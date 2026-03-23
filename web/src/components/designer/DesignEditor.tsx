@@ -12,6 +12,7 @@ import { ShapesPanel } from "./panels/ShapesPanel";
 import { LayersPanel } from "./panels/LayersPanel";
 import { TemplatesPanel } from "./panels/TemplatesPanel";
 import { ClipartPanel } from "./panels/ClipartPanel";
+import { DrawPanel } from "./panels/DrawPanel";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
 
 export const DesignEditor = () => {
@@ -58,6 +59,13 @@ export const DesignEditor = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  /* ─── Disable drawing mode when switching away from draw tool ─── */
+  useEffect(() => {
+    if (activeTool !== "draw") {
+      canvasRef.current?.setDrawingMode(false);
+    }
+  }, [activeTool]);
+
   /* ─── Product not yet selected → show picker ─── */
   if (!selectedProduct) {
     return <ProductSelector />;
@@ -72,6 +80,8 @@ export const DesignEditor = () => {
         return <ImagePanel canvasRef={canvasRef} />;
       case "shapes":
         return <ShapesPanel canvasRef={canvasRef} />;
+      case "draw":
+        return <DrawPanel canvasRef={canvasRef} />;
       case "templates":
         return <TemplatesPanel canvasRef={canvasRef} />;
       case "clipart":
