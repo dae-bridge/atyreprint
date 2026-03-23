@@ -10,6 +10,8 @@ import { TextPanel } from "./panels/TextPanel";
 import { ImagePanel } from "./panels/ImagePanel";
 import { ShapesPanel } from "./panels/ShapesPanel";
 import { LayersPanel } from "./panels/LayersPanel";
+import { TemplatesPanel } from "./panels/TemplatesPanel";
+import { ClipartPanel } from "./panels/ClipartPanel";
 import { PanelRightClose, PanelRightOpen } from "lucide-react";
 
 export const DesignEditor = () => {
@@ -70,6 +72,10 @@ export const DesignEditor = () => {
         return <ImagePanel canvasRef={canvasRef} />;
       case "shapes":
         return <ShapesPanel canvasRef={canvasRef} />;
+      case "templates":
+        return <TemplatesPanel canvasRef={canvasRef} />;
+      case "clipart":
+        return <ClipartPanel canvasRef={canvasRef} />;
       default:
         return (
           <div className="p-4">

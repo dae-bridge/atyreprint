@@ -110,6 +110,31 @@ export type DesignTool =
   | "clipart"
   | "templates";
 
+/** A pre-made design template users can load and customise */
+export interface DesignTemplate {
+  id: string;
+  name: string;
+  /** Template category (e.g. "Business", "Birthday", "Sports") */
+  category: string;
+  /** Which product types this template works with */
+  productTypes: ProductType[];
+  /** Emoji preview shown in the panel */
+  emoji: string;
+  /** Brief description */
+  description: string;
+  /** Fabric.js canvas JSON to load onto the canvas */
+  canvasJSON: object;
+  /** Optional tags for search/filtering */
+  tags?: string[];
+}
+
+/** Category for grouping design templates */
+export interface DesignTemplateCategory {
+  id: string;
+  name: string;
+  emoji: string;
+}
+
 /** Shape types available */
 export type ShapeType =
   | "rectangle"

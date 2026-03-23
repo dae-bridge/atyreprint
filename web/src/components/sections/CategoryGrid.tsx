@@ -18,7 +18,7 @@ const categories = [
 
 export const CategoryGrid = () => {
   return (
-    <section className="py-16 md:py-20 bg-surface">
+    <section className="py-16 md:py-20">
       <Container>
         <SectionHeading
           overline="Categories"
@@ -31,9 +31,11 @@ export const CategoryGrid = () => {
             <ScrollReveal key={cat.label} variant="fade-up" delay={index * 80}>
               <Link
                 href={cat.href}
-                className="group bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all text-center border border-border-light hover:border-primary/30"
+                className="group flex flex-col items-center p-6 rounded-xl text-center transition-all hover:bg-surface"
               >
-                <div className="text-5xl mb-4">{cat.emoji}</div>
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">
+                  {cat.emoji}
+                </div>
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
                   {cat.label}
                 </p>

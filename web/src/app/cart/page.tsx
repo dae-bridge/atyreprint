@@ -13,7 +13,13 @@ const CartItemRow = ({ item }: { item: CartItem }) => {
   return (
     <div className="flex gap-4 py-5 border-b border-border-light last:border-b-0">
       <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-surface flex-shrink-0">
-        <Image src={item.image} alt={item.name} fill className="object-cover" sizes="96px" />
+        <Image
+          src={item.image}
+          alt={item.name}
+          fill
+          className="object-cover"
+          sizes="96px"
+        />
       </div>
       <div className="flex-1 min-w-0">
         <Link
@@ -29,7 +35,14 @@ const CartItemRow = ({ item }: { item: CartItem }) => {
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-center border border-border-light rounded-lg overflow-hidden">
             <button
-              onClick={() => updateQuantity(item.productId, item.color, item.variants, item.quantity - 1)}
+              onClick={() =>
+                updateQuantity(
+                  item.productId,
+                  item.color,
+                  item.variants,
+                  item.quantity - 1,
+                )
+              }
               className="px-2.5 py-1.5 hover:bg-surface transition-colors"
               aria-label="Decrease quantity"
             >
@@ -39,7 +52,14 @@ const CartItemRow = ({ item }: { item: CartItem }) => {
               {item.quantity}
             </span>
             <button
-              onClick={() => updateQuantity(item.productId, item.color, item.variants, item.quantity + 1)}
+              onClick={() =>
+                updateQuantity(
+                  item.productId,
+                  item.color,
+                  item.variants,
+                  item.quantity + 1,
+                )
+              }
               className="px-2.5 py-1.5 hover:bg-surface transition-colors"
               aria-label="Increase quantity"
             >
@@ -51,7 +71,9 @@ const CartItemRow = ({ item }: { item: CartItem }) => {
               £{(item.price * item.quantity).toFixed(2)}
             </span>
             <button
-              onClick={() => removeItem(item.productId, item.color, item.variants)}
+              onClick={() =>
+                removeItem(item.productId, item.color, item.variants)
+              }
               className="p-1.5 text-text-muted hover:text-error transition-colors"
               aria-label="Remove item"
             >
@@ -72,7 +94,11 @@ export default function CartPage() {
     <>
       <PageHeader
         title="Your Cart"
-        subtitle={count > 0 ? `${count} item${count !== 1 ? "s" : ""} in your cart` : undefined}
+        subtitle={
+          count > 0
+            ? `${count} item${count !== 1 ? "s" : ""} in your cart`
+            : undefined
+        }
         badge="Shopping Cart"
       />
 
@@ -85,7 +111,8 @@ export default function CartPage() {
                 Your cart is empty
               </h2>
               <p className="text-text-secondary mb-6">
-                Looks like you haven&apos;t added anything yet. Browse our products and find something you love!
+                Looks like you haven&apos;t added anything yet. Browse our
+                products and find something you love!
               </p>
               <Link
                 href="/shop"
@@ -99,7 +126,9 @@ export default function CartPage() {
               {/* Cart Items */}
               <div className="lg:col-span-2">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-foreground">Cart Items</h2>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    Cart Items
+                  </h2>
                   <button
                     onClick={clearCart}
                     className="text-sm text-text-muted hover:text-error transition-colors"
@@ -120,7 +149,9 @@ export default function CartPage() {
               {/* Order Summary */}
               <div>
                 <div className="bg-surface rounded-xl p-6 sticky top-24">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Order Summary</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Order Summary
+                  </h3>
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm text-text-secondary">
                       <span>Subtotal ({count} items)</span>
@@ -128,11 +159,15 @@ export default function CartPage() {
                     </div>
                     <div className="flex justify-between text-sm text-text-secondary">
                       <span>Shipping</span>
-                      <span className="text-success font-medium">Calculated at checkout</span>
+                      <span className="text-success font-medium">
+                        Calculated at checkout
+                      </span>
                     </div>
                     <div className="border-t border-border-light pt-3 flex justify-between font-semibold text-foreground">
                       <span>Total</span>
-                      <span className="text-primary text-lg">£{totalPrice().toFixed(2)}</span>
+                      <span className="text-primary text-lg">
+                        £{totalPrice().toFixed(2)}
+                      </span>
                     </div>
                   </div>
                   <button className="w-full py-3.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors mb-3">
