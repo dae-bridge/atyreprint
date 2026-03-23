@@ -1,6 +1,12 @@
 import { siteConfig } from "@/config/site";
 import { Container } from "@/components/ui/Container";
-import { Truck, ShieldCheck, Zap, Headphones, type LucideIcon } from "lucide-react";
+import {
+  Truck,
+  ShieldCheck,
+  Zap,
+  Headphones,
+  type LucideIcon,
+} from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   Truck,
@@ -30,9 +36,7 @@ export const FeatureBadges = () => {
                   <p className="text-sm font-semibold text-foreground">
                     {badge.title}
                   </p>
-                  <p className="text-xs text-text-muted">
-                    {badge.description}
-                  </p>
+                  <p className="text-xs text-text-muted">{badge.description}</p>
                 </div>
               </div>
             );

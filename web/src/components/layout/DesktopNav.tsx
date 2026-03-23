@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navLinks, type NavItem, type NavChild } from "@/config/site";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -83,7 +84,13 @@ const DropdownMenu = ({ children }: { children: NavChild[] }) => {
 };
 
 /* ─── Individual Nav Item ─── */
-const NavItemComponent = ({ item }: { item: NavItem }) => {
+const NavItemComponent = ({
+  item,
+  isActive,
+}: {
+  item: NavItem;
+  isActive: boolean;
+}) => {
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -113,33 +120,49 @@ const NavItemComponent = ({ item }: { item: NavItem }) => {
       <Link
         href={item.href}
         className={cn(
-          "flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors",
+          "relative flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors",
           item.featured
             ? "text-secondary hover:text-secondary-light font-bold"
-            : "text-foreground hover:text-primary"
+            : isActive
+              ? "text-primary font-semibold"
+              : "text-foreground hover:text-primary",
         )}
       >
         {item.label}
-        {hasChildren && <ChevronDown size={14} className={cn("transition-transform", open && "rotate-180")} />}
+        {hasChildren && (
+          <ChevronDown
+            size={14}
+            className={cn("transition-transform", open && "rotate-180")}
+          />
+        )}
+        {isActive && (
+          <span className="absolute -bottom-1 left-3 right-3 h-0.5 bg-accent rounded-full" />
+        )}
       </Link>
 
-      {hasChildren && open && (
-        item.megaMenu ? (
+      {hasChildren &&
+        open &&
+        (item.megaMenu ? (
           <MegaMenu item={item} />
         ) : (
           <DropdownMenu>{item.children!}</DropdownMenu>
-        )
-      )}
+        ))}
     </div>
   );
 };
 
 export const DesktopNav = () => {
+  const pathname = usePathname();
+
   return (
     <nav className="hidden lg:flex items-center gap-1">
-      {navLinks.map((item) => (
-        <NavItemComponent key={item.label} item={item} />
-      ))}
+      {navLinks.map((item) => {
+        const isActive =
+          item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+        return (
+          <NavItemComponent key={item.label} item={item} isActive={isActive} />
+        );
+      })}
     </nav>
   );
 };

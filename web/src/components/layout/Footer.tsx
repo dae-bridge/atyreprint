@@ -2,12 +2,7 @@ import Link from "next/link";
 import { siteConfig, footerLinks } from "@/config/site";
 import { Container } from "@/components/ui/Container";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-} from "lucide-react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 
 const FooterLinkColumn = ({
   title,
@@ -83,7 +78,10 @@ export const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <FooterLinkColumn title="Quick Links" links={footerLinks.quickLinks} />
+          <FooterLinkColumn
+            title="Quick Links"
+            links={footerLinks.quickLinks}
+          />
 
           {/* Help & Support */}
           <FooterLinkColumn

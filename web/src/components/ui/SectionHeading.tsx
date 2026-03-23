@@ -17,11 +17,7 @@ export const SectionHeading = ({
 }: SectionHeadingProps) => {
   return (
     <div
-      className={cn(
-        "mb-12",
-        align === "center" && "text-center",
-        className
-      )}
+      className={cn("mb-12", align === "center" && "text-center", className)}
     >
       {overline && (
         <p className="text-secondary font-medium tracking-wider uppercase text-sm mb-2">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navLinks, siteConfig, type NavItem } from "@/config/site";
 import { X, ChevronDown, ChevronRight, Phone, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,9 +11,11 @@ import { cn } from "@/lib/utils";
 const MobileNavItem = ({
   item,
   onClose,
+  isActive,
 }: {
   item: NavItem;
   onClose: () => void;
+  isActive: boolean;
 }) => {
   const [expanded, setExpanded] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
@@ -27,7 +30,9 @@ const MobileNavItem = ({
             "flex-1 py-3.5 px-4 text-base font-medium transition-colors",
             item.featured
               ? "text-secondary font-bold"
-              : "text-foreground hover:text-primary"
+              : isActive
+                ? "text-primary font-semibold bg-accent/10"
+                : "text-foreground hover:text-primary",
           )}
         >
           {item.label}
@@ -90,13 +95,15 @@ interface MobileNavProps {
 }
 
 export const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
+  const pathname = usePathname();
+
   return (
     <>
       {/* Backdrop */}
       <div
         className={cn(
           "fixed inset-0 bg-black/50 z-40 transition-opacity lg:hidden",
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
         onClick={onClose}
         aria-hidden="true"
@@ -106,7 +113,7 @@ export const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
       <div
         className={cn(
           "fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white z-50 transform transition-transform duration-300 lg:hidden flex flex-col",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Header */}
@@ -127,9 +134,20 @@ export const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
 
         {/* Nav Items */}
         <nav className="flex-1 overflow-y-auto">
-          {navLinks.map((item) => (
-            <MobileNavItem key={item.label} item={item} onClose={onClose} />
-          ))}
+          {navLinks.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(item.href);
+            return (
+              <MobileNavItem
+                key={item.label}
+                item={item}
+                onClose={onClose}
+                isActive={isActive}
+              />
+            );
+          })}
         </nav>
 
         {/* Contact footer */}

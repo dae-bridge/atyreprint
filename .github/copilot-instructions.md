@@ -56,6 +56,17 @@ AtyrePrint is a custom clothing & gifts e-commerce platform with two Next.js app
 - Use `const` arrow functions for components
 - **Extract reusable components aggressively** — if a UI pattern appears (or could appear) on multiple pages, make it a component in `components/ui/` or `components/sections/`. Avoid duplicating markup.
 
+### Safe File Rewrites
+
+When you need to **rewrite an entire file or folder** (not a small edit):
+
+1. **Rename** the existing file/folder first (e.g., `MyComponent.tsx` → `MyComponent.old.tsx`)
+2. **Create** the new file/folder with the updated code
+3. **Wait for the developer to confirm** the new version works correctly
+4. **Only then delete** the `.old` backup
+
+This prevents data loss. Never delete the original before the developer has verified the replacement.
+
 ## Styling Rules
 
 - Use Tailwind utility classes; avoid inline styles
@@ -65,11 +76,13 @@ AtyrePrint is a custom clothing & gifts e-commerce platform with two Next.js app
 
 ## Brand Colors (AtyrePrint)
 
-- **Primary:** `#1B4D3E` (deep forest green)
-- **Primary Light:** `#2D7A5F`
-- **Primary Dark:** `#0F2E25`
-- **Secondary/Accent:** `#D4A853` (warm gold)
-- **Accent Light:** `#E8C97A`
+- **Primary:** `#3D6B1E` (dark olive green — readable with white text)
+- **Primary Light:** `#4A7C25` (medium green — hover states)
+- **Primary Dark:** `#1A3A10` (very dark green — footer, topbar)
+- **Accent:** `#A7CF45` (brand lime green — highlights, nav indicators, decorative pops)
+- **Accent Light:** `#C8E07D`
+- **Secondary:** `#D4A853` (warm gold)
+- **Secondary Light:** `#E8C97A`
 - **Background:** `#FFFFFF`
 - **Surface:** `#F8F9FA`
 - **Text Primary:** `#1A1A1A`

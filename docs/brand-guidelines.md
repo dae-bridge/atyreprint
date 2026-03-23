@@ -21,16 +21,23 @@
 
 | Name | Hex | Usage |
 |---|---|---|
-| **Primary (Forest Green)** | `#1B4D3E` | Headers, buttons, navigation, key UI elements |
-| **Primary Light** | `#2D7A5F` | Hover states, secondary buttons, accents |
-| **Primary Dark** | `#0F2E25` | Admin sidebar, footer background, dark sections |
+| **Primary (Dark Olive Green)** | `#3D6B1E` | Headers, buttons, navigation, key UI elements — readable with white text |
+| **Primary Light** | `#4A7C25` | Hover states, secondary buttons |
+| **Primary Dark** | `#1A3A10` | Admin sidebar, footer background, dark sections |
 
-### Accent Colours
+### Brand Accent
+
+| Name | Hex | Usage |
+|---|---|---|
+| **Accent (Brand Lime Green)** | `#A7CF45` | Highlights, nav indicators, decorative pops, scrollbar, badges |
+| **Accent Light** | `#C8E07D` | Accent hover states, subtle green accents |
+
+### Secondary Colours
 
 | Name | Hex | Usage |
 |---|---|---|
 | **Secondary (Warm Gold)** | `#D4A853` | Call-to-action buttons, highlights, badges, premium feel |
-| **Accent Light** | `#E8C97A` | Gold hover states, subtle gold accents |
+| **Secondary Light** | `#E8C97A` | Gold hover states, subtle gold accents |
 | **Secondary Dark** | `#B8902F` | Active/pressed gold states |
 
 ### Neutral Colours

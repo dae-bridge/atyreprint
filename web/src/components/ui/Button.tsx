@@ -39,7 +39,7 @@ export const Button = ({
     baseStyles,
     variants[variant],
     variant !== "link" && sizes[size],
-    className
+    className,
   );
 
   if (href) {

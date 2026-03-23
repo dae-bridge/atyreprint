@@ -10,7 +10,10 @@ export const TopBar = () => {
         {/* Left - Promo text */}
         <p className="text-white/80">
           Free UK shipping on orders over £50 —{" "}
-          <Link href="/shop" className="text-secondary hover:text-secondary-light underline">
+          <Link
+            href="/shop"
+            className="text-secondary hover:text-secondary-light underline"
+          >
             Shop Now
           </Link>
         </p>

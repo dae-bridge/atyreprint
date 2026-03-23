@@ -8,11 +8,16 @@ interface CardProps {
   hover?: boolean;
 }
 
-export const Card = ({ children, className, href, hover = true }: CardProps) => {
+export const Card = ({
+  children,
+  className,
+  href,
+  hover = true,
+}: CardProps) => {
   const classes = cn(
     "bg-white rounded-xl border border-border-light overflow-hidden",
     hover && "hover:shadow-lg transition-shadow duration-300",
-    className
+    className,
   );
 
   if (href) {

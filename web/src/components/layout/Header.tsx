@@ -7,9 +7,11 @@ import { TopBar } from "./TopBar";
 import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
 import { Search, ShoppingBag, User, Menu } from "lucide-react";
+import { useCartStore } from "@/lib/cartStore";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const totalItems = useCartStore((s) => s.totalItems);
 
   return (
     <>
@@ -67,9 +69,11 @@ export const Header = () => {
                 aria-label="Cart"
               >
                 <ShoppingBag size={20} />
-                <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-secondary text-primary-dark text-xs font-bold rounded-full flex items-center justify-center">
-                  0
-                </span>
+                {totalItems() > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-secondary text-primary-dark text-xs font-bold rounded-full flex items-center justify-center">
+                    {totalItems() > 99 ? "99+" : totalItems()}
+                  </span>
+                )}
               </Link>
             </div>
           </div>

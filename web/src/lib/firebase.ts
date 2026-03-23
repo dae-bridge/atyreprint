@@ -14,7 +14,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase (prevent re-initialization during HMR)
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const app =
+  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 // Firestore
 export const db = getFirestore(app);

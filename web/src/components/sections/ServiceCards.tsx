@@ -1,12 +1,20 @@
+import Image from "next/image";
 import { siteConfig } from "@/config/site";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { Scissors, Printer, Palette, type LucideIcon } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   Scissors,
   Printer,
   Palette,
+};
+
+const serviceImages: Record<string, string> = {
+  Embroidery: "/images/services/embroidery.jpg",
+  Printing: "/images/services/printing.jpg",
+  Design: "/images/services/design.jpg",
 };
 
 export const ServiceCards = () => {
@@ -20,32 +28,35 @@ export const ServiceCards = () => {
         />
 
         <div className="grid md:grid-cols-3 gap-8 mt-10">
-          {siteConfig.services.map((service) => {
+          {siteConfig.services.map((service, index) => {
             const Icon = iconMap[service.icon];
             return (
-              <div
+              <ScrollReveal
                 key={service.title}
-                className="group bg-surface rounded-xl p-8 text-center hover:bg-primary transition-colors duration-300"
+                variant="fade-up"
+                delay={index * 150}
               >
-                <div className="w-20 h-20 bg-primary rounded-full mx-auto mb-6 flex items-center justify-center group-hover:bg-white transition-colors duration-300">
-                  {Icon ? (
-                    <Icon
-                      size={32}
-                      className="text-white group-hover:text-primary transition-colors duration-300"
+                <div className="group bg-surface rounded-xl p-8 text-center hover:bg-primary transition-colors duration-300">
+                  <div className="w-20 h-20 rounded-full mx-auto mb-6 overflow-hidden relative">
+                    <Image
+                      src={
+                        serviceImages[service.title] ||
+                        "/images/services/embroidery.jpg"
+                      }
+                      alt={service.title}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
                     />
-                  ) : (
-                    <span className="text-white text-3xl font-bold group-hover:text-primary transition-colors duration-300">
-                      {service.title[0]}
-                    </span>
-                  )}
+                  </div>
+                  <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-white transition-colors duration-300">
+                    {service.title}
+                  </h3>
+                  <p className="text-text-secondary group-hover:text-white/80 transition-colors duration-300">
+                    {service.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-white transition-colors duration-300">
-                  {service.title}
-                </h3>
-                <p className="text-text-secondary group-hover:text-white/80 transition-colors duration-300">
-                  {service.description}
-                </p>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>

@@ -1,34 +1,98 @@
-# Dependencies
+# ─── Dependencies ───
 node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# Next.js
+# ─── Next.js ───
 .next/
 out/
+next-env.d.ts
 
-# Build
+# ─── Build / Output ───
 dist/
 build/
+*.tsbuildinfo
+.turbo/
+storybook-static/
 
-# Environment
+# ─── Environment Variables ───
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
+.env.staging
 
-# Debug
+# ─── Firebase ───
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+database-debug.log
+storage-debug.log
+.firebaserc
+
+# ─── Logs ───
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
 
-# OS
+# ─── Testing / Coverage ───
+coverage/
+*.lcov
+.nyc_output/
+playwright-report/
+test-results/
+
+# ─── OS Files ───
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
-# IDE
+# ─── IDE / Editor ───
 .vscode/settings.json
+.vscode/launch.json
+.vscode/*.code-workspace
 .idea/
 *.swp
 *.swo
+*~
+*.sublime-project
+*.sublime-workspace
 
-# TypeScript
-*.tsbuildinfo
-next-env.d.ts
+# ─── Secrets / Credentials ───
+*.pem
+*.key
+*.cert
+*.p12
+serviceAccountKey.json
+service-account*.json
+*-credentials.json
+
+# ─── Deployment ───
+.vercel
+.netlify
+.serverless
+
+# ─── Error Tracking ───
+.sentryclirc
+
+# ─── Misc ───
+*.tgz
+.cache/
+.temp/
+.tmp/
