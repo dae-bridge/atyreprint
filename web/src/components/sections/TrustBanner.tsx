@@ -1,0 +1,21 @@
+import { siteConfig } from "@/config/site";
+import { Container } from "@/components/ui/Container";
+
+export const TrustBanner = () => {
+  return (
+    <section className="py-16 bg-primary">
+      <Container>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+          {siteConfig.trustStats.map((stat) => (
+            <div key={stat.label}>
+              <p className="text-3xl md:text-4xl font-bold text-secondary">
+                {stat.value}
+              </p>
+              <p className="text-white/80 mt-1 text-sm">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+};

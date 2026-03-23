@@ -12,15 +12,16 @@ This ensures all contributors and AI agents stay aligned. Never silently deviate
 
 Full project documentation lives in `/docs/`. Always reference these when you need context:
 
-| Document | Path | Purpose |
-|---|---|---|
-| **Architecture** | `docs/architecture.md` | Project structure, tech decisions, app routes |
-| **Features** | `docs/features.md` | Feature roadmap with phases and checklists |
-| **Setup Guide** | `docs/setup-guide.md` | How to install, run, and contribute |
-| **Brand Guidelines** | `docs/brand-guidelines.md` | Colours, typography, tone, photography style |
-| **API Design** | `docs/api-design.md` | Server Actions patterns, validation, error handling |
-| **Image Requirements** | `IMAGE_REQUIREMENTS.md` | Public folder image structure and specs |
-| **TODOs** | `TODOS.md` | Project-wide task tracker (kept in the base) |
+| Document               | Path                       | Purpose                                             |
+| ---------------------- | -------------------------- | --------------------------------------------------- |
+| **Architecture**       | `docs/architecture.md`     | Project structure, tech decisions, app routes       |
+| **Features**           | `docs/features.md`         | Feature roadmap with phases and checklists          |
+| **Setup Guide**        | `docs/setup-guide.md`      | How to install, run, and contribute                 |
+| **Brand Guidelines**   | `docs/brand-guidelines.md` | Colours, typography, tone, photography style        |
+| **API Design**         | `docs/api-design.md`       | Server Actions patterns, validation, error handling |
+| **Security**           | `docs/security.md`         | Rate limiting, bot protection, middleware, GDPR     |
+| **Image Requirements** | `IMAGE_REQUIREMENTS.md`    | Public folder image structure and specs             |
+| **TODOs**              | `TODOS.md`                 | Project-wide task tracker (kept in the base)        |
 
 When starting a new chat or context, read the relevant docs above for full clarity on decisions already made.
 
@@ -40,6 +41,7 @@ AtyrePrint is a custom clothing & gifts e-commerce platform with two Next.js app
 - **State Management:** Zustand (when needed)
 - **Forms:** React Hook Form + Zod validation
 - **API:** REST or Server Actions (prefer Server Actions for mutations)
+- **Backend:** Firebase (Firestore for data, Storage for files, Analytics)
 
 ## Code Conventions
 
@@ -52,6 +54,7 @@ AtyrePrint is a custom clothing & gifts e-commerce platform with two Next.js app
 - Use TypeScript strict mode; avoid `any`
 - Prefer `interface` over `type` for object shapes
 - Use `const` arrow functions for components
+- **Extract reusable components aggressively** — if a UI pattern appears (or could appear) on multiple pages, make it a component in `components/ui/` or `components/sections/`. Avoid duplicating markup.
 
 ## Styling Rules
 

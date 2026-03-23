@@ -39,6 +39,7 @@ export const submitContactForm = async (formData: FormData) => {
 ## Planned API Resources
 
 ### Products
+
 | Action | Method | Description |
 |---|---|---|
 | List products | GET (server fetch) | Paginated, filterable product list |
@@ -48,6 +49,7 @@ export const submitContactForm = async (formData: FormData) => {
 | Delete product | Server Action (admin) | Soft-delete product |
 
 ### Categories
+
 | Action | Method | Description |
 |---|---|---|
 | List categories | GET (server fetch) | All categories with product count |
@@ -55,6 +57,7 @@ export const submitContactForm = async (formData: FormData) => {
 | CRUD | Server Action (admin) | Create/update/delete categories |
 
 ### Orders
+
 | Action | Method | Description |
 |---|---|---|
 | Create order | Server Action | Place new order (checkout) |
@@ -63,6 +66,7 @@ export const submitContactForm = async (formData: FormData) => {
 | Update status | Server Action (admin) | Change order status |
 
 ### Customers
+
 | Action | Method | Description |
 |---|---|---|
 | Register | Server Action | Create account |
@@ -70,6 +74,7 @@ export const submitContactForm = async (formData: FormData) => {
 | List (admin) | Server Action (admin) | All customers |
 
 ### Contact
+
 | Action | Method | Description |
 |---|---|---|
 | Submit form | Server Action | Send contact inquiry |

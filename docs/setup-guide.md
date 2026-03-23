@@ -56,6 +56,7 @@ See [architecture.md](./architecture.md) for the full project structure and tech
 Environment variables go in `.env.local` inside each project (never committed to git).
 
 **web/.env.local:**
+
 ```env
 # Site
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
@@ -68,6 +69,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 **admin/.env.local:**
+
 ```env
 # Site
 NEXT_PUBLIC_SITE_URL=http://localhost:3001

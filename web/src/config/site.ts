@@ -22,16 +22,19 @@ export const siteConfig = {
     {
       title: "Embroidery",
       description: "Personalise fabric items with logos, names, or designs.",
+      icon: "Scissors",
     },
     {
       title: "Printing",
       description:
         "Vibrant prints on clothing, glassware, ceramics, leather, and more.",
+      icon: "Printer",
     },
     {
       title: "Design",
       description:
         "We bring your vision to life with stunning graphics and layouts.",
+      icon: "Palette",
     },
   ],
   products: [
@@ -46,16 +49,123 @@ export const siteConfig = {
     "Caps",
     "Pillowcases",
   ],
+  trustStats: [
+    { value: "5+", label: "Years Experience" },
+    { value: "3", label: "Continents Served" },
+    { value: "10+", label: "Product Types" },
+    { value: "100%", label: "Quality Guaranteed" },
+  ],
+  featureBadges: [
+    {
+      title: "Free UK Shipping",
+      description: "On orders over £50",
+      icon: "Truck",
+    },
+    {
+      title: "Quality Guarantee",
+      description: "Premium materials always",
+      icon: "ShieldCheck",
+    },
+    {
+      title: "Fast Turnaround",
+      description: "Quick production & delivery",
+      icon: "Zap",
+    },
+    {
+      title: "24/7 Support",
+      description: "Email us anytime",
+      icon: "Headphones",
+    },
+  ],
 } as const;
 
-export const navLinks = [
+export interface NavItem {
+  label: string;
+  href: string;
+  children?: NavChild[];
+  featured?: boolean;
+  megaMenu?: boolean;
+}
+
+export interface NavChild {
+  label: string;
+  href: string;
+  description?: string;
+  children?: NavChild[];
+}
+
+export const navLinks: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Shop", href: "/shop" },
-  { label: "Categories", href: "/categories" },
-  { label: "Personalise It", href: "/personalise-it" },
+  {
+    label: "Shop",
+    href: "/shop",
+    megaMenu: true,
+    children: [
+      {
+        label: "Clothing",
+        href: "/shop/clothing",
+        children: [
+          { label: "T-Shirts", href: "/shop/clothing/t-shirts" },
+          { label: "Hoodies", href: "/shop/clothing/hoodies" },
+          { label: "Sweatshirts", href: "/shop/clothing/sweatshirts" },
+          { label: "Aprons", href: "/shop/clothing/aprons" },
+        ],
+      },
+      {
+        label: "Accessories",
+        href: "/shop/accessories",
+        children: [
+          { label: "Caps", href: "/shop/accessories/caps" },
+          { label: "Tote Bags", href: "/shop/accessories/tote-bags" },
+        ],
+      },
+      {
+        label: "Drinkware",
+        href: "/shop/drinkware",
+        children: [
+          { label: "Mugs", href: "/shop/drinkware/mugs" },
+          { label: "Glass Cans", href: "/shop/drinkware/glass-cans" },
+          { label: "Tumblers", href: "/shop/drinkware/tumblers" },
+        ],
+      },
+      {
+        label: "Home & Living",
+        href: "/shop/home-living",
+        children: [
+          { label: "Pillowcases", href: "/shop/home-living/pillowcases" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Services",
+    href: "/services",
+    children: [
+      {
+        label: "Embroidery",
+        href: "/services/embroidery",
+        description: "Personalise fabric items with logos, names, or designs",
+      },
+      {
+        label: "Printing",
+        href: "/services/printing",
+        description: "Vibrant prints on clothing, glassware, ceramics & more",
+      },
+      {
+        label: "Design",
+        href: "/services/design",
+        description: "Stunning graphics and layouts brought to life",
+      },
+    ],
+  },
+  {
+    label: "Personalise It",
+    href: "/personalise-it",
+    featured: true,
+  },
   { label: "About Us", href: "/about" },
   { label: "Contact", href: "/contact" },
-] as const;
+];
 
 export const footerLinks = {
   helpAndSupport: [
