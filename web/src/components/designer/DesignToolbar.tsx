@@ -11,6 +11,7 @@ import {
   Download,
   Save,
   Trash2,
+  Maximize,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,10 +51,19 @@ export const DesignToolbar = ({ canvasRef }: DesignToolbarProps) => {
   );
 
   const handleExport = () => {
+    const dataUrl = canvasRef.current?.exportPrintArea("png", 1);
+    if (!dataUrl) return;
+    const link = document.createElement("a");
+    link.download = "design-print-area.png";
+    link.href = dataUrl;
+    link.click();
+  };
+
+  const handleExportFull = () => {
     const dataUrl = canvasRef.current?.exportImage("png", 1);
     if (!dataUrl) return;
     const link = document.createElement("a");
-    link.download = "design.png";
+    link.download = "design-full.png";
     link.href = dataUrl;
     link.click();
   };
@@ -125,12 +135,17 @@ export const DesignToolbar = ({ canvasRef }: DesignToolbarProps) => {
           label="Save Design (JSON)"
           onClick={handleSaveJSON}
         />
+        <ToolbarButton
+          icon={Maximize}
+          label="Export Full Canvas"
+          onClick={handleExportFull}
+        />
         <button
           onClick={handleExport}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-light transition-colors"
         >
           <Download size={16} />
-          Export PNG
+          Export Print Area
         </button>
       </div>
     </div>

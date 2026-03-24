@@ -118,3 +118,25 @@ html {
 .animation-delay-300 {
   animation-delay: 0.3s;
 }
+
+/* Hero tile-switch transition */
+@keyframes tile-away {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+  60% {
+    opacity: 0.6;
+    transform: scale(0.92) rotateY(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7) rotateY(90deg);
+  }
+}
+
+.animate-tile-away {
+  animation: tile-away 0.6s ease-in forwards;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}

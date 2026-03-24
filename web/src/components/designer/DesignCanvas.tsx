@@ -23,9 +23,13 @@ export interface DesignCanvasHandle {
   zoomOut: () => void;
   zoomReset: () => void;
   exportImage: (format?: string, quality?: number) => string | null;
+  exportPrintArea: (format?: string, quality?: number) => string | null;
   exportJSON: () => object | null;
   loadJSON: (json: object) => void;
   clearCanvas: () => void;
+  setDrawingMode: (enabled: boolean) => void;
+  setBrushColor: (color: string) => void;
+  setBrushWidth: (width: number) => void;
   getCanvas: () => unknown;
 }
 
@@ -401,6 +405,23 @@ export const DesignCanvas = forwardRef<DesignCanvasHandle>(
           });
         },
 
+        exportPrintArea: (format = "png", quality = 1) => {
+          const canvas = fabricRef.current;
+          const pa = activeView?.printArea;
+          if (!canvas || !pa) return null;
+          const cw = canvasDefaults.width;
+          const ch = canvasDefaults.height;
+          return canvas.toDataURL({
+            format: format as "png" | "jpeg",
+            quality,
+            multiplier: 3,
+            left: (pa.left / 100) * cw,
+            top: (pa.top / 100) * ch,
+            width: (pa.width / 100) * cw,
+            height: (pa.height / 100) * ch,
+          });
+        },
+
         exportJSON: () => {
           const canvas = fabricRef.current;
           if (!canvas) return null;
@@ -429,6 +450,29 @@ export const DesignCanvas = forwardRef<DesignCanvasHandle>(
           saveHistory();
         },
 
+        setDrawingMode: (enabled: boolean) => {
+          const canvas = fabricRef.current;
+          if (!canvas) return;
+          canvas.isDrawingMode = enabled;
+          if (enabled && canvas.freeDrawingBrush) {
+            canvas.freeDrawingBrush.color = "#1A1A1A";
+            canvas.freeDrawingBrush.width = 3;
+          }
+          canvas.renderAll();
+        },
+
+        setBrushColor: (color: string) => {
+          const canvas = fabricRef.current;
+          if (!canvas?.freeDrawingBrush) return;
+          canvas.freeDrawingBrush.color = color;
+        },
+
+        setBrushWidth: (width: number) => {
+          const canvas = fabricRef.current;
+          if (!canvas?.freeDrawingBrush) return;
+          canvas.freeDrawingBrush.width = width;
+        },
+
         getCanvas: () => fabricRef.current,
       }),
       [zoom, setZoom, syncElements, saveHistory, setCanUndo, setCanRedo],
@@ -440,35 +484,44 @@ export const DesignCanvas = forwardRef<DesignCanvasHandle>(
     return (
       <div
         ref={containerRef}
-        className="relative flex items-center justify-center bg-[#E8E8E8] rounded-lg overflow-hidden"
+        className="relative flex items-center justify-center"
         style={{ minHeight: 500 }}
       >
-        {/* Product color background */}
+        {/* Canvas-sized wrapper — overlay + canvas are both positioned inside */}
         <div
-          className="absolute rounded-lg shadow-inner"
+          className="relative"
           style={{
             width: canvasDefaults.width,
             height: canvasDefaults.height,
-            backgroundColor: selectedColor,
           }}
-        />
-
-        {/* Print area border */}
-        {printArea && (
+        >
+          {/* Product color background */}
           <div
-            className="absolute border-2 border-dashed border-primary/30 rounded pointer-events-none z-10"
-            style={{
-              top: `${printArea.top}%`,
-              left: `${printArea.left}%`,
-              width: `${printArea.width}%`,
-              height: `${printArea.height}%`,
-              transform: `translate(${(canvasDefaults.width - canvasDefaults.width) / 2}px, 0)`,
-            }}
+            className="absolute inset-0 rounded-lg shadow-inner"
+            style={{ backgroundColor: selectedColor }}
           />
-        )}
 
-        {/* Fabric.js canvas */}
-        <canvas ref={canvasElRef} className="relative z-20" />
+          {/* Print area guide */}
+          {printArea && (
+            <div
+              className="absolute pointer-events-none z-10"
+              style={{
+                top: `${printArea.top}%`,
+                left: `${printArea.left}%`,
+                width: `${printArea.width}%`,
+                height: `${printArea.height}%`,
+              }}
+            >
+              <div className="w-full h-full border-2 border-dashed border-primary/40 rounded" />
+              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-primary/60 whitespace-nowrap">
+                Print Area
+              </span>
+            </div>
+          )}
+
+          {/* Fabric.js canvas */}
+          <canvas ref={canvasElRef} className="relative z-20" />
+        </div>
       </div>
     );
   },

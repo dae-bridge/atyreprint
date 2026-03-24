@@ -32,13 +32,13 @@ export const productTemplates: ProductTemplate[] = [
       {
         id: "front",
         label: "Front",
-        printArea: { top: 18, left: 25, width: 50, height: 45 },
+        printArea: { top: 12, left: 15, width: 70, height: 60 },
         mockupImage: "/images/products/tshirt-front.png",
       },
       {
         id: "back",
         label: "Back",
-        printArea: { top: 15, left: 25, width: 50, height: 50 },
+        printArea: { top: 10, left: 15, width: 70, height: 65 },
         mockupImage: "/images/products/tshirt-back.png",
       },
     ],
@@ -56,13 +56,13 @@ export const productTemplates: ProductTemplate[] = [
       {
         id: "front",
         label: "Front",
-        printArea: { top: 22, left: 22, width: 56, height: 40 },
+        printArea: { top: 15, left: 15, width: 70, height: 55 },
         mockupImage: "/images/products/hoodie-front.png",
       },
       {
         id: "back",
         label: "Back",
-        printArea: { top: 15, left: 20, width: 60, height: 50 },
+        printArea: { top: 10, left: 15, width: 70, height: 60 },
         mockupImage: "/images/products/hoodie-back.png",
       },
     ],
@@ -80,13 +80,13 @@ export const productTemplates: ProductTemplate[] = [
       {
         id: "front",
         label: "Front",
-        printArea: { top: 20, left: 22, width: 56, height: 42 },
+        printArea: { top: 14, left: 15, width: 70, height: 56 },
         mockupImage: "/images/products/sweatshirt-front.png",
       },
       {
         id: "back",
         label: "Back",
-        printArea: { top: 15, left: 20, width: 60, height: 48 },
+        printArea: { top: 10, left: 15, width: 70, height: 62 },
         mockupImage: "/images/products/sweatshirt-back.png",
       },
     ],
@@ -108,7 +108,7 @@ export const productTemplates: ProductTemplate[] = [
       {
         id: "front",
         label: "Front",
-        printArea: { top: 10, left: 15, width: 70, height: 65 },
+        printArea: { top: 8, left: 10, width: 80, height: 75 },
         mockupImage: "/images/products/tote-front.png",
       },
     ],
@@ -144,7 +144,7 @@ export const productTemplates: ProductTemplate[] = [
       {
         id: "front",
         label: "Front",
-        printArea: { top: 10, left: 20, width: 60, height: 40 },
+        printArea: { top: 8, left: 15, width: 70, height: 48 },
         mockupImage: "/images/products/cap-front.png",
       },
     ],
@@ -166,7 +166,7 @@ export const productTemplates: ProductTemplate[] = [
       {
         id: "front",
         label: "Front",
-        printArea: { top: 8, left: 20, width: 60, height: 50 },
+        printArea: { top: 6, left: 15, width: 70, height: 58 },
         mockupImage: "/images/products/apron-front.png",
       },
     ],
