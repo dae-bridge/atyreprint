@@ -70,7 +70,7 @@ export default function DesignPage() {
       />
 
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-sm text-text-secondary mb-10">
             <Link href="/" className="hover:text-primary transition-colors">
@@ -90,7 +90,7 @@ export default function DesignPage() {
           {/* Intro */}
           <div className="grid md:grid-cols-2 gap-10 items-center mb-16">
             <div>
-              <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-foreground mb-4">
+              <h2 className="font-jost text-2xl md:text-3xl font-bold text-foreground mb-4">
                 Design That Delivers
               </h2>
               <p className="text-text-secondary text-lg leading-relaxed mb-6">
@@ -128,7 +128,7 @@ export default function DesignPage() {
 
           {/* Offerings Grid */}
           <div className="mb-16">
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground text-center mb-10">
+            <h2 className="font-jost text-2xl font-bold text-foreground text-center mb-10">
               What We Offer
             </h2>
             <div className="grid sm:grid-cols-2 gap-6">
@@ -147,7 +147,7 @@ export default function DesignPage() {
 
           {/* Process */}
           <div className="mb-16">
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground text-center mb-10">
+            <h2 className="font-jost text-2xl font-bold text-foreground text-center mb-10">
               How It Works
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -169,7 +169,7 @@ export default function DesignPage() {
 
           {/* CTA */}
           <div className="bg-primary rounded-2xl p-8 md:p-12 text-center text-white">
-            <h3 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold mb-3">
+            <h3 className="font-jost text-2xl md:text-3xl font-bold mb-3">
               Need design help?
             </h3>
             <p className="text-white/80 mb-6 max-w-lg mx-auto">

@@ -2,22 +2,22 @@ import { siteConfig } from "@/config/site";
 import { Container } from "@/components/ui/Container";
 import {
   Truck,
-  ShieldCheck,
-  Zap,
+  PiggyBank,
+  BadgePercent,
   Headphones,
   type LucideIcon,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
   Truck,
-  ShieldCheck,
-  Zap,
+  PiggyBank,
+  BadgePercent,
   Headphones,
 };
 
 export const FeatureBadges = () => {
   return (
-    <section className="border-b border-border bg-white">
+    <section className="bg-[#f8f9fa] pt-8 md:pt-12">
       <Container className="py-5">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {siteConfig.featureBadges.map((badge) => {
@@ -33,7 +33,7 @@ export const FeatureBadges = () => {
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-foreground">
+                  <p className="text-base font-bold text-foreground">
                     {badge.title}
                   </p>
                   <p className="text-xs text-text-muted">{badge.description}</p>

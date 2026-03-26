@@ -57,27 +57,33 @@ export const siteConfig = {
   ],
   featureBadges: [
     {
-      title: "Free UK Shipping",
-      description: "On orders over £50",
+      title: "Worldwide Shipping",
+      description: "For all Orders Over $100",
       icon: "Truck",
     },
     {
-      title: "Quality Guarantee",
-      description: "Premium materials always",
-      icon: "ShieldCheck",
+      title: "Money Back Guarantee",
+      description: "Guarantee With In 30 Days",
+      icon: "PiggyBank",
     },
     {
-      title: "Fast Turnaround",
-      description: "Quick production & delivery",
-      icon: "Zap",
+      title: "Offers And Discounts",
+      description: "Back Returns In 7 Days",
+      icon: "BadgePercent",
     },
     {
-      title: "24/7 Support",
-      description: "Email us anytime",
+      title: "24/7 Support Services",
+      description: "Contact us Anytime",
       icon: "Headphones",
     },
   ],
-} as const;
+  topBarLinks: [
+    { label: "About Us", href: "/about" },
+    { label: "Blog", href: "/blog" },
+    { label: "Contact Us", href: "/contact" },
+    { label: "FAQs", href: "/faqs" },
+  ],
+};
 
 export interface NavItem {
   label: string;
@@ -85,6 +91,8 @@ export interface NavItem {
   children?: NavChild[];
   featured?: boolean;
   megaMenu?: boolean;
+  badge?: string;
+  badgeColor?: string;
 }
 
 export interface NavChild {
@@ -92,6 +100,8 @@ export interface NavChild {
   href: string;
   description?: string;
   children?: NavChild[];
+  badge?: string;
+  badgeColor?: string;
 }
 
 export const navLinks: NavItem[] = [
@@ -102,69 +112,98 @@ export const navLinks: NavItem[] = [
     megaMenu: true,
     children: [
       {
-        label: "Clothing",
+        label: "Product Types",
+        href: "/shop",
+        children: [
+          { label: "Simple Product", href: "/shop" },
+          { label: "Grouped Product", href: "/shop" },
+          { label: "Variable Product", href: "/shop", badge: "NEW", badgeColor: "bg-blue-400" },
+          { label: "External Product", href: "/shop" },
+          { label: "Sale Product", href: "/shop", badge: "SALE", badgeColor: "bg-orange-400" },
+          { label: "Upsell Products", href: "/shop" },
+          { label: "Cross-Sell Product", href: "/shop" },
+        ],
+      },
+      {
+        label: "Our Services",
+        href: "/services",
+        children: [
+          { label: "Embroidery", href: "/services/embroidery" },
+          { label: "Screen Printing", href: "/services/screen-printing" },
+          { label: "Transfer Printing", href: "/services/transfer-printing", badge: "HOT", badgeColor: "bg-accent" },
+          { label: "Sublimation", href: "/services/sublimation" },
+          { label: "Bulk Ordering", href: "/services/bulk" },
+          { label: "Design Support", href: "/services/design" },
+        ],
+      },
+      {
+        label: "Shop Features",
+        href: "/shop",
+        children: [
+          { label: "Stock Progress Bar", href: "/shop" },
+          { label: "Color Swatches", href: "/shop" },
+          { label: "Size Guide Table", href: "/shop", badge: "POPULAR", badgeColor: "bg-orange-400" },
+          { label: "Custom Tab", href: "/shop" },
+          { label: "Countdown Timer", href: "/shop" },
+          { label: "Product Video", href: "/shop", badge: "FEATURED", badgeColor: "bg-accent" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Categories",
+    href: "/shop",
+    megaMenu: true,
+    badge: "SALE",
+    badgeColor: "bg-accent",
+    children: [
+      {
+        label: "Custom Clothing",
         href: "/shop/clothing",
         children: [
           { label: "T-Shirts", href: "/shop/clothing/t-shirts" },
           { label: "Hoodies", href: "/shop/clothing/hoodies" },
           { label: "Sweatshirts", href: "/shop/clothing/sweatshirts" },
           { label: "Aprons", href: "/shop/clothing/aprons" },
+          { label: "Pillowcases", href: "/shop/clothing/pillowcases" },
+        ],
+      },
+      {
+        label: "Personalised Gifts",
+        href: "/shop/gifts",
+        children: [
+          { label: "Mugs", href: "/shop/gifts/mugs" },
+          { label: "Glass Cans", href: "/shop/gifts/glass-cans" },
+          { label: "Tumblers", href: "/shop/gifts/tumblers" },
+          { label: "Tote Bags", href: "/shop/gifts/tote-bags" },
+          { label: "Custom Embroidery", href: "/shop/gifts/embroidery" },
         ],
       },
       {
         label: "Accessories",
         href: "/shop/accessories",
         children: [
-          { label: "Caps", href: "/shop/accessories/caps" },
-          { label: "Tote Bags", href: "/shop/accessories/tote-bags" },
-        ],
-      },
-      {
-        label: "Drinkware",
-        href: "/shop/drinkware",
-        children: [
-          { label: "Mugs", href: "/shop/drinkware/mugs" },
-          { label: "Glass Cans", href: "/shop/drinkware/glass-cans" },
-          { label: "Tumblers", href: "/shop/drinkware/tumblers" },
-        ],
-      },
-      {
-        label: "Home & Living",
-        href: "/shop/home-living",
-        children: [
-          { label: "Pillowcases", href: "/shop/home-living/pillowcases" },
+          { label: "Caps & Hats", href: "/shop/accessories/caps" },
+          { label: "Bags", href: "/shop/accessories/bags" },
+          { label: "Textiles", href: "/shop/accessories/textiles" },
+          { label: "Home Decor", href: "/shop/accessories/home" },
+          { label: "Office Gifts", href: "/shop/accessories/office" },
         ],
       },
     ],
   },
   {
-    label: "Services",
-    href: "/services",
+    label: "Products",
+    href: "/shop",
+    megaMenu: true,
+    badge: "HOT",
+    badgeColor: "bg-primary-light",
     children: [
-      {
-        label: "Embroidery",
-        href: "/services/embroidery",
-        description: "Personalise fabric items with logos, names, or designs",
-      },
-      {
-        label: "Printing",
-        href: "/services/printing",
-        description: "Vibrant prints on clothing, glassware, ceramics & more",
-      },
-      {
-        label: "Design",
-        href: "/services/design",
-        description: "Stunning graphics and layouts brought to life",
-      },
+      { label: "New Arrivals", href: "/shop?sort=newest" },
+      { label: "Best Sellers", href: "/shop?sort=popular" },
     ],
   },
-  {
-    label: "Personalise It",
-    href: "/personalise-it",
-    featured: true,
-  },
-  { label: "About Us", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Top deals", href: "/shop?tag=deals", megaMenu: true },
 ];
 
 export const footerLinks = {

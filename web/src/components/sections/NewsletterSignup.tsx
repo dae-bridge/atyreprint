@@ -10,7 +10,7 @@ export const NewsletterSignup = () => {
       <Container>
         <ScrollReveal variant="fade-up">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 className="font-jost text-2xl md:text-3xl font-bold text-white mb-3">
               Stay in the Loop
             </h2>
             <p className="text-white/70 mb-8">

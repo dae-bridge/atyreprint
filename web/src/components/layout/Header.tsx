@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig } from "@/config/site";
 import { TopBar } from "./TopBar";
 import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
-import { Search, ShoppingBag, User, Menu } from "lucide-react";
+import { Container } from "@/components/ui/Container";
+import { Search, ShoppingBag, User, Menu, Heart, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 
 export const Header = () => {
@@ -15,15 +17,14 @@ export const Header = () => {
 
   return (
     <>
-      {/* Top Bar */}
       <TopBar />
 
-      {/* Main Header */}
-      <header className="sticky top-0 z-30 bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[70px]">
-            {/* Left: Hamburger + Logo */}
-            <div className="flex items-center gap-3">
+      <header className="bg-white">
+        {/* Middle Level: Logo, Search, Actions */}
+        <Container>
+          <div className="flex items-center justify-between py-3 gap-8 relative">
+            {/* Left: Logo */}
+            <div className="flex items-center gap-4 flex-shrink-0">
               <button
                 onClick={() => setMobileMenuOpen(true)}
                 className="lg:hidden p-2 text-foreground hover:text-primary transition-colors"
@@ -32,51 +33,103 @@ export const Header = () => {
                 <Menu size={24} />
               </button>
 
-              <Link href="/" className="flex items-center gap-2">
-                {/* Logo mark */}
-                <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">A</span>
-                </div>
-                <div className="hidden sm:block">
-                  <span className="text-xl font-bold text-primary">
-                    {siteConfig.name}
-                  </span>
+              <Link href="/" className="flex items-center">
+                <div className="relative w-[260px] h-[85px]">
+                  <Image
+                    src="/images/icons/atyreprint-logo.png"
+                    alt={`${siteConfig.name} Logo`}
+                    fill
+                    className="object-contain object-left"
+                    priority
+                  />
                 </div>
               </Link>
             </div>
 
-            {/* Center: Desktop Navigation */}
-            <DesktopNav />
+            {/* Center: Search Bar */}
+            <div className="hidden md:flex flex-1 max-w-3xl bg-surface-alt rounded-md overflow-hidden border border-border group focus-within:border-primary transition-colors h-12">
+              <div className="flex items-center px-4 py-2 border-r border-border cursor-pointer hover:bg-surface transition-colors min-w-[140px] h-full">
+                <span className="text-[15px] font-medium text-text-secondary mr-2">All Categories</span>
+                <ChevronDown size={14} className="text-text-muted" />
+              </div>
+              <div className="flex-1 flex items-center relative h-full">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  className="w-full px-4 py-2 text-[15px] bg-transparent outline-none text-foreground placeholder-text-muted h-full"
+                />
+                <button className="px-5 text-text-secondary hover:text-primary transition-colors h-full flex items-center justify-center">
+                  <Search size={22} />
+                </button>
+              </div>
+            </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-2">
-              <button
-                className="p-2.5 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-surface"
-                aria-label="Search"
-              >
-                <Search size={20} />
-              </button>
+            <div className="flex items-center gap-1 lg:gap-4 flex-shrink-0">
+              {/* Account */}
               <Link
                 href="/account"
-                className="p-2.5 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-surface hidden sm:flex"
-                aria-label="Account"
+                className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
               >
-                <User size={20} />
+                <div className="flex items-center justify-center">
+                  <User size={28} strokeWidth={1.5} />
+                </div>
+                <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
+                  <span className="text-text-secondary font-medium">Sign In</span>
+                  <span className="font-bold text-[15px]">Account</span>
+                </div>
               </Link>
+
+              {/* Favourites */}
+              <Link
+                href="/wishlist"
+                className="relative p-2 text-foreground hover:text-primary transition-colors"
+                aria-label="Favourites"
+              >
+                <Heart size={26} strokeWidth={1.5} />
+                <span className="absolute top-1 right-0.5 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                  0
+                </span>
+              </Link>
+
+              {/* My Cart */}
               <Link
                 href="/cart"
-                className="relative p-2.5 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-surface"
-                aria-label="Cart"
+                className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
               >
-                <ShoppingBag size={20} />
-                {totalItems() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-secondary text-primary-dark text-xs font-bold rounded-full flex items-center justify-center">
-                    {totalItems() > 99 ? "99+" : totalItems()}
+                <div className="relative">
+                  <ShoppingBag size={26} strokeWidth={1.5} />
+                  <span className="absolute -top-1 -right-1.5 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                    {totalItems()}
                   </span>
-                )}
+                </div>
+                <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
+                  <span className="text-text-secondary font-medium whitespace-nowrap">£0.00</span>
+                  <span className="font-bold text-[15px]">My Cart</span>
+                </div>
               </Link>
             </div>
           </div>
+        </Container>
+
+        {/* Bottom Level: Desktop Navigation */}
+        <div className="hidden lg:block border-t border-border">
+          <Container>
+            <div className="flex items-center justify-between relative h-full">
+              <DesktopNav />
+              
+              {/* Today's Deal */}
+              <Link 
+                href="/deals" 
+                className="flex items-center gap-2 py-3 text-foreground hover:text-primary transition-colors font-semibold text-[15px]"
+              >
+                <div className="w-5 h-5 flex items-center justify-center rounded-full border-2 border-primary text-primary">
+                  <span className="text-[10px] font-bold">%</span>
+                </div>
+                Today's Deal
+              </Link>
+            </div>
+          </Container>
         </div>
       </header>
 

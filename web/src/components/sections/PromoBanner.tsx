@@ -66,7 +66,7 @@ export const PromoBanner = () => {
                   <p className="text-secondary font-semibold text-sm uppercase tracking-wider mb-2">
                     {banner.overline}
                   </p>
-                  <h3 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-white mb-3">
+                  <h3 className="font-jost text-2xl md:text-3xl font-bold text-white mb-3">
                     {banner.title} <br /> {banner.titleLine2}
                   </h3>
                   <p className="text-white/70 text-sm mb-5 max-w-sm">

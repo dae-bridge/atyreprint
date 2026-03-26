@@ -47,11 +47,11 @@ export default function ContactPage() {
       />
 
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-12">
             {/* Contact info */}
             <div className="lg:col-span-2">
-              <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground mb-6">
+              <h2 className="font-jost text-2xl font-bold text-foreground mb-6">
                 Reach Out to Us
               </h2>
               <p className="text-text-secondary mb-8 leading-relaxed">

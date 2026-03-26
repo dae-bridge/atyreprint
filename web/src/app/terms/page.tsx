@@ -23,7 +23,7 @@ export default function TermsPage() {
           </p>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               1. Overview
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -35,7 +35,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               2. Custom Products
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -47,7 +47,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               3. Pricing & Payment
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -59,7 +59,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               4. Intellectual Property
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -71,7 +71,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               5. Delivery
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -89,7 +89,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               6. Returns & Refunds
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -107,7 +107,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               7. Limitation of Liability
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -118,7 +118,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               8. Changes to These Terms
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -129,7 +129,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               9. Governing Law
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -140,7 +140,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               10. Contact
             </h2>
             <p className="text-text-secondary leading-relaxed">

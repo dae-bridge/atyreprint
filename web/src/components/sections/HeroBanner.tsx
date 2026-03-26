@@ -148,20 +148,21 @@ export const HeroBanner = () => {
   }, [outgoingIndex]);
 
   return (
-    <section
-      className="relative min-h-[85vh] flex items-center overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      {/* Incoming slide — sits underneath the tile grid */}
-      <div className="absolute inset-0">
+    <Container>
+      <section
+        className="relative min-h-[70vh] flex items-center overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+      {/* Incoming slide — shifted left for zero overlap with right-aligned text */}
+      <div className="absolute inset-0 w-[115%] -left-[15%]">
         <Image
           src={slide.image}
           alt={slide.alt}
           fill
-          className="object-cover"
+          className="object-cover object-left"
           priority
-          sizes="100vw"
+          sizes="115vw"
         />
       </div>
 
@@ -172,28 +173,27 @@ export const HeroBanner = () => {
         </div>
       )}
 
-      {/* Multi-layer overlay — guarantees text readability on any image */}
+      {/* Multi-layer overlay — flipped for right-aligned text readability */}
       <div className="absolute inset-0 z-[3]">
-        {/* Full-screen dark wash */}
-        <div className="absolute inset-0 bg-black/50" />
-        {/* Extra gradient on the left where text sits */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+        {/* Targeted gradient on the right where text sits */}
+        <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/40 to-transparent" />
         {/* Bottom fade for dots / arrows */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
-      {/* Content */}
-      <Container className="relative z-10 py-20">
-        <div className="max-w-2xl">
+      {/* Content — Positioned to the right */}
+      <div className="absolute inset-0 z-10 flex items-center justify-end py-20 pointer-events-none">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-end">
+          <div className="max-w-xl text-left pointer-events-auto">
           <p
             key={`overline-${current}`}
-            className="text-secondary font-semibold tracking-wider uppercase text-sm mb-4 animate-fade-in-up drop-shadow-md"
+            className="text-secondary font-semibold tracking-wider uppercase text-[15px] mb-4 animate-fade-in-up drop-shadow-md"
           >
             {slide.overline}
           </p>
           <h1
             key={`title-${current}`}
-            className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 animate-fade-in-up animation-delay-100 drop-shadow-lg"
+            className="font-jost text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 animate-fade-in-up animation-delay-100 drop-shadow-lg"
           >
             {slide.title}{" "}
             <span className="text-secondary drop-shadow-md">
@@ -212,31 +212,32 @@ export const HeroBanner = () => {
           >
             <Link
               href={slide.cta.href}
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-secondary text-primary-dark font-semibold rounded-lg hover:bg-secondary-light transition-colors text-lg shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-accent text-primary-dark font-semibold rounded-none hover:bg-primary hover:text-white transition-colors text-lg shadow-lg"
             >
               {slide.cta.label}
             </Link>
             <Link
               href={slide.ctaSecondary.href}
-              className="inline-flex items-center justify-center px-8 py-3.5 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary transition-colors text-lg shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-3.5 border-2 border-white text-white font-semibold rounded-none hover:bg-white hover:text-primary transition-colors text-lg shadow-lg"
             >
               {slide.ctaSecondary.label}
             </Link>
           </div>
+          </div>
         </div>
-      </Container>
+      </div>
 
       {/* Navigation arrows */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-all shadow-lg active:scale-95"
         aria-label="Previous slide"
       >
         <ChevronLeft size={22} />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-all shadow-lg active:scale-95"
         aria-label="Next slide"
       >
         <ChevronRight size={22} />
@@ -248,7 +249,7 @@ export const HeroBanner = () => {
           <button
             key={i}
             onClick={() => goTo(i)}
-            className={`h-2 rounded-full transition-all duration-500 ${
+            className={`h-2 transition-all duration-500 rounded-full ${
               i === current
                 ? "w-8 bg-secondary"
                 : "w-2 bg-white/50 hover:bg-white/70"
@@ -258,5 +259,6 @@ export const HeroBanner = () => {
         ))}
       </div>
     </section>
+    </Container>
   );
 };

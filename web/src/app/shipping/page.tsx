@@ -20,7 +20,7 @@ export default function ShippingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           {/* UK Shipping */}
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-4">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-4">
               UK Shipping
             </h2>
             <div className="bg-white border border-border-light rounded-xl overflow-hidden">
@@ -68,7 +68,7 @@ export default function ShippingPage() {
 
           {/* International */}
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-4">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-4">
               International Shipping
             </h2>
             <div className="bg-white border border-border-light rounded-xl overflow-hidden">
