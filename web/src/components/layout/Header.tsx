@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
@@ -10,10 +10,26 @@ import { MobileNav } from "./MobileNav";
 import { Container } from "@/components/ui/Container";
 import { Search, ShoppingBag, User, Menu, Heart, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
+import { cn } from "@/lib/utils";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Sticky after scrolling past TopBar + Middle level (~145px)
+      if (window.scrollY > 145) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -113,7 +129,10 @@ export const Header = () => {
         </Container>
 
         {/* Bottom Level: Desktop Navigation */}
-        <div className="hidden lg:block border-t border-border">
+        <div className={cn(
+          "hidden lg:block border-t border-border bg-white transition-all duration-300",
+          isSticky ? "fixed top-0 left-0 w-full z-50 shadow-md transform-gpu" : "relative"
+        )}>
           <Container>
             <div className="flex items-center justify-between relative h-full">
               <DesktopNav />

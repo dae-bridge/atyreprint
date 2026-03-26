@@ -12,22 +12,26 @@ import Image from "next/image";
 const bestSellingProducts = [
   {
     title: "Embroidered Hoodie",
+    slug: "embroidered-hoodie",
     price: "£45",
     discountPrice: "£38",
     image: "/images/products/embroidered-hoodie/main.jpg",
   },
   {
     title: "Personalised Mug",
+    slug: "personalised-mug",
     price: "£12",
     image: "/images/products/personalised-mug/main.jpg",
   },
   {
     title: "Custom Tote Bag",
+    slug: "custom-tote-bag",
     price: "£15",
     image: "/images/products/custom-tote-bag/main.jpg",
   },
   {
     title: "Branded Snapback",
+    slug: "branded-snapback-cap",
     price: "£25",
     discountPrice: "£20",
     image: "/images/products/branded-snapback-cap/main.jpg",
@@ -37,6 +41,7 @@ const bestSellingProducts = [
 const featuredProducts = [
   {
     title: "Eco-Friendly T-Shirt",
+    slug: "custom-printed-tshirt",
     price: "£22.00",
     discountPrice: "£18.00",
     discount: "-18%",
@@ -46,6 +51,7 @@ const featuredProducts = [
   },
   {
     title: "Premium Hoodie",
+    slug: "embroidered-hoodie",
     price: "£45.00",
     discountPrice: "£38.00",
     discount: "-15%",
@@ -55,12 +61,14 @@ const featuredProducts = [
   },
   {
     title: "Custom Ceramic Mug",
+    slug: "personalised-mug",
     price: "£12.00",
     rating: 4,
     image: "/images/categories/mega/3.jpg",
   },
   {
     title: "Printed Tote Bag",
+    slug: "custom-tote-bag",
     price: "£15.00",
     discountPrice: "£12.00",
     discount: "-20%",
@@ -69,6 +77,7 @@ const featuredProducts = [
   },
   {
     title: "Embroidered Cap",
+    slug: "branded-snapback-cap",
     price: "£25.00",
     rating: 5,
     image: "/images/categories/mega/1.jpg",
@@ -97,12 +106,14 @@ const ProductMegaMenu = () => {
                     {product.discount}
                   </span>
                 )}
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                <Link href={`/shop/product/${product.slug}`} className="block relative w-full h-full">
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </Link>
                 {product.timer && (
                   <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur-sm rounded py-1 px-2 text-center shadow-sm">
                     <span className="text-[9px] font-mono font-bold text-primary">{product.timer}</span>
@@ -111,9 +122,11 @@ const ProductMegaMenu = () => {
               </div>
               
               <div className="flex flex-col flex-1">
-                <h4 className="text-[13px] font-bold text-foreground line-clamp-2 mb-1 hover:text-primary transition-colors cursor-pointer">
-                  {product.title}
-                </h4>
+                <Link href={`/shop/product/${product.slug}`}>
+                  <h4 className="text-[13px] font-bold text-foreground line-clamp-2 mb-1 hover:text-primary transition-colors cursor-pointer">
+                    {product.title}
+                  </h4>
+                </Link>
                 
                 <div className="flex gap-0.5 mb-2">
                   {[...Array(5)].map((_, i) => (
@@ -162,12 +175,12 @@ const dealCategories = [
 ];
 
 const topRatedProducts = [
-  { title: "Attractive Clog Shoes", price: "£12", image: "/images/categories/mega/3.jpg" },
-  { title: "Logicmart Activity Tent", price: "£53", oldPrice: "£56", image: "/images/categories/mega/1.jpg" },
-  { title: "Baby's First Blocks", price: "£24", image: "/images/categories/mega/4.jpg" },
-  { title: "Batman Lace Running", price: "£38", oldPrice: "£40", image: "/images/categories/mega/2.jpg" },
-  { title: "Cuddles - Super Pants", price: "£18", oldPrice: "£20", image: "/images/categories/mega/4.jpg" },
-  { title: "Cute Stuffed Soft Toys", price: "£15", image: "/images/categories/mega/1.jpg" },
+  { title: "Attractive Clog Shoes", slug: "custom-printed-tshirt", price: "£12", image: "/images/categories/mega/3.jpg" },
+  { title: "Logicmart Activity Tent", slug: "custom-tumbler", price: "£53", oldPrice: "£56", image: "/images/categories/mega/1.jpg" },
+  { title: "Baby's First Blocks", slug: "embroidered-sweatshirt", price: "£24", image: "/images/categories/mega/4.jpg" },
+  { title: "Batman Lace Running", slug: "custom-apron", price: "£38", oldPrice: "£40", image: "/images/categories/mega/2.jpg" },
+  { title: "Cuddles - Super Pants", slug: "personalised-pillowcase", price: "£18", oldPrice: "£20", image: "/images/categories/mega/4.jpg" },
+  { title: "Cute Stuffed Soft Toys", slug: "custom-glass-can", price: "£15", image: "/images/categories/mega/1.jpg" },
 ];
 
 /* ─── Shop Mega Menu (Links + Promo Banner) ─── */
@@ -276,7 +289,7 @@ const DealsMegaMenu = () => {
           {topRatedProducts.map((product) => (
             <Link 
               key={product.title} 
-              href="/shop" 
+              href={`/shop/product/${product.slug}`} 
               className="group flex items-center gap-4 bg-white p-4 rounded-md transition-all hover:bg-white/95"
             >
               <div className="relative w-16 h-16 bg-surface-alt rounded overflow-hidden shrink-0">
@@ -351,7 +364,7 @@ const CategoryMegaMenu = ({ item }: { item: NavItem }) => {
           {bestSellingProducts.map((product) => (
             <Link 
               key={product.title} 
-              href="/shop" 
+              href={`/shop/product/${product.slug}`} 
               className="group flex items-center gap-4 bg-white p-4 rounded-md transition-all hover:bg-white/95"
             >
               <div className="relative w-20 h-20 bg-surface-alt rounded overflow-hidden shrink-0">
@@ -418,9 +431,11 @@ const DropdownMenu = ({ children }: { children: NavChild[] }) => {
 const NavItemComponent = ({
   item,
   isActive,
+  pathname,
 }: {
   item: NavItem;
   isActive: boolean;
+  pathname: string;
 }) => {
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -439,6 +454,11 @@ const NavItemComponent = ({
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
+
+  // Close mega menu on route change (client-side navigation)
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   const hasChildren = (item.children && item.children.length > 0) || item.megaMenu;
 
@@ -509,7 +529,7 @@ export const DesktopNav = () => {
         const isActive =
           item.href === "/" ? pathname === "/" : pathname === item.href;
         return (
-          <NavItemComponent key={item.label} item={item} isActive={isActive} />
+          <NavItemComponent key={item.label} item={item} isActive={isActive} pathname={pathname} />
         );
       })}
     </nav>
