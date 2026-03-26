@@ -99,7 +99,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       />
 
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-sm text-text-secondary mb-8">
             <Link href="/" className="hover:text-primary transition-colors">
@@ -174,7 +174,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
           {/* CTA for custom orders */}
           <div className="mt-16 bg-surface rounded-2xl p-8 md:p-12 text-center">
-            <h3 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground mb-3">
+            <h3 className="font-jost text-2xl font-bold text-foreground mb-3">
               Need something custom?
             </h3>
             <p className="text-text-secondary mb-6 max-w-lg mx-auto">

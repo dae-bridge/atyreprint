@@ -65,7 +65,7 @@ export default function ServicesPage() {
       />
 
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-16">
             {services.map((service, index) => {
               const isReversed = index % 2 !== 0;
@@ -90,7 +90,7 @@ export default function ServicesPage() {
 
                   {/* Content */}
                   <div className="flex-1">
-                    <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-foreground mb-4">
+                    <h2 className="font-jost text-2xl md:text-3xl font-bold text-foreground mb-4">
                       {service.title}
                     </h2>
                     <p className="text-text-secondary text-lg mb-6 leading-relaxed">
@@ -121,7 +121,7 @@ export default function ServicesPage() {
 
           {/* CTA */}
           <div className="mt-20 bg-primary rounded-2xl p-8 md:p-12 text-center text-white">
-            <h3 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold mb-3">
+            <h3 className="font-jost text-2xl md:text-3xl font-bold mb-3">
               Ready to get started?
             </h3>
             <p className="text-white/80 mb-6 max-w-lg mx-auto">

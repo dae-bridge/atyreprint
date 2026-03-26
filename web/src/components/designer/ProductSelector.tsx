@@ -25,7 +25,7 @@ export const ProductSelector = () => {
             <p className="text-secondary font-semibold tracking-wider uppercase text-sm mb-2">
               Personalise It
             </p>
-            <h1 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-foreground mb-3">
+            <h1 className="font-jost text-3xl md:text-4xl font-bold text-foreground mb-3">
               Choose Your Product
             </h1>
             <p className="text-text-secondary max-w-lg mx-auto">

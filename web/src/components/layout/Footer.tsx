@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig, footerLinks } from "@/config/site";
 import { Container } from "@/components/ui/Container";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
@@ -12,7 +13,7 @@ const FooterLinkColumn = ({
   links: ReadonlyArray<{ label: string; href: string }>;
 }) => (
   <div>
-    <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+    <h3 className="text-[15px] font-bold uppercase tracking-wider text-white mb-4">
       {title}
     </h3>
     <ul className="space-y-2.5">
@@ -20,7 +21,7 @@ const FooterLinkColumn = ({
         <li key={link.label}>
           <Link
             href={link.href}
-            className="text-sm text-white/70 hover:text-secondary transition-colors"
+            className="text-[15px] text-white/70 hover:text-secondary transition-colors"
           >
             {link.label}
           </Link>
@@ -41,16 +42,16 @@ export const Footer = () => {
           {/* About / Brand */}
           <div>
             <Link href="/" className="inline-block mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-primary-dark font-bold text-lg">A</span>
-                </div>
-                <span className="text-xl font-bold text-white">
-                  {siteConfig.name}
-                </span>
+              <div className="relative w-[180px] h-[50px] brightness-0 invert opacity-90">
+                <Image
+                  src="/images/icons/atyreprint-logo.png"
+                  alt={`${siteConfig.name} Logo`}
+                  fill
+                  className="object-contain object-left"
+                />
               </div>
             </Link>
-            <p className="text-sm text-white/70 leading-relaxed mb-5">
+            <p className="text-[15px] text-white/70 leading-relaxed mb-5">
               Premium print-on-demand &amp; embroidery services. Custom
               clothing, drinkware, accessories &amp; gifts — delivering quality
               across the UK, Africa &amp; Europe.
@@ -91,14 +92,14 @@ export const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+            <h3 className="text-[15px] font-bold uppercase tracking-wider text-white mb-4">
               Contact Us
             </h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`}
-                  className="flex items-start gap-2.5 text-sm text-white/70 hover:text-secondary transition-colors"
+                  className="flex items-start gap-2.5 text-[15px] text-white/70 hover:text-secondary transition-colors"
                 >
                   <Phone size={16} className="mt-0.5 shrink-0" />
                   {siteConfig.contact.phone}
@@ -107,13 +108,13 @@ export const Footer = () => {
               <li>
                 <a
                   href={`mailto:${siteConfig.contact.email}`}
-                  className="flex items-start gap-2.5 text-sm text-white/70 hover:text-secondary transition-colors"
+                  className="flex items-start gap-2.5 text-[15px] text-white/70 hover:text-secondary transition-colors"
                 >
                   <Mail size={16} className="mt-0.5 shrink-0" />
                   {siteConfig.contact.email}
                 </a>
               </li>
-              <li className="flex items-start gap-2.5 text-sm text-white/70">
+              <li className="flex items-start gap-2.5 text-[15px] text-white/70">
                 <MapPin size={16} className="mt-0.5 shrink-0" />
                 {siteConfig.contact.address}
               </li>

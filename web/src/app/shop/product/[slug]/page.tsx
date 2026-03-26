@@ -84,7 +84,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       {related.length > 0 && (
         <section className="py-12 md:py-16 bg-surface">
           <Container>
-            <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground mb-8">
+            <h2 className="font-jost text-2xl font-bold text-foreground mb-8">
               You May Also Like
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">

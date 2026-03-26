@@ -68,12 +68,12 @@ export default function ShopPage() {
       />
 
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           {/* Categories grid */}
           {categories.map((category) => (
             <div key={category.title} className="mb-14 last:mb-0">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground">
+                <h2 className="font-jost text-2xl font-bold text-foreground">
                   {category.title}
                 </h2>
                 <Link
@@ -103,7 +103,7 @@ export default function ShopPage() {
 
           {/* CTA */}
           <div className="mt-16 bg-surface rounded-2xl p-8 md:p-12 text-center">
-            <h3 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-foreground mb-3">
+            <h3 className="font-jost text-2xl font-bold text-foreground mb-3">
               Can&apos;t find what you&apos;re looking for?
             </h3>
             <p className="text-text-secondary mb-6 max-w-lg mx-auto">

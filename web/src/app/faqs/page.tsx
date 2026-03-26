@@ -92,7 +92,7 @@ export default function FAQsPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {faqs.map((section) => (
             <div key={section.category} className="mb-12 last:mb-0">
-              <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-6 pb-2 border-b border-border">
+              <h2 className="font-jost text-xl font-bold text-foreground mb-6 pb-2 border-b border-border">
                 {section.category}
               </h2>
               <div className="space-y-6">

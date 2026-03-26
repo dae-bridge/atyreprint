@@ -96,7 +96,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           {product.category}
         </p>
 
-        <h1 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <h1 className="font-jost text-3xl md:text-4xl font-bold text-foreground mb-4">
           {product.name}
         </h1>
 
