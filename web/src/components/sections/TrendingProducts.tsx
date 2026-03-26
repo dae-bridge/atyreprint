@@ -2,79 +2,86 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { ChevronLeft, ChevronRight, Heart, RefreshCw, Eye, Star } from "lucide-react";
 
 const trendingProducts = [
   {
     id: "1",
-    name: "Logicmart Activity Tent House Extremely For Kids",
-    originalPrice: "$56",
-    price: "$53",
-    discount: "-5%",
-    rating: 4,
-    image: "/images/products/trending/pink-tent.jpg",
-    hoverImage: "/images/products/trending/backpack.jpg",
+    slug: "custom-printed-tshirt",
+    name: "Custom Printed T-Shirt",
+    originalPrice: "£24.99",
+    price: "£19.99",
+    discount: "-20%",
+    rating: 5,
+    image: "/images/products/custom-printed-tshirt/main.jpg",
+    hoverImage: "/images/products/custom-printed-tshirt/thumb-1.jpg",
     countdown: "208d : 01h : 03m : 18s",
     buttonLabel: "ADD TO CART",
   },
   {
     id: "2",
-    name: "Batman Lace Running Shoes For Boys & Girls (Red)",
-    originalPrice: "$40",
-    price: "$38",
-    discount: "-5%",
-    rating: 4,
-    image: "/images/products/trending/batman-shoes.jpg",
-    hoverImage: "/images/products/trending/puppy-toy.jpg",
+    slug: "embroidered-hoodie",
+    name: "Embroidered Hoodie",
+    originalPrice: "£49.99",
+    price: "£39.99",
+    discount: "-20%",
+    rating: 5,
+    image: "/images/products/embroidered-hoodie/main.jpg",
+    hoverImage: "/images/products/embroidered-hoodie/thumb-1.jpg",
     countdown: "237d : 01h : 03m : 18s",
     buttonLabel: "ADD TO CART",
   },
   {
     id: "3",
-    name: "Hotshot Kids Bag | Rabbit Bag | School Bag",
+    slug: "personalised-mug",
+    name: "Personalised Ceramic Mug",
     originalPrice: null,
-    price: "$13",
+    price: "£12.99",
     discount: null,
-    rating: 5,
-    image: "/images/products/trending/backpack.jpg",
-    hoverImage: "/images/products/trending/batman-shoes.jpg",
+    rating: 4,
+    image: "/images/products/personalised-mug/main.jpg",
+    hoverImage: "/images/products/personalised-mug/thumb-1.jpg",
     countdown: null,
     buttonLabel: "SELECT OPTIONS",
   },
   {
     id: "4",
-    name: "Fisher Price Laugh & Learn Smart Stages Puppy",
+    slug: "custom-tote-bag",
+    name: "Custom Tote Bag",
     originalPrice: null,
-    price: "$32",
+    price: "£14.99",
     discount: null,
-    rating: 4,
-    image: "/images/products/trending/puppy-toy.jpg",
-    hoverImage: "/images/products/trending/pink-tent.jpg",
+    rating: 5,
+    image: "/images/products/custom-tote-bag/main.jpg",
+    hoverImage: "/images/products/custom-tote-bag/thumb-1.jpg",
     countdown: null,
     buttonLabel: "ADD TO CART",
   },
   {
     id: "5",
-    name: "Sebamed Baby Cleansing Bar & Sebamed Baby Wash",
-    originalPrice: "$15",
-    price: "$22",
-    discount: "-10%",
-    rating: 4,
-    image: "/images/products/trending/pink-tent.jpg",
-    hoverImage: "/images/products/trending/batman-shoes.jpg",
+    slug: "branded-snapback-cap",
+    name: "Branded Snapback Cap",
+    originalPrice: "£20.00",
+    price: "£16.99",
+    discount: "-15%",
+    rating: 5,
+    image: "/images/products/branded-snapback-cap/main.jpg",
+    hoverImage: "/images/products/branded-snapback-cap/thumb-1.jpg",
     countdown: null,
     buttonLabel: "VIEW PRODUCTS",
   },
   {
     id: "6",
-    name: "Branded Snapback Cap With Custom Logo",
-    originalPrice: "$20",
-    price: "$18",
-    discount: "-10%",
-    rating: 5,
-    image: "/images/products/trending/batman-shoes.jpg",
-    hoverImage: "/images/products/trending/backpack.jpg",
+    slug: "custom-glass-can",
+    name: "Custom Glass Can",
+    originalPrice: "£18.00",
+    price: "£15.99",
+    discount: "-11%",
+    rating: 4,
+    image: "/images/products/custom-glass-can/main.jpg",
+    hoverImage: "/images/products/custom-glass-can/thumb-1.jpg",
     countdown: "12d : 05h : 20m : 10s",
     buttonLabel: "ADD TO CART",
   },
@@ -87,7 +94,7 @@ const ProductCard = ({ product }: { product: any }) => {
       <div className="group/image relative aspect-[4/5] bg-[#f9f9f9] overflow-hidden">
         {/* Discount Badge */}
         {product.discount && (
-          <div className="absolute top-4 left-4 z-20 bg-[#ff4d6d] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
+          <div className="absolute top-4 left-4 z-20 bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
             {product.discount}
           </div>
         )}
@@ -109,7 +116,7 @@ const ProductCard = ({ product }: { product: any }) => {
         </div>
 
         {/* Image */}
-        <div className="relative w-full h-full">
+        <Link href={`/shop/product/${product.slug}`} className="relative w-full h-full block">
           {/* Default Image */}
           <Image
             src={product.image}
@@ -128,12 +135,12 @@ const ProductCard = ({ product }: { product: any }) => {
               sizes="(max-width: 768px) 100vw, 20vw"
             />
           )}
-        </div>
+        </Link>
 
         {/* Countdown */}
         {product.countdown && (
           <div className="absolute bottom-4 left-4 right-4 z-20 bg-white/90 backdrop-blur-sm py-2 px-3 text-center">
-            <span className="text-[11px] font-bold text-[#ff4d6d] tracking-wider uppercase">
+            <span className="text-[11px] font-bold text-accent tracking-wider uppercase">
               {product.countdown}
             </span>
           </div>
@@ -142,9 +149,11 @@ const ProductCard = ({ product }: { product: any }) => {
 
       {/* Product Info */}
       <div className="p-5 flex flex-col items-start text-left">
-        <h3 className="text-[15px] font-medium text-foreground leading-snug mb-2 line-clamp-2 min-h-[40px] hover:text-accent cursor-pointer transition-colors uppercase tracking-tight font-jost">
-          {product.name}
-        </h3>
+        <Link href={`/shop/product/${product.slug}`}>
+          <h3 className="text-[15px] font-medium text-foreground leading-snug mb-2 line-clamp-2 min-h-[40px] hover:text-accent cursor-pointer transition-colors uppercase tracking-tight font-jost">
+            {product.name}
+          </h3>
+        </Link>
         
         {/* Ratings */}
         <div className="flex gap-0.5 mb-3">
