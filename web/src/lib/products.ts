@@ -43,6 +43,7 @@ export interface ProductData {
   inStock: boolean;
   badge?: string;
   bannerImage: string;
+  buttonLabel?: string;
 }
 
 const defaultShippingInfo = `We offer fast and reliable shipping on all orders.\n\n- **Dispatch:** Within 24 hours\n- **Free shipping** on all orders over £99\n- **Standard delivery:** 3–5 business days\n- **Express delivery:** 1–2 business days (additional charge)\n- **International delivery:** 5–10 business days\n\nPlease note delivery times are estimates and may vary.`;
@@ -105,6 +106,7 @@ export const products: ProductData[] = [
     tags: ["T-Shirt", "Custom Print", "DTG", "Workwear"],
     inStock: true,
     badge: "New",
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "2",
@@ -155,6 +157,7 @@ export const products: ProductData[] = [
     tags: ["Hoodie", "Embroidery", "Workwear", "Team Kit"],
     inStock: true,
     badge: "Popular",
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "3",
@@ -200,6 +203,7 @@ export const products: ProductData[] = [
     sku: "AP-MUG-003",
     tags: ["Mug", "Ceramic", "Gift", "Sublimation"],
     inStock: true,
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "4",
@@ -246,6 +250,7 @@ export const products: ProductData[] = [
     sku: "AP-TOT-004",
     tags: ["Tote Bag", "Eco-Friendly", "Cotton", "Promotional"],
     inStock: true,
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "5",
@@ -295,6 +300,7 @@ export const products: ProductData[] = [
     tags: ["Cap", "Snapback", "Embroidery", "Street Style"],
     inStock: true,
     badge: "New",
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "6",

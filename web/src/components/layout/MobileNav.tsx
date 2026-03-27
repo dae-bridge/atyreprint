@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navLinks, siteConfig, type NavItem } from "@/config/site";
-import { X, ChevronDown, ChevronRight, Phone, Mail } from "lucide-react";
+import { X, ChevronDown, ChevronRight, Phone, Mail, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /* ─── Accordion nav item for mobile ─── */
@@ -123,13 +123,23 @@ export const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
               {siteConfig.name}
             </span>
           </Link>
-          <button
-            onClick={onClose}
-            className="p-2 text-text-muted hover:text-foreground transition-colors"
-            aria-label="Close menu"
-          >
-            <X size={24} />
-          </button>
+          <div className="flex items-center gap-2">
+            <Link 
+              href="/login" 
+              onClick={onClose}
+              className="p-2 text-text-muted hover:text-primary transition-colors"
+              aria-label="My Account"
+            >
+              <User size={24} />
+            </Link>
+            <button
+              onClick={onClose}
+              className="p-2 text-text-muted hover:text-foreground transition-colors"
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
         </div>
 
         {/* Nav Items */}

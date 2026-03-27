@@ -151,9 +151,12 @@ const ProductMegaMenu = () => {
                   )}
                 </div>
                 
-                <button className="w-full py-2 border border-border text-[11px] font-bold text-foreground hover:bg-primary hover:text-white transition-all uppercase rounded font-bold">
-                  Add to cart
-                </button>
+                <Link 
+                  href={`/personalise-it?product=${product.slug}`}
+                  className="w-full py-2 border border-border text-[11px] font-bold text-foreground hover:bg-primary hover:text-white transition-all uppercase rounded text-center block"
+                >
+                  Customise
+                </Link>
               </div>
             </div>
           ))}
@@ -188,7 +191,7 @@ const ShopMegaMenu = ({ item }: { item: NavItem }) => {
   return (
     <div className="absolute left-0 top-full w-full bg-white shadow-2xl border border-border z-50 overflow-hidden rounded-b-xl flex">
       {/* Left: Link Columns */}
-      <div className="flex-[2] px-10 py-10 grid grid-cols-3 gap-8">
+      <div className="flex-[2] px-10 py-10 grid grid-cols-4 gap-8">
         {item.children?.map((group) => (
           <div key={group.label} className="space-y-6">
             <div>
@@ -504,7 +507,7 @@ const NavItemComponent = ({
       {hasChildren &&
         open &&
         (item.megaMenu ? (
-          item.label === "Products" ? (
+          item.label === "Personalise" ? (
             <ProductMegaMenu />
           ) : item.label === "Top deals" ? (
             <DealsMegaMenu />

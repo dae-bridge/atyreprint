@@ -18,7 +18,7 @@ const trendingProducts = [
     image: "/images/products/custom-printed-tshirt/main.jpg",
     hoverImage: "/images/products/custom-printed-tshirt/thumb-1.jpg",
     countdown: "208d : 01h : 03m : 18s",
-    buttonLabel: "ADD TO CART",
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "2",
@@ -44,7 +44,7 @@ const trendingProducts = [
     image: "/images/products/personalised-mug/main.jpg",
     hoverImage: "/images/products/personalised-mug/thumb-1.jpg",
     countdown: null,
-    buttonLabel: "SELECT OPTIONS",
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "4",
@@ -70,7 +70,7 @@ const trendingProducts = [
     image: "/images/products/branded-snapback-cap/main.jpg",
     hoverImage: "/images/products/branded-snapback-cap/thumb-1.jpg",
     countdown: null,
-    buttonLabel: "VIEW PRODUCTS",
+    buttonLabel: "CUSTOMISE",
   },
   {
     id: "6",
@@ -179,9 +179,18 @@ const ProductCard = ({ product }: { product: any }) => {
         </div>
 
         {/* Action Button */}
-        <button className="w-full py-3 bg-[#eeeeee] text-[13px] font-bold text-foreground hover:bg-accent hover:text-primary transition-colors tracking-wide uppercase font-jost">
-          {product.buttonLabel}
-        </button>
+        {product.buttonLabel === "CUSTOMISE" ? (
+          <Link 
+            href={`/personalise-it?product=${product.slug}`}
+            className="w-full py-3 bg-[#eeeeee] text-[13px] font-bold text-foreground hover:bg-accent hover:text-white transition-colors tracking-wide uppercase font-jost text-center block"
+          >
+            CUSTOMISE
+          </Link>
+        ) : (
+          <button className="w-full py-3 bg-[#eeeeee] text-[13px] font-bold text-foreground hover:bg-accent hover:text-white transition-colors tracking-wide uppercase font-jost">
+            {product.buttonLabel}
+          </button>
+        )}
       </div>
     </div>
   );
