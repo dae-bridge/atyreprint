@@ -6,7 +6,7 @@ interface PageHeaderProps {
 
 export const PageHeader = ({ title, subtitle, badge }: PageHeaderProps) => {
   return (
-    <section className="bg-primary text-white py-16 md:py-20">
+    <section className="bg-primary text-white py-8 md:py-12">
       <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {badge && (
           <span className="inline-block text-secondary font-semibold text-sm uppercase tracking-wider mb-3">

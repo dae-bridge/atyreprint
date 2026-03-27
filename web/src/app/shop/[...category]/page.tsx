@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ProductCard } from "@/components/ui/ProductCard";
+import { CategorySidebar } from "@/components/shop/CategorySidebar";
+import { CategoryTopbar } from "@/components/shop/CategoryTopbar";
 import {
   categoryGroups,
   getProductsByGroupSlug,
@@ -89,113 +91,91 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const description = isGroup
     ? data.group.description
     : data.category.description;
+    
+  const currentCategorySlug = isGroup ? undefined : data.category.slug;
 
   return (
     <>
-      <PageHeader
-        title={title}
-        subtitle={description}
-        badge={isGroup ? "Shop" : data.group.name}
-      />
-
-      <section className="py-16 md:py-20">
-        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-sm text-text-secondary mb-8">
-            <Link href="/" className="hover:text-primary transition-colors">
-              Home
-            </Link>
-            <span>/</span>
-            <Link href="/shop" className="hover:text-primary transition-colors">
-              Shop
-            </Link>
-            {isGroup ? (
-              <>
-                <span>/</span>
-                <span className="text-foreground font-medium">
-                  {data.group.name}
-                </span>
-              </>
-            ) : (
-              <>
-                <span>/</span>
-                <Link
-                  href={`/shop/${data.groupSlug}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {data.group.name}
-                </Link>
-                <span>/</span>
-                <span className="text-foreground font-medium">
-                  {data.category.name}
-                </span>
-              </>
-            )}
-          </nav>
-
-          {/* Sub-category links (on group pages) */}
-          {isGroup && (
-            <div className="flex flex-wrap gap-3 mb-10">
-              {data.group.categories.map((cat) => (
-                <Link
-                  key={cat.slug}
-                  href={`/shop/${data.groupSlug}/${cat.slug}`}
-                  className="px-4 py-2 bg-surface rounded-full text-sm font-medium text-foreground hover:bg-primary hover:text-white transition-colors"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {/* Product grid */}
-          {data.products.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {data.products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+      {/* 
+        Breadcrumb/Page Header 
+        Matching the reference site's prominent header container 
+      */}
+      <div className="bg-[#f5f5f5] py-12 border-b border-border-light text-center">
+        <h1 className="font-jost text-4xl md:text-5xl font-bold text-foreground mb-4 uppercase tracking-wide">
+          {title}
+        </h1>
+        <nav className="flex items-center justify-center gap-2 text-[15px] font-jost text-text-secondary">
+          <Link href="/" className="hover:text-primary transition-colors">
+            Home
+          </Link>
+          <span>/</span>
+          {isGroup ? (
+            <span className="text-foreground capitalize">{data.group.name}</span>
           ) : (
-            <div className="text-center py-16">
-              <p className="text-text-secondary text-lg mb-4">
-                No products found in this category yet.
-              </p>
-              <p className="text-text-muted mb-6">
-                We&apos;re adding new products regularly. Check back soon!
-              </p>
+            <>
               <Link
-                href="/shop"
-                className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
+                href={`/shop/${data.groupSlug}`}
+                className="hover:text-primary transition-colors capitalize"
               >
-                Browse All Products
+                {data.group.name}
               </Link>
-            </div>
+              <span>/</span>
+              <span className="text-foreground capitalize">{data.category.name}</span>
+            </>
           )}
+        </nav>
+      </div>
 
-          {/* CTA for custom orders */}
-          <div className="mt-16 bg-surface rounded-2xl p-8 md:p-12 text-center">
-            <h3 className="font-jost text-2xl font-bold text-foreground mb-3">
-              Need something custom?
-            </h3>
-            <p className="text-text-secondary mb-6 max-w-lg mx-auto">
-              We can customise any product in this range. Upload your design or
-              let our team create one for you.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link
-                href="/personalise-it"
-                className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
-              >
-                Design Your Own
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition-colors"
-              >
-                Request a Quote
-              </Link>
+      <section className="py-12 md:py-16 bg-[#f8f9fa]">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="flex flex-col lg:flex-row gap-8">
+            
+            {/* Sidebar (Left Column) */}
+            <CategorySidebar currentCategorySlug={currentCategorySlug} />
+            
+            {/* Main Content (Right Column) */}
+            <div className="flex-1 min-w-0">
+              
+              {/* Topbar */}
+              <CategoryTopbar totalResults={data.products.length} categoryName={title} />
+              
+              {/* Product Grid */}
+              {data.products.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {data.products.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+
+                  {/* Pagination (Mock UI to match reference) */}
+                  {data.products.length > 0 && (
+                     <div className="mt-12 flex justify-center">
+                        <nav className="flex items-center gap-2">
+                           <span className="w-10 h-10 flex items-center justify-center rounded-sm bg-primary text-white font-medium text-sm">1</span>
+                           <button className="w-10 h-10 flex items-center justify-center rounded-sm bg-white text-text-secondary hover:bg-primary hover:text-white border border-border-light font-medium text-sm transition-colors">→</button>
+                        </nav>
+                     </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-16 bg-white border border-border-light rounded-sm shadow-sm">
+                  <p className="text-text-secondary text-lg mb-4">
+                    No products found in this category yet.
+                  </p>
+                  <Link
+                    href="/shop"
+                    className="inline-flex items-center px-8 py-3 bg-primary text-white text-sm font-bold uppercase tracking-wider rounded-sm hover:bg-primary-dark transition-colors"
+                  >
+                    Continue Shopping
+                  </Link>
+                </div>
+              )}
+              
             </div>
           </div>
+
         </div>
       </section>
     </>

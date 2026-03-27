@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ProductData } from "@/lib/products";
@@ -26,6 +27,8 @@ import {
   HelpCircle,
   CheckCircle2,
 } from "lucide-react";
+
+import { PaymentIcons } from "@/components/ui/PaymentIcons";
 
 interface ProductDetailClientProps {
   product: ProductData;
@@ -86,34 +89,6 @@ const StarRating = ({
   </div>
 );
 
-/* ─── Payment Icons ─── */
-const PaymentIcons = () => (
-  <div className="flex items-center gap-1.5 justify-center">
-    {/* Visa */}
-    <div className="w-[50px] h-[32px] bg-[#1a1f71] rounded-sm flex items-center justify-center">
-      <span className="text-white font-bold italic tracking-tighter text-[15px]">VISA</span>
-    </div>
-    {/* Mastercard */}
-    <div className="w-[50px] h-[32px] bg-white rounded-sm border border-gray-200 flex items-center justify-center">
-      <svg viewBox="0 0 36 24" className="w-[28px] h-[18px]">
-        <circle cx="13" cy="12" r="8" fill="#eb001b" />
-        <circle cx="23" cy="12" r="8" fill="#f79e1b" style={{ mixBlendMode: "multiply" }} />
-      </svg>
-    </div>
-    {/* PayPal */}
-    <div className="w-[50px] h-[32px] bg-white rounded-sm flex items-center justify-center">
-      <span className="text-[#003087] font-bold italic text-[12px] tracking-tighter">Pay</span>
-      <span className="text-[#0079c1] font-bold italic text-[12px] tracking-tighter">Pal</span>
-    </div>
-    {/* Apple Pay */}
-    <div className="w-[50px] h-[32px] bg-white rounded-sm border-[1.5px] border-black flex items-center justify-center gap-[1px]">
-      <svg viewBox="0 0 384 512" className="w-[11px] h-[11px] fill-black mb-[1px]">
-        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
-      </svg>
-      <span className="text-black font-semibold text-[11px]">Pay</span>
-    </div>
-  </div>
-);
 
 /* ─── Tabs ─── */
 type TabId = "description" | "additional" | "reviews" | "shipping";
@@ -395,46 +370,56 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
 
           {/* ─── Quantity, Add to Cart & Buy Now ─── */}
           <div className="flex items-center gap-3 mb-6">
-            {/* Quantity Selector */}
-            <div className="flex items-center bg-[#f5f5f5] h-[46px] min-w-[100px] rounded-sm">
-              <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-foreground hover:bg-gray-200 transition-colors"
-                aria-label="Decrease quantity"
+            {product.buttonLabel === "CUSTOMISE" || !(product.variants && product.variants.length > 0 && product.variants[0].options.length > 0) ? (
+              <Link
+                href={`/personalise-it?product=${product.slug}`}
+                className="flex-1 h-[46px] bg-[#a9cb5b] text-white flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:bg-[#8ba83a] transition-colors rounded-sm shadow-sm"
               >
-                <Minus size={14} />
-              </button>
-              <span className="w-8 text-center font-semibold text-sm text-foreground">
-                {quantity}
-              </span>
-              <button
-                onClick={() => setQuantity((q) => q + 1)}
-                className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-foreground hover:bg-gray-200 transition-colors"
-                aria-label="Increase quantity"
-              >
-                <Plus size={14} />
-              </button>
-            </div>
+                CUSTOMISE
+              </Link>
+            ) : (
+              <>
+                {/* Quantity Selector */}
+                <div className="flex items-center bg-[#f5f5f5] h-[46px] min-w-[100px] rounded-sm">
+                  <button
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-foreground hover:bg-gray-200 transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="w-8 text-center font-semibold text-sm text-foreground">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-foreground hover:bg-gray-200 transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
 
-            {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              className={cn(
-                "flex-[1.5] h-[46px] flex items-center justify-center font-bold transition-colors text-sm tracking-widest uppercase rounded-sm",
-                addedToCart
-                  ? "bg-[#1a3014] text-white"
-                  : "bg-[#a9cb5b] text-white hover:bg-[#8ba83a]"
-              )}
-            >
-              {addedToCart ? "ADDED!" : "ADD TO CART"}
-            </button>
-            
-            {/* Buy Now Button */}
-            <button className="flex-[1.5] h-[46px] bg-[#222] text-white flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:bg-black transition-colors rounded-sm">
-              BUY NOW
-            </button>
+                {/* Add to Cart Button */}
+                <button
+                  onClick={handleAddToCart}
+                  className={cn(
+                    "flex-[1.5] h-[46px] flex items-center justify-center font-bold transition-colors text-sm tracking-widest uppercase rounded-sm",
+                    addedToCart
+                      ? "bg-[#1a3014] text-white"
+                      : "bg-[#a9cb5b] text-white hover:bg-[#8ba83a]"
+                  )}
+                >
+                  {addedToCart ? "ADDED!" : "ADD TO CART"}
+                </button>
+                
+                {/* Buy Now Button */}
+                <button className="flex-[1.5] h-[46px] bg-[#222] text-white flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:bg-black transition-colors rounded-sm">
+                  BUY NOW
+                </button>
+              </>
+            )}
           </div>
-
           {/* Action Links & Payment Methods */}
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mt-8 mb-8 border-t border-b border-gray-100 py-6">
             <div className="flex items-center flex-wrap gap-6 text-[12px] font-bold text-gray-800 tracking-wide">

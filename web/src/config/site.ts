@@ -112,40 +112,43 @@ export const navLinks: NavItem[] = [
     megaMenu: true,
     children: [
       {
-        label: "Product Types",
-        href: "/shop",
-        children: [
-          { label: "Simple Product", href: "/shop" },
-          { label: "Grouped Product", href: "/shop" },
-          { label: "Variable Product", href: "/shop", badge: "NEW", badgeColor: "bg-blue-400" },
-          { label: "External Product", href: "/shop" },
-          { label: "Sale Product", href: "/shop", badge: "SALE", badgeColor: "bg-orange-400" },
-          { label: "Upsell Products", href: "/shop" },
-          { label: "Cross-Sell Product", href: "/shop" },
-        ],
-      },
-      {
         label: "Our Services",
         href: "/services",
         children: [
           { label: "Embroidery", href: "/services/embroidery" },
           { label: "Screen Printing", href: "/services/screen-printing" },
-          { label: "Transfer Printing", href: "/services/transfer-printing", badge: "HOT", badgeColor: "bg-accent" },
-          { label: "Sublimation", href: "/services/sublimation" },
           { label: "Bulk Ordering", href: "/services/bulk" },
           { label: "Design Support", href: "/services/design" },
         ],
       },
       {
-        label: "Shop Features",
-        href: "/shop",
+        label: "Best Selling",
+        href: "/shop?sort=bestselling",
         children: [
-          { label: "Stock Progress Bar", href: "/shop" },
-          { label: "Color Swatches", href: "/shop" },
-          { label: "Size Guide Table", href: "/shop", badge: "POPULAR", badgeColor: "bg-orange-400" },
-          { label: "Custom Tab", href: "/shop" },
-          { label: "Countdown Timer", href: "/shop" },
-          { label: "Product Video", href: "/shop", badge: "FEATURED", badgeColor: "bg-accent" },
+          { label: "Eco-Friendly T-Shirt", href: "/shop/product/custom-printed-tshirt" },
+          { label: "Premium Hoodie", href: "/shop/product/embroidered-hoodie" },
+          { label: "Custom Ceramic Mug", href: "/shop/product/personalised-mug" },
+          { label: "Printed Tote Bag", href: "/shop/product/custom-tote-bag", badge: "POPULAR", badgeColor: "bg-orange-400" },
+        ],
+      },
+      {
+        label: "Trending",
+        href: "/shop?sort=trending",
+        children: [
+          { label: "Branded Snapback", href: "/shop/product/branded-snapback-cap", badge: "NEW", badgeColor: "bg-blue-400" },
+          { label: "Personalised Pillowcase", href: "/shop/product/personalised-pillowcase" },
+          { label: "Custom Tumbler", href: "/shop/product/custom-tumbler", badge: "HOT", badgeColor: "bg-accent" },
+          { label: "Embroidered Sweatshirt", href: "/shop/product/embroidered-sweatshirt" },
+        ],
+      },
+      {
+        label: "Popular",
+        href: "/shop?sort=popular",
+        children: [
+          { label: "Custom Glass Can", href: "/shop/product/custom-glass-can" },
+          { label: "Tote Bags", href: "/shop/accessories/tote-bags" },
+          { label: "Custom Aprons", href: "/shop/product/custom-apron" },
+          { label: "Mugs Collection", href: "/shop/drinkware/mugs", badge: "SALE", badgeColor: "bg-accent" },
         ],
       },
     ],
@@ -187,9 +190,10 @@ export const navLinks: NavItem[] = [
       },
     ],
   },
+  { label: "Top deals", href: "/shop?tag=deals", megaMenu: true },
   {
-    label: "Products",
-    href: "/shop",
+    label: "Personalise",
+    href: "/personalise-it",
     megaMenu: true,
     badge: "HOT",
     badgeColor: "bg-primary-light",
@@ -198,25 +202,23 @@ export const navLinks: NavItem[] = [
       { label: "Best Sellers", href: "/shop?sort=popular" },
     ],
   },
-  { label: "Top deals", href: "/shop?tag=deals", megaMenu: true },
+  { label: "Design your own", href: "/personalise-it" },
 ];
 
 export const footerLinks = {
   helpAndSupport: [
-    { label: "FAQs", href: "/faqs" },
     { label: "Shipping & Delivery", href: "/shipping" },
     { label: "Order Tracking", href: "/order-tracking" },
   ],
   legalAndPolicies: [
     { label: "About Us", href: "/about" },
-    { label: "Cookies & Privacy Policy", href: "/privacy-policy" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
     { label: "Terms & Conditions", href: "/terms" },
     { label: "Returns Policy", href: "/returns" },
   ],
   quickLinks: [
     { label: "Shop All", href: "/shop" },
-    { label: "New Arrivals", href: "/shop?sort=newest" },
-    { label: "Best Sellers", href: "/shop?sort=popular" },
     { label: "Custom Orders", href: "/personalise-it" },
+    { label: "My Account", href: "/account" },
   ],
 } as const;

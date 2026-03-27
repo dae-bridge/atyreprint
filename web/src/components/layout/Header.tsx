@@ -7,6 +7,7 @@ import { siteConfig } from "@/config/site";
 import { TopBar } from "./TopBar";
 import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
+import { CartDrawer } from "./CartDrawer";
 import { Container } from "@/components/ui/Container";
 import { Search, ShoppingBag, User, Menu, Heart, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
@@ -14,8 +15,10 @@ import { cn } from "@/lib/utils";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems);
+  const totalPrice = useCartStore((s) => s.totalPrice);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,7 +87,7 @@ export const Header = () => {
             <div className="flex items-center gap-1 lg:gap-4 flex-shrink-0">
               {/* Account */}
               <Link
-                href="/account"
+                href="/login"
                 className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
               >
                 <div className="flex items-center justify-center">
@@ -109,21 +112,21 @@ export const Header = () => {
               </Link>
 
               {/* My Cart */}
-              <Link
-                href="/cart"
-                className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors cursor-pointer group"
               >
                 <div className="relative">
-                  <ShoppingBag size={26} strokeWidth={1.5} />
+                  <ShoppingBag size={26} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1.5 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
                     {totalItems()}
                   </span>
                 </div>
-                <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
-                  <span className="text-text-secondary font-medium whitespace-nowrap">£0.00</span>
+                <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap items-start">
+                  <span className="text-text-secondary font-medium whitespace-nowrap">£{totalPrice().toFixed(2)}</span>
                   <span className="font-bold text-[15px]">My Cart</span>
                 </div>
-              </Link>
+              </button>
             </div>
           </div>
         </Container>
@@ -156,6 +159,12 @@ export const Header = () => {
       <MobileNav
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
+      />
+
+      {/* Cart Drawer */}
+      <CartDrawer 
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
       />
     </>
   );
