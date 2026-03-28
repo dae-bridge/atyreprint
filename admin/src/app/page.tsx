@@ -1,78 +1,225 @@
-export default function AdminDashboard() {
+"use client";
+
+import {
+  Package,
+  ShoppingCart,
+  Users,
+  DollarSign,
+  TrendingUp,
+  ArrowUpRight,
+} from "lucide-react";
+import Link from "next/link";
+import { PageHeader, StatCard, Card, CardHeader, CardBody, Badge } from "@/components/ui";
+import { formatMoney, timeAgo } from "@/lib/utils";
+
+/* Placeholder data — will be replaced with Firestore reads */
+const stats = [
+  {
+    label: "Total Revenue",
+    value: "£12,450",
+    icon: <DollarSign size={20} />,
+    trend: { value: "12% vs last month", positive: true },
+  },
+  {
+    label: "Orders",
+    value: "156",
+    icon: <ShoppingCart size={20} />,
+    trend: { value: "8% vs last month", positive: true },
+  },
+  {
+    label: "Products",
+    value: "10",
+    icon: <Package size={20} />,
+  },
+  {
+    label: "Customers",
+    value: "89",
+    icon: <Users size={20} />,
+    trend: { value: "5% vs last month", positive: true },
+  },
+];
+
+const recentOrders = [
+  {
+    id: "AP-20260328-A1B2",
+    customer: "Sarah Mitchell",
+    total: 5998,
+    status: "processing" as const,
+    date: new Date(Date.now() - 2 * 60 * 60 * 1000),
+  },
+  {
+    id: "AP-20260327-C3D4",
+    customer: "James Kofi",
+    total: 3999,
+    status: "shipped" as const,
+    date: new Date(Date.now() - 18 * 60 * 60 * 1000),
+  },
+  {
+    id: "AP-20260327-E5F6",
+    customer: "Amara Obi",
+    total: 8497,
+    status: "confirmed" as const,
+    date: new Date(Date.now() - 24 * 60 * 60 * 1000),
+  },
+  {
+    id: "AP-20260326-G7H8",
+    customer: "David Tetteh",
+    total: 2999,
+    status: "delivered" as const,
+    date: new Date(Date.now() - 48 * 60 * 60 * 1000),
+  },
+  {
+    id: "AP-20260325-I9J0",
+    customer: "Emily Richardson",
+    total: 6497,
+    status: "pending" as const,
+    date: new Date(Date.now() - 72 * 60 * 60 * 1000),
+  },
+];
+
+const statusColors: Record<string, "success" | "warning" | "info" | "default" | "error"> = {
+  pending: "warning",
+  confirmed: "info",
+  processing: "info",
+  printing: "info",
+  shipped: "success",
+  delivered: "success",
+  cancelled: "error",
+  refunded: "error",
+};
+
+const topProducts = [
+  { name: "Custom Printed T-Shirt", sold: 42, revenue: 83958 },
+  { name: "Embroidered Hoodie", sold: 28, revenue: 111972 },
+  { name: "Personalised Mug", sold: 35, revenue: 45465 },
+  { name: "Custom Tote Bag", sold: 22, revenue: 32978 },
+  { name: "Branded Snapback Cap", sold: 18, revenue: 30582 },
+];
+
+export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-sidebar text-sidebar-text flex flex-col">
-        <div className="p-6 border-b border-white/10">
-          <h1 className="text-xl font-bold text-white">AtyrePrint</h1>
-          <p className="text-sm text-white/60">Admin Dashboard</p>
-        </div>
-        <nav className="flex-1 p-4">
-          <ul className="space-y-1">
-            {[
-              { label: "Dashboard", href: "/" },
-              { label: "Products", href: "/products" },
-              { label: "Orders", href: "/orders" },
-              { label: "Customers", href: "/customers" },
-              { label: "Categories", href: "/categories" },
-              { label: "Analytics", href: "/analytics" },
-              { label: "Settings", href: "/settings" },
-            ].map((item) => (
-              <li key={item.label}>
-                <a
-                  href={item.href}
-                  className="block px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-sidebar-hover transition-colors"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+    <>
+      <PageHeader
+        title="Dashboard"
+        description="Welcome back — here's what's happening with your store."
+      />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="h-16 bg-surface border-b border-border flex items-center justify-between px-8">
-          <h2 className="text-lg font-semibold">Dashboard</h2>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-text-secondary">Admin User</span>
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
-              A
-            </div>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <main className="flex-1 p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {[
-              { label: "Total Orders", value: "0", color: "bg-primary" },
-              { label: "Total Revenue", value: "£0.00", color: "bg-secondary" },
-              { label: "Products", value: "0", color: "bg-info" },
-              { label: "Customers", value: "0", color: "bg-success" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="bg-surface rounded-xl p-6 border border-border"
-              >
-                <p className="text-sm text-text-secondary mb-1">{stat.label}</p>
-                <p className="text-2xl font-bold">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-surface rounded-xl border border-border p-8 text-center">
-            <h3 className="text-xl font-semibold mb-2">
-              Welcome to AtyrePrint Admin
-            </h3>
-            <p className="text-text-secondary">
-              Manage your products, orders, and customers from this dashboard.
-            </p>
-          </div>
-        </main>
+      {/* Stats grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        {stats.map((s) => (
+          <StatCard key={s.label} {...s} />
+        ))}
       </div>
-    </div>
+
+      {/* Two-column layout */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Recent Orders */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <div>
+              <h2 className="text-base font-semibold text-[var(--foreground)]">
+                Recent Orders
+              </h2>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Latest 5 orders
+              </p>
+            </div>
+            <Link
+              href="/orders"
+              className="text-sm text-[var(--primary)] font-medium hover:underline inline-flex items-center gap-1"
+            >
+              View All <ArrowUpRight size={14} />
+            </Link>
+          </CardHeader>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[var(--border)]">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                    Order
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                    Customer
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                    Total
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                    Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)]">
+                {recentOrders.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="hover:bg-gray-50/50 transition-colors"
+                  >
+                    <td className="px-6 py-3 text-sm font-mono text-[var(--primary)] font-medium">
+                      {order.id}
+                    </td>
+                    <td className="px-6 py-3 text-sm">{order.customer}</td>
+                    <td className="px-6 py-3 text-sm font-medium">
+                      {formatMoney(order.total)}
+                    </td>
+                    <td className="px-6 py-3">
+                      <Badge variant={statusColors[order.status]}>
+                        {order.status}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-3 text-sm text-[var(--text-muted)]">
+                      {timeAgo(order.date)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        {/* Top Products */}
+        <Card>
+          <CardHeader>
+            <div>
+              <h2 className="text-base font-semibold text-[var(--foreground)]">
+                Top Products
+              </h2>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">By units sold</p>
+            </div>
+            <TrendingUp size={18} className="text-[var(--text-muted)]" />
+          </CardHeader>
+          <CardBody className="p-0">
+            <ul className="divide-y divide-[var(--border)]">
+              {topProducts.map((p, i) => (
+                <li
+                  key={p.name}
+                  className="flex items-center justify-between px-6 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-bold text-[var(--text-muted)] w-5">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className="text-sm font-medium text-[var(--foreground)]">
+                        {p.name}
+                      </p>
+                      <p className="text-xs text-[var(--text-muted)]">
+                        {p.sold} sold
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium text-[var(--foreground)]">
+                    {formatMoney(p.revenue)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </CardBody>
+        </Card>
+      </div>
+    </>
   );
 }
