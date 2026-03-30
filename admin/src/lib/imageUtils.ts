@@ -68,7 +68,12 @@ export async function compressImage(
           }
 
           // Determine extension from output type
-          const ext = outputType === "image/webp" ? ".webp" : outputType === "image/png" ? ".png" : ".jpg";
+          const ext =
+            outputType === "image/webp"
+              ? ".webp"
+              : outputType === "image/png"
+                ? ".png"
+                : ".jpg";
           const baseName = file.name.replace(/\.[^.]+$/, "");
 
           const compressed = new File([blob], `${baseName}${ext}`, {

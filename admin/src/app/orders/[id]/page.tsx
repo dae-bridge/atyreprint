@@ -95,16 +95,16 @@ export default function OrderDetailPage() {
       const statusEvent = {
         status: newStatus,
         timestamp: Timestamp.now(),
-        note: statusNote || undefined,
+        note: statusNote || "",
         updatedBy: "admin",
       };
 
       await updateDocument(COLLECTIONS.ORDERS, order.id, {
         status: newStatus,
         statusHistory: [...order.statusHistory, statusEvent],
-        trackingNumber: trackingNumber || null,
-        trackingUrl: trackingUrl || null,
-        internalNote: internalNote || undefined,
+        trackingNumber: trackingNumber || "",
+        trackingUrl: trackingUrl || "",
+        internalNote: internalNote || "",
       });
       setStatusNote("");
       loadOrder();

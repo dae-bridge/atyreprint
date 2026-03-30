@@ -43,8 +43,10 @@ import type {
   ProductVariant,
   ProductAdditionalInfo,
   ImageAsset,
+  Category,
 } from "@/types";
 import { COLLECTIONS } from "@/types";
+import { getAllDocuments } from "@/lib/firestore";
 
 // ─── Form Types ──────────────────────────────────────────────────────────
 
@@ -57,7 +59,6 @@ interface ProductFormData {
   priceAmount: number;
   compareAtPriceAmount: number | null;
   categoryId: string;
-  categoryPath: string;
   tags: string;
   inStock: boolean;
   stockQuantity: number | null;
@@ -85,7 +86,6 @@ const defaultValues: ProductFormData = {
   priceAmount: 0,
   compareAtPriceAmount: null,
   categoryId: "",
-  categoryPath: "",
   tags: "",
   inStock: true,
   stockQuantity: null,
@@ -145,6 +145,7 @@ export default function ProductFormPage() {
   const [deleting, setDeleting] = useState(false);
   const [images, setImages] = useState<ImageAsset[]>([]);
   const [bannerImage, setBannerImage] = useState<ImageAsset | null>(null);
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
 
   const {
     register,
@@ -175,6 +176,7 @@ export default function ProductFormPage() {
   } = useFieldArray({ control, name: "additionalInfo" });
 
   const name = watch("name");
+  const customisable = watch("customisable");
 
   // Auto-slug from name (only on create)
   useEffect(() => {
@@ -182,6 +184,24 @@ export default function ProductFormPage() {
       setValue("slug", slugify(name));
     }
   }, [name, isEditing, setValue]);
+
+  // Auto-update button label when customisable changes
+  useEffect(() => {
+    setValue("buttonLabel", customisable ? "Customise & Order" : "Add to Cart");
+  }, [customisable, setValue]);
+
+  // Load categories for the selector
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await getAllDocuments<Category>(COLLECTIONS.CATEGORIES, "sortOrder", "asc");
+        setAllCategories(cats);
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      }
+    };
+    loadCategories();
+  }, []);
 
   // Load existing product
   useEffect(() => {
@@ -205,10 +225,9 @@ export default function ProductFormPage() {
       slug: product.slug,
       description: product.description,
       longDescription: product.longDescription,
-      priceAmount: product.price.amount,
-      compareAtPriceAmount: product.compareAtPrice?.amount ?? null,
+      priceAmount: product.price.amount / 100,
+      compareAtPriceAmount: product.compareAtPrice ? product.compareAtPrice.amount / 100 : null,
       categoryId: product.categoryId,
-      categoryPath: product.categoryPath.join(" > "),
       tags: product.tags.join(", "),
       inStock: product.inStock,
       stockQuantity: product.stockQuantity,
@@ -256,23 +275,29 @@ export default function ProductFormPage() {
   const onSubmit = async (data: ProductFormData) => {
     setSaving(true);
     try {
+      // Derive categoryPath from the selected category
+      const selectedCategory = allCategories.find((c) => c.id === data.categoryId);
+      const categoryPath = selectedCategory
+        ? [...selectedCategory.ancestorSlugs.map((slug) => {
+            const ancestor = allCategories.find((c) => c.slug === slug);
+            return ancestor?.name ?? slug;
+          }), selectedCategory.name]
+        : [];
+
       const productData = {
         name: data.name,
         sku: data.sku,
         slug: data.slug,
         description: data.description,
         longDescription: data.longDescription,
-        price: { amount: Math.round(data.priceAmount), currency: "GBP" },
+        price: { amount: Math.round(data.priceAmount * 100), currency: "GBP" },
         compareAtPrice: data.compareAtPriceAmount
-          ? { amount: Math.round(data.compareAtPriceAmount), currency: "GBP" }
+          ? { amount: Math.round(data.compareAtPriceAmount * 100), currency: "GBP" }
           : null,
         images,
         bannerImage,
         categoryId: data.categoryId,
-        categoryPath: data.categoryPath
-          .split(">")
-          .map((s) => s.trim())
-          .filter(Boolean),
+        categoryPath,
         tags: data.tags
           .split(",")
           .map((t) => t.trim())
@@ -286,7 +311,7 @@ export default function ProductFormPage() {
           .filter(Boolean),
         inStock: data.inStock,
         stockQuantity: data.stockQuantity,
-        badge: data.badge || null,
+        badge: data.badge || "",
         buttonLabel: data.buttonLabel || "Add to Cart",
         featured: data.featured,
         customisable: data.customisable,
@@ -416,29 +441,31 @@ export default function ProductFormPage() {
               <SectionHeader
                 icon={DollarSign}
                 title="Pricing"
-                description="All prices in pence (e.g. 1999 = £19.99)"
+                description="All prices in pounds (e.g. 19.99 = £19.99)"
               />
               <CardBody>
                 <div className="grid sm:grid-cols-3 gap-4">
                   <Input
-                    label="Price"
-                    tooltip="The selling price in pence. Example: enter 1999 for £19.99. This avoids decimal rounding issues."
+                    label="Price (£)"
+                    tooltip="The selling price in pounds. Example: enter 19.99 for £19.99."
                     type="number"
+                    step="0.01"
                     {...register("priceAmount", {
                       required: "Price is required",
                       valueAsNumber: true,
                     })}
                     error={errors.priceAmount?.message}
-                    placeholder="1999"
+                    placeholder="19.99"
                   />
                   <Input
-                    label="Compare-at Price"
-                    tooltip="The original/RRP price before discount. If set, the product shows a 'Sale' strikethrough. Leave empty if not on sale. Example: 2499 (shows as £24.99 crossed out)"
+                    label="Compare-at Price (£)"
+                    tooltip="The original/RRP price before discount. If set, the product shows a 'Sale' strikethrough. Leave empty if not on sale. Example: 24.99"
                     type="number"
+                    step="0.01"
                     {...register("compareAtPriceAmount", {
                       valueAsNumber: true,
                     })}
-                    placeholder="2499"
+                    placeholder="24.99"
                   />
                   <Select
                     label="Badge"
@@ -830,17 +857,61 @@ export default function ProductFormPage() {
             <Card>
               <SectionHeader icon={Layers} title="Organization" />
               <CardBody className="space-y-4">
-                <Input
-                  label="Category ID"
-                  tooltip="The Firestore document ID of the category this product belongs to. You can find this in the Categories page."
-                  {...register("categoryId")}
-                  placeholder="e.g. hoodies"
-                />
-                <Input
-                  label="Category Path"
-                  tooltip="Breadcrumb path for navigation. Use ' > ' to separate levels. Example: 'Clothing > Hoodies' shows as Clothing → Hoodies on the storefront."
-                  {...register("categoryPath")}
-                  placeholder="e.g. Clothing > Hoodies"
+                <Controller
+                  control={control}
+                  name="categoryId"
+                  render={({ field }) => {
+                    const rootCategories = allCategories.filter((c) => !c.parentId);
+                    const childCategories = (parentId: string) =>
+                      allCategories.filter((c) => c.parentId === parentId);
+
+                    return (
+                      <div>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <label className="text-sm font-medium text-foreground">Category</label>
+                          <InfoTooltip text="Select the category this product belongs to. Categories are organised by parent groups." position="right" />
+                        </div>
+                        <select
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                        >
+                          <option value="">Select a category…</option>
+                          {rootCategories.map((parent) => {
+                            const children = childCategories(parent.id);
+                            if (children.length > 0) {
+                              return (
+                                <optgroup key={parent.id} label={parent.name}>
+                                  {children.map((child) => (
+                                    <option key={child.id} value={child.id}>
+                                      {child.name}
+                                    </option>
+                                  ))}
+                                </optgroup>
+                              );
+                            }
+                            return (
+                              <option key={parent.id} value={parent.id}>
+                                {parent.name}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        {field.value && (
+                          <p className="text-xs text-text-muted mt-1">
+                            {(() => {
+                              const cat = allCategories.find((c) => c.id === field.value);
+                              if (!cat) return "";
+                              const path = cat.ancestorSlugs
+                                .map((slug) => allCategories.find((c) => c.slug === slug)?.name ?? slug)
+                                .concat(cat.name);
+                              return path.join(" → ");
+                            })()}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  }}
                 />
                 <Input
                   label="Tags"

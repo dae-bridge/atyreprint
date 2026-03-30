@@ -10,7 +10,6 @@ import {
   ShoppingCart,
   Users,
   FolderTree,
-  FileText,
   MessageSquareQuote,
   Settings,
   Home,
@@ -71,7 +70,6 @@ const navSections = [
       },
       { label: "FAQs", href: "/faqs", icon: HelpCircle },
       { label: "Services", href: "/services", icon: Wrench },
-      { label: "Pages", href: "/pages", icon: FileText },
     ],
   },
   {

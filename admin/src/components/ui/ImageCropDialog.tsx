@@ -33,7 +33,12 @@ export const ImageCropDialog = ({
 
   const [imgUrl, setImgUrl] = useState<string>("");
   const [imgLoaded, setImgLoaded] = useState(false);
-  const [crop, setCrop] = useState<CropArea>({ x: 0, y: 0, width: 0, height: 0 });
+  const [crop, setCrop] = useState<CropArea>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const [dragging, setDragging] = useState(false);
   const [dragType, setDragType] = useState<"move" | "resize" | null>(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -175,8 +180,14 @@ export const ImageCropDialog = ({
 
     if (dragType === "move") {
       setCrop((prev) => {
-        let newX = Math.max(0, Math.min(displaySize.width - prev.width, prev.x + dx));
-        let newY = Math.max(0, Math.min(displaySize.height - prev.height, prev.y + dy));
+        const newX = Math.max(
+          0,
+          Math.min(displaySize.width - prev.width, prev.x + dx),
+        );
+        const newY = Math.max(
+          0,
+          Math.min(displaySize.height - prev.height, prev.y + dy),
+        );
         return { ...prev, x: newX, y: newY };
       });
     } else if (dragType === "resize") {
@@ -189,8 +200,10 @@ export const ImageCropDialog = ({
         }
 
         // Clamp to bounds
-        if (prev.x + newW > displaySize.width) newW = displaySize.width - prev.x;
-        if (prev.y + newH > displaySize.height) newH = displaySize.height - prev.y;
+        if (prev.x + newW > displaySize.width)
+          newW = displaySize.width - prev.x;
+        if (prev.y + newH > displaySize.height)
+          newH = displaySize.height - prev.y;
 
         if (aspectRatio) {
           newW = Math.min(newW, newH * aspectRatio);

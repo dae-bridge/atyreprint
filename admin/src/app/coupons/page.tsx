@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Ticket, Search, Trash2, Pencil, Copy } from "lucide-react";
+import { Plus, Ticket, Trash2, Pencil, Copy } from "lucide-react";
 import {
   PageHeader,
   Card,
-  CardBody,
   Badge,
   Button,
   EmptyState,
 } from "@/components/ui";
-import { Input, Textarea, Select, Toggle } from "@/components/ui/FormFields";
+import { Input, Select, Toggle } from "@/components/ui/FormFields";
+import { Dialog } from "@/components/ui/Dialog";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import {
   queryDocuments,
@@ -27,7 +27,7 @@ import { Timestamp } from "firebase/firestore";
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [editing, setEditing] = useState<Coupon | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -73,7 +73,7 @@ export default function CouponsPage() {
     setFormValidUntil("");
     setFormActive(true);
     setEditing(null);
-    setShowForm(false);
+    setShowDialog(false);
   };
 
   const openEdit = (c: Coupon) => {
@@ -91,7 +91,7 @@ export default function CouponsPage() {
       c.validUntil?.toDate?.()?.toISOString().split("T")[0] ?? "",
     );
     setFormActive(c.active);
-    setShowForm(true);
+    setShowDialog(true);
   };
 
   const handleSave = async () => {
@@ -105,7 +105,7 @@ export default function CouponsPage() {
         discountValue: formDiscountValue,
         minimumOrderValue:
           formMinOrder > 0 ? { amount: formMinOrder, currency: "GBP" } : null,
-        maxUses: formMaxUses > 0 ? formMaxUses : null,
+        maxUses: formMaxUses > 0 ? formMaxUses : 0,
         usedCount: editing?.usedCount ?? 0,
         validFrom: formValidFrom
           ? Timestamp.fromDate(new Date(formValidFrom))
@@ -240,129 +240,125 @@ export default function CouponsPage() {
         <Button
           onClick={() => {
             resetForm();
-            setShowForm(true);
+            setShowDialog(true);
           }}
         >
           <Plus size={16} /> Add Coupon
         </Button>
       </PageHeader>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        <div className={showForm ? "lg:col-span-2" : "lg:col-span-3"}>
-          <Card>
-            {!loading && coupons.length === 0 ? (
-              <EmptyState
-                icon={<Ticket size={24} />}
-                title="No coupons yet"
-                description="Create discount codes for your customers."
-                action={
-                  <Button onClick={() => setShowForm(true)}>
-                    <Plus size={16} /> Add Coupon
-                  </Button>
-                }
-              />
-            ) : (
-              <DataTable
-                columns={columns}
-                data={coupons}
-                loading={loading}
-                emptyMessage="No coupons found."
-              />
-            )}
-          </Card>
-        </div>
-
-        {showForm && (
-          <Card>
-            <div className="px-6 py-4 border-b border-[var(--border)]">
-              <h2 className="text-base font-semibold">
-                {editing ? "Edit Coupon" : "New Coupon"}
-              </h2>
-            </div>
-            <CardBody className="space-y-4">
-              <Input
-                label="Code"
-                value={formCode}
-                onChange={(e) => setFormCode(e.target.value.toUpperCase())}
-                placeholder="e.g. SUMMER20"
-              />
-              <Input
-                label="Description"
-                value={formDescription}
-                onChange={(e) => setFormDescription(e.target.value)}
-              />
-              <Select
-                label="Discount Type"
-                value={formDiscountType}
-                onChange={(e) =>
-                  setFormDiscountType(e.target.value as DiscountType)
-                }
-                options={[
-                  { value: "percentage", label: "Percentage (%)" },
-                  { value: "fixed", label: "Fixed Amount (pence)" },
-                ]}
-              />
-              <Input
-                label={
-                  formDiscountType === "percentage"
-                    ? "Discount (%)"
-                    : "Discount (pence)"
-                }
-                type="number"
-                value={formDiscountValue}
-                onChange={(e) => setFormDiscountValue(Number(e.target.value))}
-              />
-              <Input
-                label="Min Order (pence)"
-                type="number"
-                value={formMinOrder}
-                onChange={(e) => setFormMinOrder(Number(e.target.value))}
-                hint="0 = no minimum"
-              />
-              <Input
-                label="Max Uses"
-                type="number"
-                value={formMaxUses}
-                onChange={(e) => setFormMaxUses(Number(e.target.value))}
-                hint="0 = unlimited"
-              />
-              <Input
-                label="Valid From"
-                type="date"
-                value={formValidFrom}
-                onChange={(e) => setFormValidFrom(e.target.value)}
-              />
-              <Input
-                label="Valid Until"
-                type="date"
-                value={formValidUntil}
-                onChange={(e) => setFormValidUntil(e.target.value)}
-              />
-              <Toggle
-                label="Active"
-                checked={formActive}
-                onChange={setFormActive}
-              />
-              <div className="flex gap-3 pt-2">
-                <Button
-                  onClick={handleSave}
-                  loading={saving}
-                  className="flex-1"
-                >
-                  {editing ? "Update" : "Create"}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={resetForm}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </CardBody>
-          </Card>
+      <Card>
+        {!loading && coupons.length === 0 ? (
+          <EmptyState
+            icon={<Ticket size={24} />}
+            title="No coupons yet"
+            description="Create discount codes for your customers."
+            action={
+              <Button onClick={() => setShowDialog(true)}>
+                <Plus size={16} /> Add Coupon
+              </Button>
+            }
+          />
+        ) : (
+          <DataTable
+            columns={columns}
+            data={coupons}
+            loading={loading}
+            emptyMessage="No coupons found."
+          />
         )}
-      </div>
+      </Card>
+
+      {/* ─── Coupon Dialog ─── */}
+      <Dialog
+        open={showDialog}
+        onClose={resetForm}
+        title={editing ? "Edit Coupon" : "New Coupon"}
+        description={editing ? "Update the coupon details below." : "Create a new discount code for your customers."}
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input
+              label="Code"
+              value={formCode}
+              onChange={(e) => setFormCode(e.target.value.toUpperCase())}
+              placeholder="e.g. SUMMER20"
+            />
+            <Select
+              label="Discount Type"
+              value={formDiscountType}
+              onChange={(e) =>
+                setFormDiscountType(e.target.value as DiscountType)
+              }
+              options={[
+                { value: "percentage", label: "Percentage (%)" },
+                { value: "fixed", label: "Fixed Amount (pence)" },
+              ]}
+            />
+          </div>
+          <Input
+            label="Description"
+            value={formDescription}
+            onChange={(e) => setFormDescription(e.target.value)}
+            placeholder="e.g. Summer sale — 20% off everything"
+          />
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Input
+              label={
+                formDiscountType === "percentage"
+                  ? "Discount (%)"
+                  : "Discount (pence)"
+              }
+              type="number"
+              value={formDiscountValue}
+              onChange={(e) => setFormDiscountValue(Number(e.target.value))}
+            />
+            <Input
+              label="Min Order (pence)"
+              type="number"
+              value={formMinOrder}
+              onChange={(e) => setFormMinOrder(Number(e.target.value))}
+              hint="0 = no minimum"
+            />
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <Input
+              label="Max Uses"
+              type="number"
+              value={formMaxUses}
+              onChange={(e) => setFormMaxUses(Number(e.target.value))}
+              hint="0 = unlimited"
+            />
+            <Input
+              label="Valid From"
+              type="date"
+              value={formValidFrom}
+              onChange={(e) => setFormValidFrom(e.target.value)}
+            />
+            <Input
+              label="Valid Until"
+              type="date"
+              value={formValidUntil}
+              onChange={(e) => setFormValidUntil(e.target.value)}
+            />
+          </div>
+          <Toggle
+            label="Active"
+            description="Only active coupons can be applied at checkout"
+            checked={formActive}
+            onChange={setFormActive}
+          />
+          <div className="flex gap-3 pt-3 border-t border-border mt-2">
+            <Button onClick={handleSave} loading={saving} className="flex-1">
+              {editing ? "Update Coupon" : "Create Coupon"}
+            </Button>
+            <Button variant="outline" onClick={resetForm} className="flex-1">
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }

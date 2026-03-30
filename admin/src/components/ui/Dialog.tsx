@@ -70,9 +70,7 @@ export const Dialog = ({
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-4 border-b border-border">
           <div>
-            <h2 className="text-base font-semibold text-foreground">
-              {title}
-            </h2>
+            <h2 className="text-base font-semibold text-foreground">{title}</h2>
             {description && (
               <p className="text-sm text-text-secondary mt-0.5">
                 {description}
@@ -90,9 +88,7 @@ export const Dialog = ({
         </div>
 
         {/* Body */}
-        <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
-          {children}
-        </div>
+        <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">{children}</div>
       </div>
     </div>
   );

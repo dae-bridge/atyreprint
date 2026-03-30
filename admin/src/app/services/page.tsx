@@ -10,6 +10,7 @@ import {
   Button,
   EmptyState,
 } from "@/components/ui";
+import { Dialog } from "@/components/ui/Dialog";
 import {
   Input,
   Textarea,
@@ -30,7 +31,7 @@ import { COLLECTIONS } from "@/types";
 export default function ServicesPage() {
   const [services, setServices] = useState<ServicePage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [editing, setEditing] = useState<ServicePage | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -75,7 +76,7 @@ export default function ServicesPage() {
     setFormSortOrder(0);
     setFormStatus("published");
     setEditing(null);
-    setShowForm(false);
+    setShowDialog(false);
   };
 
   const openEdit = (s: ServicePage) => {
@@ -89,7 +90,7 @@ export default function ServicesPage() {
     setFormFeatures(s.features.join("\n"));
     setFormSortOrder(s.sortOrder);
     setFormStatus(s.status);
-    setShowForm(true);
+    setShowDialog(true);
   };
 
   const handleSave = async () => {
@@ -166,7 +167,7 @@ export default function ServicesPage() {
         <Button
           onClick={() => {
             resetForm();
-            setShowForm(true);
+            setShowDialog(true);
           }}
         >
           <Plus size={16} /> Add Service
@@ -174,7 +175,7 @@ export default function ServicesPage() {
       </PageHeader>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           {loading ? (
             <div className="animate-pulse space-y-3">
               {[...Array(3)].map((_, i) => (
@@ -188,7 +189,7 @@ export default function ServicesPage() {
                 title="No services yet"
                 description="Add service pages for your business."
                 action={
-                  <Button onClick={() => setShowForm(true)}>
+                  <Button onClick={() => setShowDialog(true)}>
                     <Plus size={16} /> Add Service
                   </Button>
                 }
@@ -252,98 +253,102 @@ export default function ServicesPage() {
             </div>
           )}
         </div>
-
-        {showForm && (
-          <Card>
-            <div className="px-6 py-4 border-b border-[var(--border)]">
-              <h2 className="text-base font-semibold">
-                {editing ? "Edit Service" : "New Service"}
-              </h2>
-            </div>
-            <CardBody className="space-y-4">
-              <Input
-                label="Title"
-                value={formTitle}
-                onChange={(e) => {
-                  setFormTitle(e.target.value);
-                  if (!editing) setFormSlug(slugify(e.target.value));
-                }}
-              />
-              <Input
-                label="Slug"
-                value={formSlug}
-                disabled
-                onChange={() => {}}
-                hint="Auto-generated from title"
-              />
-              <Textarea
-                label="Short Description"
-                value={formShortDescription}
-                onChange={(e) => setFormShortDescription(e.target.value)}
-                rows={2}
-              />
-              <Input
-                label="Icon"
-                value={formIcon}
-                onChange={(e) => setFormIcon(e.target.value)}
-                hint="Lucide icon name"
-              />
-              <ImageUpload
-                label="Service Image"
-                value={formImage?.url}
-                onChange={handleImageUpload}
-                onRemove={() => setFormImage(null)}
-              />
-              <Textarea
-                label="Content"
-                value={formContent}
-                onChange={(e) => setFormContent(e.target.value)}
-                rows={8}
-                placeholder="Rich description (supports markdown)"
-              />
-              <Textarea
-                label="Features"
-                value={formFeatures}
-                onChange={(e) => setFormFeatures(e.target.value)}
-                rows={4}
-                placeholder="One feature per line"
-              />
-              <Input
-                label="Sort Order"
-                type="number"
-                value={formSortOrder}
-                onChange={(e) => setFormSortOrder(Number(e.target.value))}
-              />
-              <Select
-                label="Status"
-                value={formStatus}
-                onChange={(e) => setFormStatus(e.target.value)}
-                options={[
-                  { value: "draft", label: "Draft" },
-                  { value: "published", label: "Published" },
-                  { value: "archived", label: "Archived" },
-                ]}
-              />
-              <div className="flex gap-3 pt-2">
-                <Button
-                  onClick={handleSave}
-                  loading={saving}
-                  className="flex-1"
-                >
-                  {editing ? "Update" : "Create"}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={resetForm}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </CardBody>
-          </Card>
-        )}
       </div>
+
+      {/* Service Dialog */}
+      <Dialog
+        open={showDialog}
+        onClose={resetForm}
+        title={editing ? "Edit Service" : "New Service"}
+        description="Service pages describe your offerings like printing, embroidery, etc."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              label="Title"
+              value={formTitle}
+              onChange={(e) => {
+                setFormTitle(e.target.value);
+                if (!editing) setFormSlug(slugify(e.target.value));
+              }}
+            />
+            <Input
+              label="Slug"
+              value={formSlug}
+              disabled
+              onChange={() => {}}
+              hint="Auto-generated from title"
+            />
+          </div>
+          <Textarea
+            label="Short Description"
+            value={formShortDescription}
+            onChange={(e) => setFormShortDescription(e.target.value)}
+            rows={2}
+          />
+          <Input
+            label="Icon"
+            value={formIcon}
+            onChange={(e) => setFormIcon(e.target.value)}
+            hint="Lucide icon name"
+          />
+          <ImageUpload
+            label="Service Image"
+            value={formImage?.url}
+            onChange={handleImageUpload}
+            onRemove={() => setFormImage(null)}
+          />
+          <Textarea
+            label="Content"
+            value={formContent}
+            onChange={(e) => setFormContent(e.target.value)}
+            rows={8}
+            placeholder="Rich description (supports markdown)"
+          />
+          <Textarea
+            label="Features"
+            value={formFeatures}
+            onChange={(e) => setFormFeatures(e.target.value)}
+            rows={4}
+            placeholder="One feature per line"
+          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              label="Sort Order"
+              type="number"
+              value={formSortOrder}
+              onChange={(e) => setFormSortOrder(Number(e.target.value))}
+            />
+            <Select
+              label="Status"
+              value={formStatus}
+              onChange={(e) => setFormStatus(e.target.value)}
+              options={[
+                { value: "draft", label: "Draft" },
+                { value: "published", label: "Published" },
+                { value: "archived", label: "Archived" },
+              ]}
+            />
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button
+              onClick={handleSave}
+              loading={saving}
+              className="flex-1"
+            >
+              {editing ? "Update" : "Create"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={resetForm}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }

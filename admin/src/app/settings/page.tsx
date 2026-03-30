@@ -8,12 +8,11 @@ import {
   Clock,
   Link2,
   Menu,
-  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 import {
   PageHeader,
   Card,
-  CardHeader,
   CardBody,
   Button,
 } from "@/components/ui";
@@ -112,7 +111,7 @@ export default function SettingsPage() {
         tagline,
         description,
         url: siteUrl,
-        ogImage,
+        ogImage: ogImage ?? null,
         contact: { email, phone, address },
         social: { facebook, instagram, twitter, tiktok, youtube },
         businessHours: { weekdays, weekend },
@@ -130,6 +129,7 @@ export default function SettingsPage() {
       alert("Settings saved!");
     } catch (err) {
       console.error("Failed to save settings:", err);
+      alert("Failed to save settings. Check console for details.");
     } finally {
       setSaving(false);
     }
@@ -160,191 +160,219 @@ export default function SettingsPage() {
         </Button>
       </PageHeader>
 
-      {/* Tab navigation */}
-      <div className="flex gap-1 mb-6 border-b border-[var(--border)] overflow-x-auto">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
-              activeTab === tab.id
-                ? "border-[var(--primary)] text-[var(--primary)]"
-                : "border-transparent text-[var(--text-secondary)] hover:text-[var(--foreground)]"
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-          </button>
-        ))}
+      <div className="grid lg:grid-cols-[280px_1fr] gap-6">
+        {/* ─── Left Navigation Panel ─── */}
+        <div className="space-y-2">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${
+                activeTab === tab.id
+                  ? "bg-primary/10 text-primary border border-primary/20 shadow-sm"
+                  : "bg-white border border-border text-text-secondary hover:bg-gray-50 hover:text-foreground"
+              }`}
+            >
+              <div
+                className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                  activeTab === tab.id ? "bg-primary/15" : "bg-gray-100"
+                }`}
+              >
+                {tab.icon}
+              </div>
+              <span className="text-sm font-medium">{tab.label}</span>
+              <ChevronRight
+                size={14}
+                className={`ml-auto ${activeTab === tab.id ? "text-primary" : "text-text-muted"}`}
+              />
+            </button>
+          ))}
+        </div>
+
+        {/* ─── Right Content Area ─── */}
+        <div>
+          {/* General */}
+          {activeTab === "general" && (
+            <Card>
+              <CardBody className="space-y-5">
+                <div className="pb-3 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">General Information</h2>
+                  <p className="text-sm text-text-muted mt-0.5">Basic site identity and configuration</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    label="Site Name"
+                    value={siteName}
+                    onChange={(e) => setSiteName(e.target.value)}
+                  />
+                  <Input
+                    label="Tagline"
+                    value={tagline}
+                    onChange={(e) => setTagline(e.target.value)}
+                  />
+                </div>
+                <Textarea
+                  label="Description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                />
+                <Input
+                  label="Site URL"
+                  value={siteUrl}
+                  onChange={(e) => setSiteUrl(e.target.value)}
+                />
+                <ImageUpload
+                  label="Default OG Image"
+                  value={ogImage?.url}
+                  onChange={handleOgImageUpload}
+                  onRemove={() => setOgImage(null)}
+                />
+                <Input
+                  label="Free Shipping Threshold (pence)"
+                  type="number"
+                  value={freeShippingThreshold}
+                  onChange={(e) => setFreeShippingThreshold(Number(e.target.value))}
+                  hint="0 = disabled. 5000 = free shipping over £50"
+                />
+              </CardBody>
+            </Card>
+          )}
+
+          {/* Contact */}
+          {activeTab === "contact" && (
+            <Card>
+              <CardBody className="space-y-5">
+                <div className="pb-3 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">Contact Details</h2>
+                  <p className="text-sm text-text-muted mt-0.5">How customers can reach you</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    label="Email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <Input
+                    label="Phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+                <Textarea
+                  label="Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  rows={3}
+                />
+              </CardBody>
+            </Card>
+          )}
+
+          {/* Social */}
+          {activeTab === "social" && (
+            <Card>
+              <CardBody className="space-y-5">
+                <div className="pb-3 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">Social Media Links</h2>
+                  <p className="text-sm text-text-muted mt-0.5">Connect your social media profiles</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    label="Facebook"
+                    value={facebook}
+                    onChange={(e) => setFacebook(e.target.value)}
+                    placeholder="https://facebook.com/..."
+                  />
+                  <Input
+                    label="Instagram"
+                    value={instagram}
+                    onChange={(e) => setInstagram(e.target.value)}
+                    placeholder="https://instagram.com/..."
+                  />
+                  <Input
+                    label="Twitter / X"
+                    value={twitter}
+                    onChange={(e) => setTwitter(e.target.value)}
+                    placeholder="https://x.com/..."
+                  />
+                  <Input
+                    label="TikTok"
+                    value={tiktok}
+                    onChange={(e) => setTiktok(e.target.value)}
+                    placeholder="https://tiktok.com/..."
+                  />
+                  <Input
+                    label="YouTube"
+                    value={youtube}
+                    onChange={(e) => setYoutube(e.target.value)}
+                    placeholder="https://youtube.com/..."
+                  />
+                </div>
+              </CardBody>
+            </Card>
+          )}
+
+          {/* Hours */}
+          {activeTab === "hours" && (
+            <Card>
+              <CardBody className="space-y-5">
+                <div className="pb-3 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">Business Hours</h2>
+                  <p className="text-sm text-text-muted mt-0.5">Let customers know when you&apos;re available</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    label="Weekdays"
+                    value={weekdays}
+                    onChange={(e) => setWeekdays(e.target.value)}
+                    placeholder="e.g. Mon–Fri: 9am–5pm"
+                  />
+                  <Input
+                    label="Weekend"
+                    value={weekend}
+                    onChange={(e) => setWeekend(e.target.value)}
+                    placeholder="e.g. Sat: 10am–2pm, Sun: Closed"
+                  />
+                </div>
+              </CardBody>
+            </Card>
+          )}
+
+          {/* Top Bar */}
+          {activeTab === "topbar" && (
+            <Card>
+              <CardBody className="space-y-5">
+                <div className="pb-3 border-b border-border">
+                  <h2 className="text-base font-semibold text-foreground">Top Bar Promo</h2>
+                  <p className="text-sm text-text-muted mt-0.5">Announcement banner at the top of the site</p>
+                </div>
+                <Input
+                  label="Message"
+                  value={topBarMessage}
+                  onChange={(e) => setTopBarMessage(e.target.value)}
+                  placeholder="e.g. Free shipping on orders over £50!"
+                />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Input
+                    label="Link Label"
+                    value={topBarLinkLabel}
+                    onChange={(e) => setTopBarLinkLabel(e.target.value)}
+                    placeholder="e.g. Shop Now"
+                  />
+                  <Input
+                    label="Link URL"
+                    value={topBarLinkHref}
+                    onChange={(e) => setTopBarLinkHref(e.target.value)}
+                    placeholder="e.g. /shop"
+                  />
+                </div>
+              </CardBody>
+            </Card>
+          )}
+        </div>
       </div>
-
-      {/* General */}
-      {activeTab === "general" && (
-        <Card>
-          <CardHeader>
-            <h2 className="text-base font-semibold">General Information</h2>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Input
-              label="Site Name"
-              value={siteName}
-              onChange={(e) => setSiteName(e.target.value)}
-            />
-            <Input
-              label="Tagline"
-              value={tagline}
-              onChange={(e) => setTagline(e.target.value)}
-            />
-            <Textarea
-              label="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-            <Input
-              label="Site URL"
-              value={siteUrl}
-              onChange={(e) => setSiteUrl(e.target.value)}
-            />
-            <ImageUpload
-              label="Default OG Image"
-              value={ogImage?.url}
-              onChange={handleOgImageUpload}
-              onRemove={() => setOgImage(null)}
-            />
-            <Input
-              label="Free Shipping Threshold (pence)"
-              type="number"
-              value={freeShippingThreshold}
-              onChange={(e) => setFreeShippingThreshold(Number(e.target.value))}
-              hint="0 = disabled. 5000 = free shipping over £50"
-            />
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Contact */}
-      {activeTab === "contact" && (
-        <Card>
-          <CardHeader>
-            <h2 className="text-base font-semibold">Contact Details</h2>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              label="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            <Textarea
-              label="Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              rows={3}
-            />
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Social */}
-      {activeTab === "social" && (
-        <Card>
-          <CardHeader>
-            <h2 className="text-base font-semibold">Social Media Links</h2>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Input
-              label="Facebook"
-              value={facebook}
-              onChange={(e) => setFacebook(e.target.value)}
-              placeholder="https://facebook.com/..."
-            />
-            <Input
-              label="Instagram"
-              value={instagram}
-              onChange={(e) => setInstagram(e.target.value)}
-              placeholder="https://instagram.com/..."
-            />
-            <Input
-              label="Twitter / X"
-              value={twitter}
-              onChange={(e) => setTwitter(e.target.value)}
-              placeholder="https://x.com/..."
-            />
-            <Input
-              label="TikTok"
-              value={tiktok}
-              onChange={(e) => setTiktok(e.target.value)}
-              placeholder="https://tiktok.com/..."
-            />
-            <Input
-              label="YouTube"
-              value={youtube}
-              onChange={(e) => setYoutube(e.target.value)}
-              placeholder="https://youtube.com/..."
-            />
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Hours */}
-      {activeTab === "hours" && (
-        <Card>
-          <CardHeader>
-            <h2 className="text-base font-semibold">Business Hours</h2>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Input
-              label="Weekdays"
-              value={weekdays}
-              onChange={(e) => setWeekdays(e.target.value)}
-              placeholder="e.g. Mon–Fri: 9am–5pm"
-            />
-            <Input
-              label="Weekend"
-              value={weekend}
-              onChange={(e) => setWeekend(e.target.value)}
-              placeholder="e.g. Sat: 10am–2pm, Sun: Closed"
-            />
-          </CardBody>
-        </Card>
-      )}
-
-      {/* Top Bar */}
-      {activeTab === "topbar" && (
-        <Card>
-          <CardHeader>
-            <h2 className="text-base font-semibold">Top Bar Promo</h2>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <Input
-              label="Message"
-              value={topBarMessage}
-              onChange={(e) => setTopBarMessage(e.target.value)}
-              placeholder="e.g. Free shipping on orders over £50!"
-            />
-            <div className="grid md:grid-cols-2 gap-4">
-              <Input
-                label="Link Label"
-                value={topBarLinkLabel}
-                onChange={(e) => setTopBarLinkLabel(e.target.value)}
-                placeholder="e.g. Shop Now"
-              />
-              <Input
-                label="Link URL"
-                value={topBarLinkHref}
-                onChange={(e) => setTopBarLinkHref(e.target.value)}
-                placeholder="e.g. /shop"
-              />
-            </div>
-          </CardBody>
-        </Card>
-      )}
     </>
   );
 }
