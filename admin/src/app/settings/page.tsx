@@ -10,12 +10,7 @@ import {
   Menu,
   ChevronRight,
 } from "lucide-react";
-import {
-  PageHeader,
-  Card,
-  CardBody,
-  Button,
-} from "@/components/ui";
+import { PageHeader, Card, CardBody, Button } from "@/components/ui";
 import { Input, Textarea, ImageUpload } from "@/components/ui/FormFields";
 import { getSingleton, setSingleton } from "@/lib/firestore";
 import { uploadFile } from "@/lib/storage";
@@ -196,8 +191,12 @@ export default function SettingsPage() {
             <Card>
               <CardBody className="space-y-5">
                 <div className="pb-3 border-b border-border">
-                  <h2 className="text-base font-semibold text-foreground">General Information</h2>
-                  <p className="text-sm text-text-muted mt-0.5">Basic site identity and configuration</p>
+                  <h2 className="text-base font-semibold text-foreground">
+                    General Information
+                  </h2>
+                  <p className="text-sm text-text-muted mt-0.5">
+                    Basic site identity and configuration
+                  </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
@@ -232,7 +231,9 @@ export default function SettingsPage() {
                   label="Free Shipping Threshold (pence)"
                   type="number"
                   value={freeShippingThreshold}
-                  onChange={(e) => setFreeShippingThreshold(Number(e.target.value))}
+                  onChange={(e) =>
+                    setFreeShippingThreshold(Number(e.target.value))
+                  }
                   hint="0 = disabled. 5000 = free shipping over £50"
                 />
               </CardBody>
@@ -244,8 +245,12 @@ export default function SettingsPage() {
             <Card>
               <CardBody className="space-y-5">
                 <div className="pb-3 border-b border-border">
-                  <h2 className="text-base font-semibold text-foreground">Contact Details</h2>
-                  <p className="text-sm text-text-muted mt-0.5">How customers can reach you</p>
+                  <h2 className="text-base font-semibold text-foreground">
+                    Contact Details
+                  </h2>
+                  <p className="text-sm text-text-muted mt-0.5">
+                    How customers can reach you
+                  </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
@@ -275,8 +280,12 @@ export default function SettingsPage() {
             <Card>
               <CardBody className="space-y-5">
                 <div className="pb-3 border-b border-border">
-                  <h2 className="text-base font-semibold text-foreground">Social Media Links</h2>
-                  <p className="text-sm text-text-muted mt-0.5">Connect your social media profiles</p>
+                  <h2 className="text-base font-semibold text-foreground">
+                    Social Media Links
+                  </h2>
+                  <p className="text-sm text-text-muted mt-0.5">
+                    Connect your social media profiles
+                  </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
@@ -319,8 +328,12 @@ export default function SettingsPage() {
             <Card>
               <CardBody className="space-y-5">
                 <div className="pb-3 border-b border-border">
-                  <h2 className="text-base font-semibold text-foreground">Business Hours</h2>
-                  <p className="text-sm text-text-muted mt-0.5">Let customers know when you&apos;re available</p>
+                  <h2 className="text-base font-semibold text-foreground">
+                    Business Hours
+                  </h2>
+                  <p className="text-sm text-text-muted mt-0.5">
+                    Let customers know when you&apos;re available
+                  </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
@@ -345,8 +358,12 @@ export default function SettingsPage() {
             <Card>
               <CardBody className="space-y-5">
                 <div className="pb-3 border-b border-border">
-                  <h2 className="text-base font-semibold text-foreground">Top Bar Promo</h2>
-                  <p className="text-sm text-text-muted mt-0.5">Announcement banner at the top of the site</p>
+                  <h2 className="text-base font-semibold text-foreground">
+                    Top Bar Promo
+                  </h2>
+                  <p className="text-sm text-text-muted mt-0.5">
+                    Announcement banner at the top of the site
+                  </p>
                 </div>
                 <Input
                   label="Message"

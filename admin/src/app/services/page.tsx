@@ -332,18 +332,10 @@ export default function ServicesPage() {
             />
           </div>
           <div className="flex gap-3 pt-2">
-            <Button
-              onClick={handleSave}
-              loading={saving}
-              className="flex-1"
-            >
+            <Button onClick={handleSave} loading={saving} className="flex-1">
               {editing ? "Update" : "Create"}
             </Button>
-            <Button
-              variant="outline"
-              onClick={resetForm}
-              className="flex-1"
-            >
+            <Button variant="outline" onClick={resetForm} className="flex-1">
               Cancel
             </Button>
           </div>
