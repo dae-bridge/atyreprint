@@ -3,26 +3,36 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Heart, Eye, Star } from "lucide-react";
-import type { ProductData } from "@/lib/products";
+import type { Product } from "@/types";
+import { formatPrice, priceToPounds, getImageUrl } from "@/types";
 
 interface ProductCardProps {
-  product: ProductData;
+  product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const productHref = `/shop/product/${product.slug}`;
 
+  const price = priceToPounds(product.price);
+  const compareAt = priceToPounds(product.compareAtPrice);
+
   // Calculate discount percentage if both prices exist
-  const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
-  const discountPercentage = hasDiscount 
-    ? Math.round(((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100)
+  const hasDiscount = compareAt > 0 && compareAt > price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((compareAt - price) / compareAt) * 100)
     : 0;
 
-  const buttonLabel = product.variants && product.variants.length > 0 && product.variants[0].options.length > 0 
-    ? "SELECT OPTIONS" 
-    : "CUSTOMISE";
+  const buttonLabel =
+    product.buttonLabel ||
+    (product.variants &&
+    product.variants.length > 0 &&
+    product.variants[0].options.length > 0
+      ? "SELECT OPTIONS"
+      : "CUSTOMISE");
 
-  const hoverImage = product.images.length > 1 ? product.images[1] : product.images[0];
+  const mainImage = getImageUrl(product.images?.[0]);
+  const hoverImage =
+    product.images?.length > 1 ? getImageUrl(product.images[1]) : mainImage;
 
   return (
     <div className="relative bg-white border border-transparent hover:border-gray-100 transition-all duration-500 w-full hover:shadow-2xl hover:z-30 group h-full flex flex-col">
@@ -56,7 +66,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <Link href={productHref} className="relative w-full h-full block">
           {/* Default Image */}
           <Image
-            src={product.images[0]}
+            src={mainImage}
             alt={product.name}
             fill
             className="object-contain transition-opacity duration-500 group-hover/image:opacity-0"
@@ -82,40 +92,44 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             {product.name}
           </h3>
         </Link>
-        
+
         {/* Ratings */}
         <div className="flex gap-0.5 mb-3">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
               size={13}
-              className={i < Math.floor(product.rating || 5) ? "fill-[#ffb503] text-[#ffb503]" : "fill-gray-200 text-gray-200"}
+              className={
+                i < Math.floor(product.rating || 5)
+                  ? "fill-[#ffb503] text-[#ffb503]"
+                  : "fill-gray-200 text-gray-200"
+              }
             />
           ))}
         </div>
 
         {/* Price */}
         <div className="flex items-center gap-2 mb-5 mt-auto">
-          {product.compareAtPrice && (
+          {hasDiscount && (
             <span className="text-sm text-gray-400 line-through">
-              £{product.compareAtPrice.toFixed(2)}
+              £{formatPrice(product.compareAtPrice)}
             </span>
           )}
           <span className="text-base font-bold text-[#ff4d6d]">
-            £{product.price.toFixed(2)}
+            £{formatPrice(product.price)}
           </span>
         </div>
 
         {/* Action Button */}
         {buttonLabel === "CUSTOMISE" ? (
-          <Link 
+          <Link
             href={`/personalise-it?product=${product.slug}`}
             className="w-full py-3 bg-[#eeeeee] text-[13px] font-bold text-foreground hover:bg-accent hover:text-white transition-colors tracking-wide uppercase font-jost text-center block"
           >
             CUSTOMISE
           </Link>
         ) : (
-          <button 
+          <button
             className="w-full py-3 bg-[#eeeeee] text-[13px] font-bold text-foreground hover:bg-accent hover:text-white transition-colors tracking-wide uppercase font-jost"
             onClick={(e) => e.preventDefault()}
           >

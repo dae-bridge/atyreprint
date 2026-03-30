@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { siteConfig } from "@/config/site";
+import { getHomepageCMS } from "@/lib/settings";
 import { Heart, Globe, Award, Users } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -38,7 +38,16 @@ const values = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const cms = await getHomepageCMS();
+  const trustStats = cms.trustStats?.length
+    ? cms.trustStats
+    : [
+        { id: "1", value: "5+", label: "Years Experience", sortOrder: 0 },
+        { id: "2", value: "10K+", label: "Orders Completed", sortOrder: 1 },
+        { id: "3", value: "3", label: "Continents Served", sortOrder: 2 },
+        { id: "4", value: "98%", label: "Happy Customers", sortOrder: 3 },
+      ];
   return (
     <>
       <PageHeader
@@ -111,7 +120,7 @@ export default function AboutPage() {
       <section className="py-12 bg-primary">
         <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {siteConfig.trustStats.map((stat) => (
+            {trustStats.map((stat) => (
               <div key={stat.label}>
                 <p className="text-3xl md:text-4xl font-bold text-secondary mb-1">
                   {stat.value}

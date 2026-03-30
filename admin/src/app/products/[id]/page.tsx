@@ -50,6 +50,12 @@ import { getAllDocuments } from "@/lib/firestore";
 
 // ─── Form Types ──────────────────────────────────────────────────────────
 
+/** Variant in the form: options is a comma-separated string for the text input */
+interface FormVariant {
+  label: string;
+  options: string; // stored as "XS, S, M, L, XL" in the form, converted to [] on save
+}
+
 interface ProductFormData {
   name: string;
   sku: string;
@@ -69,7 +75,7 @@ interface ProductFormData {
   sortOrder: number;
   status: PublishStatus;
   colors: ProductColor[];
-  variants: ProductVariant[];
+  variants: FormVariant[];
   additionalInfo: ProductAdditionalInfo[];
   features: string;
   seoMetaTitle: string;
@@ -244,7 +250,12 @@ export default function ProductFormPage() {
       sortOrder: product.sortOrder,
       status: product.status,
       colors: product.colors,
-      variants: product.variants,
+      variants: product.variants.map((v) => ({
+        label: v.label,
+        options: Array.isArray(v.options)
+          ? v.options.join(", ")
+          : (v.options as unknown as string) || "",
+      })),
       additionalInfo: product.additionalInfo,
       features: product.features.join("\n"),
       seoMetaTitle: product.seo.metaTitle,
@@ -317,7 +328,13 @@ export default function ProductFormPage() {
           .map((t) => t.trim())
           .filter(Boolean),
         colors: data.colors,
-        variants: data.variants,
+        variants: data.variants.map((v) => ({
+          label: v.label,
+          options: v.options
+            .split(",")
+            .map((o) => o.trim())
+            .filter(Boolean),
+        })),
         additionalInfo: data.additionalInfo,
         features: data.features
           .split("\n")
@@ -641,7 +658,7 @@ export default function ProductFormPage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => appendVariant({ label: "", options: [] })}
+                    onClick={() => appendVariant({ label: "", options: "" })}
                   >
                     <Plus size={14} /> Add Variant
                   </Button>

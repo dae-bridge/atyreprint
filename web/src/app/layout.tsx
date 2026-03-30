@@ -5,6 +5,8 @@ import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/ui/CookieConsent";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { PurchaseToast } from "@/components/ui/PurchaseToast";
+import { getCategoryTree } from "@/lib/products";
+import { getSiteSettings } from "@/lib/settings";
 import "./globals.css";
 
 const jost = Jost({
@@ -91,17 +93,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch categories + settings server-side
+  const [categoryTree, settings] = await Promise.all([
+    getCategoryTree(),
+    getSiteSettings(),
+  ]);
+  const navCategories = categoryTree.map(({ parent, children }) => ({
+    id: parent.id,
+    name: parent.name,
+    slug: parent.slug,
+    children: children.map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
+  }));
+
   return (
     <html lang="en" className={`${jost.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Header />
+        <Header navCategories={navCategories} settings={settings} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer settings={settings} />
         <ScrollToTop />
         <PurchaseToast />
         <CookieConsent />
