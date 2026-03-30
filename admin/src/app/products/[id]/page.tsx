@@ -194,7 +194,11 @@ export default function ProductFormPage() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const cats = await getAllDocuments<Category>(COLLECTIONS.CATEGORIES, "sortOrder", "asc");
+        const cats = await getAllDocuments<Category>(
+          COLLECTIONS.CATEGORIES,
+          "sortOrder",
+          "asc",
+        );
         setAllCategories(cats);
       } catch (err) {
         console.error("Failed to load categories:", err);
@@ -226,7 +230,9 @@ export default function ProductFormPage() {
       description: product.description,
       longDescription: product.longDescription,
       priceAmount: product.price.amount / 100,
-      compareAtPriceAmount: product.compareAtPrice ? product.compareAtPrice.amount / 100 : null,
+      compareAtPriceAmount: product.compareAtPrice
+        ? product.compareAtPrice.amount / 100
+        : null,
       categoryId: product.categoryId,
       tags: product.tags.join(", "),
       inStock: product.inStock,
@@ -276,12 +282,17 @@ export default function ProductFormPage() {
     setSaving(true);
     try {
       // Derive categoryPath from the selected category
-      const selectedCategory = allCategories.find((c) => c.id === data.categoryId);
+      const selectedCategory = allCategories.find(
+        (c) => c.id === data.categoryId,
+      );
       const categoryPath = selectedCategory
-        ? [...selectedCategory.ancestorSlugs.map((slug) => {
-            const ancestor = allCategories.find((c) => c.slug === slug);
-            return ancestor?.name ?? slug;
-          }), selectedCategory.name]
+        ? [
+            ...selectedCategory.ancestorSlugs.map((slug) => {
+              const ancestor = allCategories.find((c) => c.slug === slug);
+              return ancestor?.name ?? slug;
+            }),
+            selectedCategory.name,
+          ]
         : [];
 
       const productData = {
@@ -292,7 +303,10 @@ export default function ProductFormPage() {
         longDescription: data.longDescription,
         price: { amount: Math.round(data.priceAmount * 100), currency: "GBP" },
         compareAtPrice: data.compareAtPriceAmount
-          ? { amount: Math.round(data.compareAtPriceAmount * 100), currency: "GBP" }
+          ? {
+              amount: Math.round(data.compareAtPriceAmount * 100),
+              currency: "GBP",
+            }
           : null,
         images,
         bannerImage,
@@ -861,15 +875,22 @@ export default function ProductFormPage() {
                   control={control}
                   name="categoryId"
                   render={({ field }) => {
-                    const rootCategories = allCategories.filter((c) => !c.parentId);
+                    const rootCategories = allCategories.filter(
+                      (c) => !c.parentId,
+                    );
                     const childCategories = (parentId: string) =>
                       allCategories.filter((c) => c.parentId === parentId);
 
                     return (
                       <div>
                         <div className="flex items-center gap-2 mb-1.5">
-                          <label className="text-sm font-medium text-foreground">Category</label>
-                          <InfoTooltip text="Select the category this product belongs to. Categories are organised by parent groups." position="right" />
+                          <label className="text-sm font-medium text-foreground">
+                            Category
+                          </label>
+                          <InfoTooltip
+                            text="Select the category this product belongs to. Categories are organised by parent groups."
+                            position="right"
+                          />
                         </div>
                         <select
                           value={field.value}
@@ -900,10 +921,16 @@ export default function ProductFormPage() {
                         {field.value && (
                           <p className="text-xs text-text-muted mt-1">
                             {(() => {
-                              const cat = allCategories.find((c) => c.id === field.value);
+                              const cat = allCategories.find(
+                                (c) => c.id === field.value,
+                              );
                               if (!cat) return "";
                               const path = cat.ancestorSlugs
-                                .map((slug) => allCategories.find((c) => c.slug === slug)?.name ?? slug)
+                                .map(
+                                  (slug) =>
+                                    allCategories.find((c) => c.slug === slug)
+                                      ?.name ?? slug,
+                                )
                                 .concat(cat.name);
                               return path.join(" → ");
                             })()}

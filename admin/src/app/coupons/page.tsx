@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Ticket, Trash2, Pencil, Copy } from "lucide-react";
-import {
-  PageHeader,
-  Card,
-  Badge,
-  Button,
-  EmptyState,
-} from "@/components/ui";
+import { PageHeader, Card, Badge, Button, EmptyState } from "@/components/ui";
 import { Input, Select, Toggle } from "@/components/ui/FormFields";
 import { Dialog } from "@/components/ui/Dialog";
 import { DataTable, type Column } from "@/components/ui/DataTable";
@@ -274,7 +268,11 @@ export default function CouponsPage() {
         open={showDialog}
         onClose={resetForm}
         title={editing ? "Edit Coupon" : "New Coupon"}
-        description={editing ? "Update the coupon details below." : "Create a new discount code for your customers."}
+        description={
+          editing
+            ? "Update the coupon details below."
+            : "Create a new discount code for your customers."
+        }
         size="lg"
       >
         <div className="space-y-4">

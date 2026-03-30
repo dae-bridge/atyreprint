@@ -412,11 +412,7 @@ export default function FAQPage() {
             >
               {editingCat ? "Update" : "Create"}
             </Button>
-            <Button
-              variant="outline"
-              onClick={resetCatForm}
-              className="flex-1"
-            >
+            <Button variant="outline" onClick={resetCatForm} className="flex-1">
               Cancel
             </Button>
           </div>
