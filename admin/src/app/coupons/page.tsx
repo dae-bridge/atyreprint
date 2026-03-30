@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Ticket, Search, Trash2, Pencil, Copy } from "lucide-react";
-import { PageHeader, Card, CardBody, Badge, Button, EmptyState } from "@/components/ui";
+import {
+  PageHeader,
+  Card,
+  CardBody,
+  Badge,
+  Button,
+  EmptyState,
+} from "@/components/ui";
 import { Input, Textarea, Select, Toggle } from "@/components/ui/FormFields";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import {
@@ -27,7 +34,8 @@ export default function CouponsPage() {
   // Form state
   const [formCode, setFormCode] = useState("");
   const [formDescription, setFormDescription] = useState("");
-  const [formDiscountType, setFormDiscountType] = useState<DiscountType>("percentage");
+  const [formDiscountType, setFormDiscountType] =
+    useState<DiscountType>("percentage");
   const [formDiscountValue, setFormDiscountValue] = useState(0);
   const [formMinOrder, setFormMinOrder] = useState(0);
   const [formMaxUses, setFormMaxUses] = useState(0);
@@ -76,8 +84,12 @@ export default function CouponsPage() {
     setFormDiscountValue(c.discountValue);
     setFormMinOrder(c.minimumOrderValue?.amount ?? 0);
     setFormMaxUses(c.maxUses ?? 0);
-    setFormValidFrom(c.validFrom?.toDate?.()?.toISOString().split("T")[0] ?? "");
-    setFormValidUntil(c.validUntil?.toDate?.()?.toISOString().split("T")[0] ?? "");
+    setFormValidFrom(
+      c.validFrom?.toDate?.()?.toISOString().split("T")[0] ?? "",
+    );
+    setFormValidUntil(
+      c.validUntil?.toDate?.()?.toISOString().split("T")[0] ?? "",
+    );
     setFormActive(c.active);
     setShowForm(true);
   };
@@ -91,11 +103,16 @@ export default function CouponsPage() {
         description: formDescription,
         discountType: formDiscountType,
         discountValue: formDiscountValue,
-        minimumOrderValue: formMinOrder > 0 ? { amount: formMinOrder, currency: "GBP" } : null,
+        minimumOrderValue:
+          formMinOrder > 0 ? { amount: formMinOrder, currency: "GBP" } : null,
         maxUses: formMaxUses > 0 ? formMaxUses : null,
         usedCount: editing?.usedCount ?? 0,
-        validFrom: formValidFrom ? Timestamp.fromDate(new Date(formValidFrom)) : Timestamp.now(),
-        validUntil: formValidUntil ? Timestamp.fromDate(new Date(formValidUntil)) : Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
+        validFrom: formValidFrom
+          ? Timestamp.fromDate(new Date(formValidFrom))
+          : Timestamp.now(),
+        validUntil: formValidUntil
+          ? Timestamp.fromDate(new Date(formValidUntil))
+          : Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
         applicableCategories: [],
         applicableProducts: [],
         active: formActive,
@@ -134,7 +151,9 @@ export default function CouponsPage() {
       label: "Code",
       render: (c) => (
         <div className="flex items-center gap-2">
-          <span className="font-mono font-semibold text-[var(--primary)]">{c.code}</span>
+          <span className="font-mono font-semibold text-[var(--primary)]">
+            {c.code}
+          </span>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -193,13 +212,19 @@ export default function CouponsPage() {
       render: (c) => (
         <div className="flex items-center gap-1">
           <button
-            onClick={(e) => { e.stopPropagation(); openEdit(c); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              openEdit(c);
+            }}
             className="p-1.5 rounded hover:bg-gray-100 text-[var(--text-muted)]"
           >
             <Pencil size={14} />
           </button>
           <button
-            onClick={(e) => { e.stopPropagation(); handleDelete(c.id); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(c.id);
+            }}
             className="p-1.5 rounded hover:bg-red-50 text-[var(--text-muted)] hover:text-red-500"
           >
             <Trash2 size={14} />
@@ -212,7 +237,12 @@ export default function CouponsPage() {
   return (
     <>
       <PageHeader title="Coupons" description="Manage discount codes.">
-        <Button onClick={() => { resetForm(); setShowForm(true); }}>
+        <Button
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
           <Plus size={16} /> Add Coupon
         </Button>
       </PageHeader>
@@ -264,14 +294,20 @@ export default function CouponsPage() {
               <Select
                 label="Discount Type"
                 value={formDiscountType}
-                onChange={(e) => setFormDiscountType(e.target.value as DiscountType)}
+                onChange={(e) =>
+                  setFormDiscountType(e.target.value as DiscountType)
+                }
                 options={[
                   { value: "percentage", label: "Percentage (%)" },
                   { value: "fixed", label: "Fixed Amount (pence)" },
                 ]}
               />
               <Input
-                label={formDiscountType === "percentage" ? "Discount (%)" : "Discount (pence)"}
+                label={
+                  formDiscountType === "percentage"
+                    ? "Discount (%)"
+                    : "Discount (pence)"
+                }
                 type="number"
                 value={formDiscountValue}
                 onChange={(e) => setFormDiscountValue(Number(e.target.value))}
@@ -308,10 +344,18 @@ export default function CouponsPage() {
                 onChange={setFormActive}
               />
               <div className="flex gap-3 pt-2">
-                <Button onClick={handleSave} loading={saving} className="flex-1">
+                <Button
+                  onClick={handleSave}
+                  loading={saving}
+                  className="flex-1"
+                >
                   {editing ? "Update" : "Create"}
                 </Button>
-                <Button variant="outline" onClick={resetForm} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={resetForm}
+                  className="flex-1"
+                >
                   Cancel
                 </Button>
               </div>

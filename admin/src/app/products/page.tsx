@@ -48,8 +48,7 @@ export default function ProductsPage() {
       search === "" ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.sku.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || p.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || p.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -115,9 +114,7 @@ export default function ProductsPage() {
       key: "status",
       label: "Status",
       render: (p) => (
-        <Badge variant={statusColors[p.status] ?? "default"}>
-          {p.status}
-        </Badge>
+        <Badge variant={statusColors[p.status] ?? "default"}>{p.status}</Badge>
       ),
     },
     {

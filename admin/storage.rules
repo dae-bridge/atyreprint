@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ─── Helper Functions ──────────────────────────────────────────
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuth() && request.auth.token.admin == true;
+    }
+
+    // Max file size (5 MB)
+    function isUnder5MB() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+
+    // Max file size (10 MB)
+    function isUnder10MB() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // Only allow image content types
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // ─── Product Images — Admin upload, public read ────────────────
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ─── Category Images — Admin upload, public read ───────────────
+    match /categories/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ─── Blog Images — Admin upload, public read ───────────────────
+    match /blog/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ─── CMS/Homepage Images — Admin upload, public read ───────────
+    match /cms/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ─── Service Images — Admin upload, public read ────────────────
+    match /services/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ─── Testimonial Images — Admin upload, public read ────────────
+    match /testimonials/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && isUnder5MB();
+    }
+
+    // ─── User Designs — Owner upload, owner + admin read ───────────
+    match /designs/{userId}/{allPaths=**} {
+      allow read: if isAdmin() || (isAuth() && request.auth.uid == userId);
+      allow write: if isAuth() && request.auth.uid == userId && isImage() && isUnder10MB();
+    }
+
+    // ─── Deny everything else ──────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

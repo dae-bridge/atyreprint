@@ -1,10 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Star, Trash2, Pencil, MessageSquare, GripVertical } from "lucide-react";
-import { PageHeader, Card, CardBody, Badge, Button, EmptyState } from "@/components/ui";
-import { Input, Textarea, Select, Toggle, ImageUpload } from "@/components/ui/FormFields";
-import { queryDocuments, createDocument, updateDocument, deleteDocument } from "@/lib/firestore";
+import {
+  Plus,
+  Star,
+  Trash2,
+  Pencil,
+  MessageSquare,
+  GripVertical,
+} from "lucide-react";
+import {
+  PageHeader,
+  Card,
+  CardBody,
+  Badge,
+  Button,
+  EmptyState,
+} from "@/components/ui";
+import {
+  Input,
+  Textarea,
+  Select,
+  Toggle,
+  ImageUpload,
+} from "@/components/ui/FormFields";
+import {
+  queryDocuments,
+  createDocument,
+  updateDocument,
+  deleteDocument,
+} from "@/lib/firestore";
 import { uploadFile } from "@/lib/storage";
 import type { Testimonial, ImageAsset } from "@/types";
 import { COLLECTIONS } from "@/types";
@@ -118,7 +143,10 @@ export default function TestimonialsPage() {
   };
 
   const handleAvatarUpload = async (file: File) => {
-    const { url, storagePath } = await uploadFile(file, `testimonials/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `testimonials/${Date.now()}-${file.name}`,
+    );
     setFormAvatar({ url, alt: formName || file.name, storagePath });
   };
 
@@ -130,8 +158,16 @@ export default function TestimonialsPage() {
 
   return (
     <>
-      <PageHeader title="Testimonials" description="Manage customer testimonials.">
-        <Button onClick={() => { resetForm(); setShowForm(true); }}>
+      <PageHeader
+        title="Testimonials"
+        description="Manage customer testimonials."
+      >
+        <Button
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
           <Plus size={16} /> Add Testimonial
         </Button>
       </PageHeader>
@@ -164,7 +200,10 @@ export default function TestimonialsPage() {
                 <Card key={t.id}>
                   <CardBody>
                     <div className="flex items-start gap-4">
-                      <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab mt-1" />
+                      <GripVertical
+                        size={14}
+                        className="text-[var(--text-muted)] cursor-grab mt-1"
+                      />
                       {t.avatar ? (
                         <img
                           src={t.avatar.url}
@@ -178,9 +217,15 @@ export default function TestimonialsPage() {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="font-medium text-[var(--foreground)]">{t.name}</p>
-                          <Badge variant={statusColors[t.status]}>{t.status}</Badge>
-                          {t.featured && <Badge variant="secondary">Featured</Badge>}
+                          <p className="font-medium text-[var(--foreground)]">
+                            {t.name}
+                          </p>
+                          <Badge variant={statusColors[t.status]}>
+                            {t.status}
+                          </Badge>
+                          {t.featured && (
+                            <Badge variant="secondary">Featured</Badge>
+                          )}
                         </div>
                         <p className="text-xs text-[var(--text-muted)] mb-2">
                           {t.location} {t.role && `· ${t.role}`}
@@ -190,7 +235,11 @@ export default function TestimonialsPage() {
                             <Star
                               key={s}
                               size={14}
-                              className={s <= t.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                              className={
+                                s <= t.rating
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                              }
                             />
                           ))}
                         </div>
@@ -229,12 +278,33 @@ export default function TestimonialsPage() {
               </h2>
             </div>
             <CardBody className="space-y-4">
-              <Input label="Name" value={formName} onChange={(e) => setFormName(e.target.value)} />
-              <Input label="Location" value={formLocation} onChange={(e) => setFormLocation(e.target.value)} placeholder="e.g. London, UK" />
-              <Input label="Role" value={formRole} onChange={(e) => setFormRole(e.target.value)} placeholder="e.g. Business Owner" />
-              <Textarea label="Testimonial Text" value={formText} onChange={(e) => setFormText(e.target.value)} rows={4} />
+              <Input
+                label="Name"
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+              />
+              <Input
+                label="Location"
+                value={formLocation}
+                onChange={(e) => setFormLocation(e.target.value)}
+                placeholder="e.g. London, UK"
+              />
+              <Input
+                label="Role"
+                value={formRole}
+                onChange={(e) => setFormRole(e.target.value)}
+                placeholder="e.g. Business Owner"
+              />
+              <Textarea
+                label="Testimonial Text"
+                value={formText}
+                onChange={(e) => setFormText(e.target.value)}
+                rows={4}
+              />
               <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-1.5">Rating</label>
+                <label className="block text-sm font-medium text-[var(--foreground)] mb-1.5">
+                  Rating
+                </label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <button
@@ -245,7 +315,11 @@ export default function TestimonialsPage() {
                     >
                       <Star
                         size={20}
-                        className={s <= formRating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                        className={
+                          s <= formRating
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300"
+                        }
                       />
                     </button>
                   ))}
@@ -280,10 +354,18 @@ export default function TestimonialsPage() {
                 onChange={setFormFeatured}
               />
               <div className="flex gap-3 pt-2">
-                <Button onClick={handleSave} loading={saving} className="flex-1">
+                <Button
+                  onClick={handleSave}
+                  loading={saving}
+                  className="flex-1"
+                >
                   {editing ? "Update" : "Create"}
                 </Button>
-                <Button variant="outline" onClick={resetForm} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={resetForm}
+                  className="flex-1"
+                >
                   Cancel
                 </Button>
               </div>

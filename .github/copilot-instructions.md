@@ -43,6 +43,29 @@ AtyrePrint is a custom clothing & gifts e-commerce platform with two Next.js app
 - **API:** REST or Server Actions (prefer Server Actions for mutations)
 - **Backend:** Firebase (Firestore for data, Storage for files, Analytics)
 
+## Firebase Configuration
+
+All Firebase configuration lives inside the **admin/** project — NOT at the repo root. This includes:
+
+- `admin/.firebaserc` — Project alias (default: `atyreprint-01`)
+- `admin/firebase.json` — Firestore, Storage, Functions & emulator config
+- `admin/firestore.rules` — Firestore security rules (covers both web & admin)
+- `admin/firestore.indexes.json` — Composite index definitions
+- `admin/storage.rules` — Storage security rules
+- `admin/functions/` — Cloud Functions (TypeScript, built from `admin/functions/src/`)
+
+**Deploy from the `admin/` directory:**
+
+```bash
+cd admin
+firebase deploy --only firestore:rules
+firebase deploy --only storage
+firebase deploy --only functions
+firebase deploy  # deploys everything
+```
+
+Never place Firebase config files (firebase.json, .firebaserc, rules, functions/) at the monorepo root.
+
 ## Code Conventions
 
 - Use `src/` directory structure with App Router

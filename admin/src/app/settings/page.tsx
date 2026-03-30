@@ -1,8 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Save, Globe, Phone, Clock, Link2, Menu, ChevronDown } from "lucide-react";
-import { PageHeader, Card, CardHeader, CardBody, Button } from "@/components/ui";
+import {
+  Save,
+  Globe,
+  Phone,
+  Clock,
+  Link2,
+  Menu,
+  ChevronDown,
+} from "lucide-react";
+import {
+  PageHeader,
+  Card,
+  CardHeader,
+  CardBody,
+  Button,
+} from "@/components/ui";
 import { Input, Textarea, ImageUpload } from "@/components/ui/FormFields";
 import { getSingleton, setSingleton } from "@/lib/firestore";
 import { uploadFile } from "@/lib/storage";
@@ -107,7 +121,10 @@ export default function SettingsPage() {
           topBarLinkLabel && topBarLinkHref
             ? { label: topBarLinkLabel, href: topBarLinkHref }
             : null,
-        freeShippingThreshold: { amount: freeShippingThreshold, currency: "GBP" },
+        freeShippingThreshold: {
+          amount: freeShippingThreshold,
+          currency: "GBP",
+        },
       };
       await setSingleton("settings", "general", settings);
       alert("Settings saved!");
@@ -119,7 +136,10 @@ export default function SettingsPage() {
   };
 
   const handleOgImageUpload = async (file: File) => {
-    const { url, storagePath } = await uploadFile(file, `settings/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `settings/${Date.now()}-${file.name}`,
+    );
     setOgImage({ url, alt: "OG Image", storagePath });
   };
 
@@ -134,10 +154,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Settings"
-        description="Configure site-wide settings."
-      >
+      <PageHeader title="Settings" description="Configure site-wide settings.">
         <Button onClick={handleSave} loading={saving}>
           <Save size={16} /> Save Settings
         </Button>
@@ -168,15 +185,27 @@ export default function SettingsPage() {
             <h2 className="text-base font-semibold">General Information</h2>
           </CardHeader>
           <CardBody className="space-y-4">
-            <Input label="Site Name" value={siteName} onChange={(e) => setSiteName(e.target.value)} />
-            <Input label="Tagline" value={tagline} onChange={(e) => setTagline(e.target.value)} />
+            <Input
+              label="Site Name"
+              value={siteName}
+              onChange={(e) => setSiteName(e.target.value)}
+            />
+            <Input
+              label="Tagline"
+              value={tagline}
+              onChange={(e) => setTagline(e.target.value)}
+            />
             <Textarea
               label="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
             />
-            <Input label="Site URL" value={siteUrl} onChange={(e) => setSiteUrl(e.target.value)} />
+            <Input
+              label="Site URL"
+              value={siteUrl}
+              onChange={(e) => setSiteUrl(e.target.value)}
+            />
             <ImageUpload
               label="Default OG Image"
               value={ogImage?.url}
@@ -201,9 +230,23 @@ export default function SettingsPage() {
             <h2 className="text-base font-semibold">Contact Details</h2>
           </CardHeader>
           <CardBody className="space-y-4">
-            <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            <Textarea label="Address" value={address} onChange={(e) => setAddress(e.target.value)} rows={3} />
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              label="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <Textarea
+              label="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              rows={3}
+            />
           </CardBody>
         </Card>
       )}
@@ -215,11 +258,36 @@ export default function SettingsPage() {
             <h2 className="text-base font-semibold">Social Media Links</h2>
           </CardHeader>
           <CardBody className="space-y-4">
-            <Input label="Facebook" value={facebook} onChange={(e) => setFacebook(e.target.value)} placeholder="https://facebook.com/..." />
-            <Input label="Instagram" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/..." />
-            <Input label="Twitter / X" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="https://x.com/..." />
-            <Input label="TikTok" value={tiktok} onChange={(e) => setTiktok(e.target.value)} placeholder="https://tiktok.com/..." />
-            <Input label="YouTube" value={youtube} onChange={(e) => setYoutube(e.target.value)} placeholder="https://youtube.com/..." />
+            <Input
+              label="Facebook"
+              value={facebook}
+              onChange={(e) => setFacebook(e.target.value)}
+              placeholder="https://facebook.com/..."
+            />
+            <Input
+              label="Instagram"
+              value={instagram}
+              onChange={(e) => setInstagram(e.target.value)}
+              placeholder="https://instagram.com/..."
+            />
+            <Input
+              label="Twitter / X"
+              value={twitter}
+              onChange={(e) => setTwitter(e.target.value)}
+              placeholder="https://x.com/..."
+            />
+            <Input
+              label="TikTok"
+              value={tiktok}
+              onChange={(e) => setTiktok(e.target.value)}
+              placeholder="https://tiktok.com/..."
+            />
+            <Input
+              label="YouTube"
+              value={youtube}
+              onChange={(e) => setYoutube(e.target.value)}
+              placeholder="https://youtube.com/..."
+            />
           </CardBody>
         </Card>
       )}

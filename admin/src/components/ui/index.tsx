@@ -6,7 +6,11 @@ interface PageHeaderProps {
   children?: React.ReactNode;
 }
 
-export const PageHeader = ({ title, description, children }: PageHeaderProps) => (
+export const PageHeader = ({
+  title,
+  description,
+  children,
+}: PageHeaderProps) => (
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
     <div>
       <h1 className="text-2xl font-bold text-foreground">{title}</h1>
@@ -137,8 +141,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const buttonVariants = {
   primary: "bg-primary text-white hover:bg-primary-light",
   secondary: "bg-secondary text-primary-dark hover:bg-secondary-light",
-  outline:
-    "bg-white border border-border text-foreground hover:bg-gray-50",
+  outline: "bg-white border border-border text-foreground hover:bg-gray-50",
   ghost: "bg-transparent text-text-secondary hover:bg-gray-100",
   danger: "bg-error text-white hover:bg-red-600",
 };
@@ -169,11 +172,7 @@ export const Button = ({
     {...props}
   >
     {loading && (
-      <svg
-        className="animate-spin h-4 w-4"
-        viewBox="0 0 24 24"
-        fill="none"
-      >
+      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
         <circle
           cx="12"
           cy="12"

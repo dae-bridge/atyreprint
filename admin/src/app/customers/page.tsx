@@ -1,8 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Search, Eye, X, Package, Mail, Phone, MapPin } from "lucide-react";
-import { PageHeader, Card, CardBody, Badge, Button, EmptyState } from "@/components/ui";
+import {
+  Users,
+  Search,
+  Eye,
+  X,
+  Package,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import {
+  PageHeader,
+  Card,
+  CardBody,
+  Badge,
+  Button,
+  EmptyState,
+} from "@/components/ui";
 import { DataTable, type Column } from "@/components/ui/DataTable";
 import { queryDocuments, updateDocument } from "@/lib/firestore";
 import { formatMoney, formatDate, timeAgo } from "@/lib/utils";
@@ -37,7 +53,11 @@ export default function CustomersPage() {
 
   const toggleBlock = async (c: Customer) => {
     const newStatus = c.status === "blocked" ? "active" : "blocked";
-    if (newStatus === "blocked" && !confirm(`Block ${c.displayName || c.email}?`)) return;
+    if (
+      newStatus === "blocked" &&
+      !confirm(`Block ${c.displayName || c.email}?`)
+    )
+      return;
     try {
       await updateDocument(COLLECTIONS.CUSTOMERS, c.id, { status: newStatus });
       loadCustomers();
@@ -79,7 +99,9 @@ export default function CustomersPage() {
             <p className="font-medium text-[var(--text-primary)] truncate">
               {c.displayName || "—"}
             </p>
-            <p className="text-xs text-[var(--text-muted)] truncate">{c.email}</p>
+            <p className="text-xs text-[var(--text-muted)] truncate">
+              {c.email}
+            </p>
           </div>
         </div>
       ),
@@ -87,15 +109,15 @@ export default function CustomersPage() {
     {
       key: "orders",
       label: "Orders",
-      render: (c) => (
-        <span className="font-medium">{c.orderCount}</span>
-      ),
+      render: (c) => <span className="font-medium">{c.orderCount}</span>,
     },
     {
       key: "spent",
       label: "Total Spent",
       render: (c) => (
-        <span className="font-medium">{formatMoney(c.totalSpent?.amount ?? 0)}</span>
+        <span className="font-medium">
+          {formatMoney(c.totalSpent?.amount ?? 0)}
+        </span>
       ),
     },
     {
@@ -120,7 +142,9 @@ export default function CustomersPage() {
       key: "joined",
       label: "Joined",
       render: (c) => (
-        <span className="text-sm text-[var(--text-muted)]">{timeAgo(c.createdAt)}</span>
+        <span className="text-sm text-[var(--text-muted)]">
+          {timeAgo(c.createdAt)}
+        </span>
       ),
     },
     {
@@ -129,7 +153,10 @@ export default function CustomersPage() {
       className: "w-12",
       render: (c) => (
         <button
-          onClick={(e) => { e.stopPropagation(); setSelected(c); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelected(c);
+          }}
           className="p-1.5 rounded hover:bg-gray-100 text-[var(--text-muted)]"
         >
           <Eye size={14} />
@@ -140,7 +167,10 @@ export default function CustomersPage() {
 
   return (
     <>
-      <PageHeader title="Customers" description="View customer accounts and order history." />
+      <PageHeader
+        title="Customers"
+        description="View customer accounts and order history."
+      />
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className={selected ? "lg:col-span-2" : "lg:col-span-3"}>
@@ -208,14 +238,18 @@ export default function CustomersPage() {
                   />
                 ) : (
                   <div className="w-14 h-14 rounded-full bg-[var(--primary)] text-white flex items-center justify-center text-lg font-medium">
-                    {(selected.displayName || selected.email).charAt(0).toUpperCase()}
+                    {(selected.displayName || selected.email)
+                      .charAt(0)
+                      .toUpperCase()}
                   </div>
                 )}
                 <div>
                   <p className="font-semibold text-[var(--text-primary)]">
                     {selected.displayName || "No name"}
                   </p>
-                  <Badge variant={selected.status === "active" ? "success" : "error"}>
+                  <Badge
+                    variant={selected.status === "active" ? "success" : "error"}
+                  >
                     {selected.status}
                   </Badge>
                 </div>
@@ -241,32 +275,59 @@ export default function CustomersPage() {
               </div>
 
               {/* Addresses */}
-              {(selected.defaultShippingAddress || selected.defaultBillingAddress) && (
+              {(selected.defaultShippingAddress ||
+                selected.defaultBillingAddress) && (
                 <div className="space-y-2">
                   <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                     Addresses
                   </h3>
                   {selected.defaultShippingAddress && (
                     <div className="flex items-start gap-2 text-sm bg-gray-50 rounded-lg p-3">
-                      <MapPin size={14} className="text-[var(--text-muted)] mt-0.5 shrink-0" />
+                      <MapPin
+                        size={14}
+                        className="text-[var(--text-muted)] mt-0.5 shrink-0"
+                      />
                       <div>
-                        <p className="text-xs font-medium text-[var(--text-muted)] mb-1">Shipping</p>
+                        <p className="text-xs font-medium text-[var(--text-muted)] mb-1">
+                          Shipping
+                        </p>
                         <p>{selected.defaultShippingAddress.line1}</p>
-                        {selected.defaultShippingAddress.line2 && <p>{selected.defaultShippingAddress.line2}</p>}
-                        <p>{selected.defaultShippingAddress.city}, {selected.defaultShippingAddress.county} {selected.defaultShippingAddress.postcode}</p>
-                        <p className="text-[var(--text-muted)]">{selected.defaultShippingAddress.country}</p>
+                        {selected.defaultShippingAddress.line2 && (
+                          <p>{selected.defaultShippingAddress.line2}</p>
+                        )}
+                        <p>
+                          {selected.defaultShippingAddress.city},{" "}
+                          {selected.defaultShippingAddress.county}{" "}
+                          {selected.defaultShippingAddress.postcode}
+                        </p>
+                        <p className="text-[var(--text-muted)]">
+                          {selected.defaultShippingAddress.country}
+                        </p>
                       </div>
                     </div>
                   )}
                   {selected.defaultBillingAddress && (
                     <div className="flex items-start gap-2 text-sm bg-gray-50 rounded-lg p-3">
-                      <MapPin size={14} className="text-[var(--text-muted)] mt-0.5 shrink-0" />
+                      <MapPin
+                        size={14}
+                        className="text-[var(--text-muted)] mt-0.5 shrink-0"
+                      />
                       <div>
-                        <p className="text-xs font-medium text-[var(--text-muted)] mb-1">Billing</p>
+                        <p className="text-xs font-medium text-[var(--text-muted)] mb-1">
+                          Billing
+                        </p>
                         <p>{selected.defaultBillingAddress.line1}</p>
-                        {selected.defaultBillingAddress.line2 && <p>{selected.defaultBillingAddress.line2}</p>}
-                        <p>{selected.defaultBillingAddress.city}, {selected.defaultBillingAddress.county} {selected.defaultBillingAddress.postcode}</p>
-                        <p className="text-[var(--text-muted)]">{selected.defaultBillingAddress.country}</p>
+                        {selected.defaultBillingAddress.line2 && (
+                          <p>{selected.defaultBillingAddress.line2}</p>
+                        )}
+                        <p>
+                          {selected.defaultBillingAddress.city},{" "}
+                          {selected.defaultBillingAddress.county}{" "}
+                          {selected.defaultBillingAddress.postcode}
+                        </p>
+                        <p className="text-[var(--text-muted)]">
+                          {selected.defaultBillingAddress.country}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -280,14 +341,18 @@ export default function CustomersPage() {
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
-                    <p className="text-xl font-bold text-[var(--primary)]">{selected.orderCount}</p>
+                    <p className="text-xl font-bold text-[var(--primary)]">
+                      {selected.orderCount}
+                    </p>
                     <p className="text-xs text-[var(--text-muted)]">Orders</p>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
                     <p className="text-xl font-bold text-[var(--primary)]">
                       {formatMoney(selected.totalSpent?.amount ?? 0)}
                     </p>
-                    <p className="text-xs text-[var(--text-muted)]">Total Spent</p>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      Total Spent
+                    </p>
                   </div>
                 </div>
                 {selected.lastOrderAt && (
@@ -305,7 +370,9 @@ export default function CustomersPage() {
                   </h3>
                   <div className="flex flex-wrap gap-1.5">
                     {selected.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">{tag}</Badge>
+                      <Badge key={tag} variant="secondary">
+                        {tag}
+                      </Badge>
                     ))}
                   </div>
                 </div>
@@ -313,18 +380,27 @@ export default function CustomersPage() {
 
               {/* Meta */}
               <div className="space-y-1 text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border)]">
-                <p>Newsletter: {selected.newsletterSubscribed ? "Subscribed" : "Not subscribed"}</p>
+                <p>
+                  Newsletter:{" "}
+                  {selected.newsletterSubscribed
+                    ? "Subscribed"
+                    : "Not subscribed"}
+                </p>
                 <p>Joined: {formatDate(selected.createdAt)}</p>
               </div>
 
               {/* Actions */}
               <div className="pt-2">
                 <Button
-                  variant={selected.status === "blocked" ? "primary" : "outline"}
+                  variant={
+                    selected.status === "blocked" ? "primary" : "outline"
+                  }
                   onClick={() => toggleBlock(selected)}
                   className="w-full"
                 >
-                  {selected.status === "blocked" ? "Unblock Customer" : "Block Customer"}
+                  {selected.status === "blocked"
+                    ? "Unblock Customer"
+                    : "Block Customer"}
                 </Button>
               </div>
             </CardBody>

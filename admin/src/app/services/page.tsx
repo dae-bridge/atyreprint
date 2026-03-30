@@ -1,16 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Plus, Trash2, Pencil, Wrench, GripVertical, Save } from "lucide-react";
 import {
-  Plus,
-  Trash2,
-  Pencil,
-  Wrench,
-  GripVertical,
-  Save,
-} from "lucide-react";
-import { PageHeader, Card, CardBody, Badge, Button, EmptyState } from "@/components/ui";
-import { Input, Textarea, Select, ImageUpload } from "@/components/ui/FormFields";
+  PageHeader,
+  Card,
+  CardBody,
+  Badge,
+  Button,
+  EmptyState,
+} from "@/components/ui";
+import {
+  Input,
+  Textarea,
+  Select,
+  ImageUpload,
+} from "@/components/ui/FormFields";
 import {
   queryDocuments,
   createDocument,
@@ -98,7 +103,10 @@ export default function ServicesPage() {
         icon: formIcon,
         image: formImage,
         content: formContent,
-        features: formFeatures.split("\n").map((f) => f.trim()).filter(Boolean),
+        features: formFeatures
+          .split("\n")
+          .map((f) => f.trim())
+          .filter(Boolean),
         sortOrder: formSortOrder,
         status: formStatus as "draft" | "published" | "archived",
         seo: {
@@ -136,7 +144,10 @@ export default function ServicesPage() {
   };
 
   const handleImageUpload = async (file: File) => {
-    const { url, storagePath } = await uploadFile(file, `services/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `services/${Date.now()}-${file.name}`,
+    );
     setFormImage({ url, alt: formTitle || file.name, storagePath });
   };
 
@@ -148,8 +159,16 @@ export default function ServicesPage() {
 
   return (
     <>
-      <PageHeader title="Services" description="Manage service pages (printing, embroidery, etc).">
-        <Button onClick={() => { resetForm(); setShowForm(true); }}>
+      <PageHeader
+        title="Services"
+        description="Manage service pages (printing, embroidery, etc)."
+      >
+        <Button
+          onClick={() => {
+            resetForm();
+            setShowForm(true);
+          }}
+        >
           <Plus size={16} /> Add Service
         </Button>
       </PageHeader>
@@ -181,7 +200,10 @@ export default function ServicesPage() {
                 <Card key={s.id}>
                   <CardBody>
                     <div className="flex items-start gap-4">
-                      <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab mt-1" />
+                      <GripVertical
+                        size={14}
+                        className="text-[var(--text-muted)] cursor-grab mt-1"
+                      />
                       {s.image ? (
                         <img
                           src={s.image.url}
@@ -195,8 +217,12 @@ export default function ServicesPage() {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="font-medium text-[var(--foreground)]">{s.title}</p>
-                          <Badge variant={statusColors[s.status]}>{s.status}</Badge>
+                          <p className="font-medium text-[var(--foreground)]">
+                            {s.title}
+                          </p>
+                          <Badge variant={statusColors[s.status]}>
+                            {s.status}
+                          </Badge>
                         </div>
                         <p className="text-sm text-[var(--text-secondary)] line-clamp-2">
                           {s.shortDescription}
@@ -243,7 +269,13 @@ export default function ServicesPage() {
                   if (!editing) setFormSlug(slugify(e.target.value));
                 }}
               />
-              <Input label="Slug" value={formSlug} onChange={(e) => setFormSlug(e.target.value)} />
+              <Input
+                label="Slug"
+                value={formSlug}
+                disabled
+                onChange={() => {}}
+                hint="Auto-generated from title"
+              />
               <Textarea
                 label="Short Description"
                 value={formShortDescription}
@@ -293,10 +325,18 @@ export default function ServicesPage() {
                 ]}
               />
               <div className="flex gap-3 pt-2">
-                <Button onClick={handleSave} loading={saving} className="flex-1">
+                <Button
+                  onClick={handleSave}
+                  loading={saving}
+                  className="flex-1"
+                >
                   {editing ? "Update" : "Create"}
                 </Button>
-                <Button variant="outline" onClick={resetForm} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={resetForm}
+                  className="flex-1"
+                >
                   Cancel
                 </Button>
               </div>

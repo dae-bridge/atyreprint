@@ -25,6 +25,7 @@ import {
   Search,
   Menu,
 } from "lucide-react";
+import Image from "next/image";
 
 // ─── Sidebar context ─────────────────────────────────────────────────────
 
@@ -63,7 +64,11 @@ const navSections = [
     items: [
       { label: "Homepage", href: "/homepage", icon: Home },
       { label: "Blog Posts", href: "/blog", icon: Newspaper },
-      { label: "Testimonials", href: "/testimonials", icon: MessageSquareQuote },
+      {
+        label: "Testimonials",
+        href: "/testimonials",
+        icon: MessageSquareQuote,
+      },
       { label: "FAQs", href: "/faqs", icon: HelpCircle },
       { label: "Services", href: "/services", icon: Wrench },
       { label: "Pages", href: "/pages", icon: FileText },
@@ -99,8 +104,14 @@ const Sidebar = ({
     >
       {/* Logo */}
       <div className="flex items-center h-16 px-4 border-b border-white/10">
-        <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
-          <span className="text-primary-dark font-bold text-sm">A</span>
+        <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 bg-white/10">
+          <Image
+            src="/logo.png"
+            alt="AtyrePrint"
+            width={32}
+            height={32}
+            className="w-full h-full object-contain"
+          />
         </div>
         {!collapsed && (
           <div className="ml-3 overflow-hidden">
@@ -115,7 +126,7 @@ const Sidebar = ({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto py-4 px-2">
+      <nav className="flex-1 overflow-y-auto py-4 px-2 scrollbar-none">
         {navSections.map((section) => (
           <div key={section.label} className="mb-5">
             {!collapsed && (
@@ -213,9 +224,7 @@ const TopHeader = ({
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-medium text-foreground">Admin</p>
-            <p className="text-[11px] text-text-muted">
-              admin@atyreprint.com
-            </p>
+            <p className="text-[11px] text-text-muted">admin@atyreprint.com</p>
           </div>
         </div>
       </div>

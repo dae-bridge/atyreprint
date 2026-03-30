@@ -11,7 +11,14 @@ import {
   Package,
   User,
 } from "lucide-react";
-import { PageHeader, Card, CardHeader, CardBody, Badge, Button } from "@/components/ui";
+import {
+  PageHeader,
+  Card,
+  CardHeader,
+  CardBody,
+  Badge,
+  Button,
+} from "@/components/ui";
 import { Input, Textarea, Select } from "@/components/ui/FormFields";
 import { getDocument, updateDocument } from "@/lib/firestore";
 import { formatMoney, formatDate, timeAgo } from "@/lib/utils";
@@ -19,7 +26,10 @@ import type { Order, OrderStatus } from "@/types";
 import { COLLECTIONS } from "@/types";
 import { serverTimestamp, Timestamp } from "firebase/firestore";
 
-const statusColors: Record<OrderStatus, "success" | "warning" | "info" | "default" | "error"> = {
+const statusColors: Record<
+  OrderStatus,
+  "success" | "warning" | "info" | "default" | "error"
+> = {
   pending: "warning",
   confirmed: "info",
   processing: "info",
@@ -159,8 +169,12 @@ export default function OrderDetailPage() {
                     </p>
                     <div className="flex gap-3 text-xs text-[var(--text-muted)] mt-0.5">
                       <span>SKU: {item.sku}</span>
-                      {item.selectedColor && <span>Color: {item.selectedColor}</span>}
-                      {item.selectedSize && <span>Size: {item.selectedSize}</span>}
+                      {item.selectedColor && (
+                        <span>Color: {item.selectedColor}</span>
+                      )}
+                      {item.selectedSize && (
+                        <span>Size: {item.selectedSize}</span>
+                      )}
                     </div>
                   </div>
                   <div className="text-right">
@@ -186,7 +200,9 @@ export default function OrderDetailPage() {
               </div>
               {order.discount.amount > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
-                  <span>Discount {order.couponCode && `(${order.couponCode})`}</span>
+                  <span>
+                    Discount {order.couponCode && `(${order.couponCode})`}
+                  </span>
                   <span>-{formatMoney(order.discount.amount)}</span>
                 </div>
               )}
@@ -213,13 +229,17 @@ export default function OrderDetailPage() {
             </CardHeader>
             <CardBody>
               {order.statusHistory.length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">No status updates yet.</p>
+                <p className="text-sm text-[var(--text-muted)]">
+                  No status updates yet.
+                </p>
               ) : (
                 <div className="space-y-4">
                   {[...order.statusHistory].reverse().map((event, i) => (
                     <div key={i} className="flex gap-3">
                       <div className="flex flex-col items-center">
-                        <div className={`w-3 h-3 rounded-full ${i === 0 ? "bg-[var(--primary)]" : "bg-gray-300"}`} />
+                        <div
+                          className={`w-3 h-3 rounded-full ${i === 0 ? "bg-[var(--primary)]" : "bg-gray-300"}`}
+                        />
                         {i < order.statusHistory.length - 1 && (
                           <div className="w-px h-full bg-gray-200 mt-1" />
                         )}
@@ -264,7 +284,10 @@ export default function OrderDetailPage() {
                 label="New Status"
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
-                options={allStatuses.map((s) => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))}
+                options={allStatuses.map((s) => ({
+                  value: s,
+                  label: s.charAt(0).toUpperCase() + s.slice(1),
+                }))}
               />
               <Textarea
                 label="Note"
@@ -294,9 +317,13 @@ export default function OrderDetailPage() {
             </CardHeader>
             <CardBody className="space-y-2">
               <p className="font-medium">{order.customerName}</p>
-              <p className="text-sm text-[var(--text-secondary)]">{order.customerEmail}</p>
+              <p className="text-sm text-[var(--text-secondary)]">
+                {order.customerEmail}
+              </p>
               {order.customerPhone && (
-                <p className="text-sm text-[var(--text-secondary)]">{order.customerPhone}</p>
+                <p className="text-sm text-[var(--text-secondary)]">
+                  {order.customerPhone}
+                </p>
               )}
             </CardBody>
           </Card>
@@ -312,11 +339,20 @@ export default function OrderDetailPage() {
             <CardBody>
               <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
                 {order.shippingAddress.line1}
-                {order.shippingAddress.line2 && <><br />{order.shippingAddress.line2}</>}
-                <br />{order.shippingAddress.city}
-                {order.shippingAddress.county && `, ${order.shippingAddress.county}`}
-                <br />{order.shippingAddress.postcode}
-                <br />{order.shippingAddress.country}
+                {order.shippingAddress.line2 && (
+                  <>
+                    <br />
+                    {order.shippingAddress.line2}
+                  </>
+                )}
+                <br />
+                {order.shippingAddress.city}
+                {order.shippingAddress.county &&
+                  `, ${order.shippingAddress.county}`}
+                <br />
+                {order.shippingAddress.postcode}
+                <br />
+                {order.shippingAddress.country}
               </p>
             </CardBody>
           </Card>
@@ -332,7 +368,11 @@ export default function OrderDetailPage() {
             <CardBody className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--text-secondary)]">Status</span>
-                <Badge variant={order.paymentStatus === "paid" ? "success" : "warning"}>
+                <Badge
+                  variant={
+                    order.paymentStatus === "paid" ? "success" : "warning"
+                  }
+                >
                   {order.paymentStatus}
                 </Badge>
               </div>

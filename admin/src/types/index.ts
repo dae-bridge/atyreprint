@@ -104,6 +104,7 @@ export interface Product extends BaseDocument, SoftDeletable {
   badge: string | null; // "New", "Popular", "Hot", "Sale"
   buttonLabel: string; // "Add to Cart", "Customise", etc.
   featured: boolean;
+  customisable: boolean; // Allows customers to use the product designer
   sortOrder: number;
 
   /** Stats (denormalized for fast reads) */

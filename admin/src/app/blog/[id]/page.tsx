@@ -5,8 +5,19 @@ import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Save, Trash2 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { PageHeader, Card, CardBody, Button } from "@/components/ui";
-import { Input, Textarea, Select, Toggle, ImageUpload } from "@/components/ui/FormFields";
-import { getDocument, createDocument, updateDocument, softDeleteDocument } from "@/lib/firestore";
+import {
+  Input,
+  Textarea,
+  Select,
+  Toggle,
+  ImageUpload,
+} from "@/components/ui/FormFields";
+import {
+  getDocument,
+  createDocument,
+  updateDocument,
+  softDeleteDocument,
+} from "@/lib/firestore";
 import { uploadFile } from "@/lib/storage";
 import { slugify } from "@/lib/utils";
 import type { BlogPost, ImageAsset, PublishStatus } from "@/types";
@@ -97,7 +108,10 @@ export default function BlogFormPage() {
   };
 
   const handleCoverUpload = async (file: File) => {
-    const { url, storagePath } = await uploadFile(file, `blog/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `blog/${Date.now()}-${file.name}`,
+    );
     setCoverImage({ url, alt: file.name, storagePath });
   };
 
@@ -111,7 +125,10 @@ export default function BlogFormPage() {
         content: data.content,
         coverImage: coverImage ?? { url: "", alt: "" },
         author: data.author,
-        tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),
+        tags: data.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
         featured: data.featured,
         publishedAt: data.status === "published" ? Timestamp.now() : null,
         status: data.status,
@@ -157,7 +174,9 @@ export default function BlogFormPage() {
     <>
       <PageHeader
         title={isEditing ? "Edit Blog Post" : "New Blog Post"}
-        description={isEditing ? "Update your blog post." : "Write a new article."}
+        description={
+          isEditing ? "Update your blog post." : "Write a new article."
+        }
       >
         <Button variant="ghost" onClick={() => router.push("/blog")}>
           <ArrowLeft size={16} /> Back
@@ -178,10 +197,28 @@ export default function BlogFormPage() {
             <h2 className="text-base font-semibold">Post Details</h2>
           </div>
           <CardBody className="space-y-4">
-            <Input label="Title" {...register("title", { required: "Title is required" })} error={errors.title?.message} />
-            <Input label="Slug" {...register("slug")} hint="Auto-generated from title" />
-            <Input label="Author" {...register("author", { required: "Author is required" })} error={errors.author?.message} />
-            <Textarea label="Excerpt" {...register("excerpt")} rows={2} hint="Short summary for cards" />
+            <Input
+              label="Title"
+              {...register("title", { required: "Title is required" })}
+              error={errors.title?.message}
+            />
+            <Input
+              label="Slug"
+              {...register("slug")}
+              disabled
+              hint="Auto-generated from title"
+            />
+            <Input
+              label="Author"
+              {...register("author", { required: "Author is required" })}
+              error={errors.author?.message}
+            />
+            <Textarea
+              label="Excerpt"
+              {...register("excerpt")}
+              rows={2}
+              hint="Short summary for cards"
+            />
             <Input label="Tags" {...register("tags")} hint="Comma separated" />
           </CardBody>
         </Card>
@@ -248,7 +285,11 @@ export default function BlogFormPage() {
           </div>
           <CardBody className="space-y-4">
             <Input label="Meta Title" {...register("seoMetaTitle")} />
-            <Textarea label="Meta Description" {...register("seoMetaDescription")} rows={2} />
+            <Textarea
+              label="Meta Description"
+              {...register("seoMetaDescription")}
+              rows={2}
+            />
             <Input label="OG Image URL" {...register("seoOgImage")} />
           </CardBody>
         </Card>

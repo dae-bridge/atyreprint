@@ -9,7 +9,14 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import Link from "next/link";
-import { PageHeader, StatCard, Card, CardHeader, CardBody, Badge } from "@/components/ui";
+import {
+  PageHeader,
+  StatCard,
+  Card,
+  CardHeader,
+  CardBody,
+  Badge,
+} from "@/components/ui";
 import { formatMoney, timeAgo } from "@/lib/utils";
 
 /* Placeholder data — will be replaced with Firestore reads */
@@ -77,7 +84,10 @@ const recentOrders = [
   },
 ];
 
-const statusColors: Record<string, "success" | "warning" | "info" | "default" | "error"> = {
+const statusColors: Record<
+  string,
+  "success" | "warning" | "info" | "default" | "error"
+> = {
   pending: "warning",
   confirmed: "info",
   processing: "info",
@@ -187,7 +197,9 @@ export default function DashboardPage() {
               <h2 className="text-base font-semibold text-[var(--foreground)]">
                 Top Products
               </h2>
-              <p className="text-xs text-[var(--text-muted)] mt-0.5">By units sold</p>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                By units sold
+              </p>
             </div>
             <TrendingUp size={18} className="text-[var(--text-muted)]" />
           </CardHeader>

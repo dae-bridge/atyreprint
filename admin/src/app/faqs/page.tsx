@@ -358,7 +358,7 @@ export default function FAQPage() {
                     if (!editingCat) setCatSlug(slugify(e.target.value));
                   }}
                 />
-                <Input label="Slug" value={catSlug} onChange={(e) => setCatSlug(e.target.value)} />
+                <Input label="Slug" value={catSlug} disabled onChange={() => {}} hint="Auto-generated from name" />
                 <Input
                   label="Sort Order"
                   type="number"

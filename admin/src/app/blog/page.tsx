@@ -91,7 +91,9 @@ export default function BlogPage() {
       render: (p) => (
         <div className="flex gap-1 flex-wrap">
           {p.tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="default">{tag}</Badge>
+            <Badge key={tag} variant="default">
+              {tag}
+            </Badge>
           ))}
           {p.tags.length > 3 && (
             <span className="text-xs text-[var(--text-muted)]">
@@ -104,9 +106,7 @@ export default function BlogPage() {
     {
       key: "status",
       label: "Status",
-      render: (p) => (
-        <Badge variant={statusColors[p.status]}>{p.status}</Badge>
-      ),
+      render: (p) => <Badge variant={statusColors[p.status]}>{p.status}</Badge>,
     },
     {
       key: "date",

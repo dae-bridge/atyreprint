@@ -1,0 +1,156 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════════════════════════════
+    // DEVELOPMENT RULES
+    // ═══════════════════════════════════════════════════════════════════
+    // TODO: Once Firebase Auth is integrated into the admin dashboard,
+    //       replace `if true` write rules with `if isAdmin()` checks.
+    //       The helper functions below are kept ready for that switch.
+    // ═══════════════════════════════════════════════════════════════════
+
+    // ─── Helper Functions (ready for production) ─────────────────────
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuth() && request.auth.token.admin == true;
+    }
+
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Products — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if true; // TODO: if isAdmin()
+
+      // Product reviews subcollection
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if true; // TODO: if isAuth()
+        allow update, delete: if true; // TODO: if isAdmin()
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Categories — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Orders — Public read for web (own orders), full CRUD for admin
+    // ═══════════════════════════════════════════════════════════════════
+    match /orders/{orderId} {
+      allow read: if true; // TODO: if isAdmin() || (isAuth() && resource.data.customerId == request.auth.uid)
+      allow create: if true; // TODO: if isAuth()
+      allow update, delete: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Customers — Own profile or admin
+    // ═══════════════════════════════════════════════════════════════════
+    match /customers/{customerId} {
+      allow read: if true; // TODO: if isAdmin() || isOwner(customerId)
+      allow create, update: if true; // TODO: if isAdmin() || isOwner(customerId)
+      allow delete: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Testimonials — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Blog Posts — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /blog-posts/{postId} {
+      allow read: if true;
+      allow write: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // FAQ Categories + Items subcollection — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /faq-categories/{faqId} {
+      allow read: if true;
+      allow write: if true; // TODO: if isAdmin()
+
+      // FAQ items subcollection
+      match /items/{itemId} {
+        allow read: if true;
+        allow write: if true; // TODO: if isAdmin()
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Services — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Coupons — Public read (for code validation), admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /coupons/{couponId} {
+      allow read: if true; // TODO: if isAdmin() (web validates via Cloud Function)
+      allow write: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Newsletter Subscribers — Public create, admin manage
+    // ═══════════════════════════════════════════════════════════════════
+    match /newsletter-subscribers/{subId} {
+      allow read: if true; // TODO: if isAdmin()
+      allow create: if true;
+      allow update, delete: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Saved Designs — Owner or admin
+    // ═══════════════════════════════════════════════════════════════════
+    match /designs/{designId} {
+      allow read: if true; // TODO: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid)
+      allow create: if true; // TODO: if isAuth()
+      allow update, delete: if true; // TODO: if isAdmin() || owner
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CMS (homepage, banners, etc.) — Public read, admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /cms/{docId} {
+      allow read: if true;
+      allow write: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Settings — Public read (for site config), admin write
+    // ═══════════════════════════════════════════════════════════════════
+    match /settings/{docId} {
+      allow read: if true; // TODO: if isAdmin()
+      allow write: if true; // TODO: if isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Deny all other access by default
+    // ═══════════════════════════════════════════════════════════════════
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

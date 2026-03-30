@@ -31,9 +31,7 @@ export function formatDate(
 }
 
 /** Timestamp or Date → relative time "2 hours ago" */
-export function timeAgo(
-  date: { toDate?: () => Date } | Date | string,
-): string {
+export function timeAgo(date: { toDate?: () => Date } | Date | string): string {
   const d =
     typeof date === "string"
       ? new Date(date)

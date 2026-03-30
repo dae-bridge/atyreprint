@@ -1,7 +1,33 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
+import { InfoTooltip } from "./InfoTooltip";
+import { ImageCropDialog } from "./ImageCropDialog";
+import { compressImage } from "@/lib/imageUtils";
+
+// ─── Label Helper ────────────────────────────────────────────────────────
+
+const FieldLabel = ({
+  htmlFor,
+  label,
+  tooltip,
+  required,
+}: {
+  htmlFor?: string;
+  label: string;
+  tooltip?: string;
+  required?: boolean;
+}) => (
+  <label
+    htmlFor={htmlFor}
+    className="flex items-center gap-1.5 text-sm font-medium text-foreground"
+  >
+    {label}
+    {required && <span className="text-error">*</span>}
+    {tooltip && <InfoTooltip text={tooltip} position="right" />}
+  </label>
+);
 
 // ─── Input ───────────────────────────────────────────────────────────────
 
@@ -9,20 +35,21 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   hint?: string;
+  tooltip?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, hint, className, id, ...props }, ref) => {
+  ({ label, error, hint, tooltip, className, id, required, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
     return (
       <div className="space-y-1.5">
         {label && (
-          <label
+          <FieldLabel
             htmlFor={inputId}
-            className="block text-sm font-medium text-foreground"
-          >
-            {label}
-          </label>
+            label={label}
+            tooltip={tooltip}
+            required={required}
+          />
         )}
         <input
           ref={ref}
@@ -32,14 +59,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             error
               ? "border-error focus:ring-error/20 focus:border-error"
               : "border-border",
+            props.disabled && "bg-gray-50 text-text-muted cursor-not-allowed",
             className,
           )}
           {...props}
         />
         {error && <p className="text-xs text-error">{error}</p>}
-        {hint && !error && (
-          <p className="text-xs text-text-muted">{hint}</p>
-        )}
+        {hint && !error && <p className="text-xs text-text-muted">{hint}</p>}
       </div>
     );
   },
@@ -48,25 +74,25 @@ Input.displayName = "Input";
 
 // ─── Textarea ────────────────────────────────────────────────────────────
 
-interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
   hint?: string;
+  tooltip?: string;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, hint, className, id, ...props }, ref) => {
+  ({ label, error, hint, tooltip, className, id, required, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
     return (
       <div className="space-y-1.5">
         {label && (
-          <label
+          <FieldLabel
             htmlFor={inputId}
-            className="block text-sm font-medium text-foreground"
-          >
-            {label}
-          </label>
+            label={label}
+            tooltip={tooltip}
+            required={required}
+          />
         )}
         <textarea
           ref={ref}
@@ -80,9 +106,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           )}
           {...props}
         />
-        {hint && !error && (
-          <p className="text-xs text-text-muted">{hint}</p>
-        )}
+        {hint && !error && <p className="text-xs text-text-muted">{hint}</p>}
         {error && <p className="text-xs text-error">{error}</p>}
       </div>
     );
@@ -95,22 +119,36 @@ Textarea.displayName = "Textarea";
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
+  tooltip?: string;
   options: { value: string; label: string }[];
   placeholder?: string;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, error, options, placeholder, className, id, ...props }, ref) => {
+  (
+    {
+      label,
+      error,
+      tooltip,
+      options,
+      placeholder,
+      className,
+      id,
+      required,
+      ...props
+    },
+    ref,
+  ) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
     return (
       <div className="space-y-1.5">
         {label && (
-          <label
+          <FieldLabel
             htmlFor={inputId}
-            className="block text-sm font-medium text-foreground"
-          >
-            {label}
-          </label>
+            label={label}
+            tooltip={tooltip}
+            required={required}
+          />
         )}
         <select
           ref={ref}
@@ -188,58 +226,97 @@ export const Toggle = ({
 
 interface ImageUploadProps {
   label?: string;
+  tooltip?: string;
   value?: string;
   onChange: (file: File) => void;
   onRemove?: () => void;
+  /** Aspect ratio for crop (width/height). Null = free crop */
+  cropAspectRatio?: number | null;
+  /** Enable crop dialog. Default: true */
+  enableCrop?: boolean;
   className?: string;
 }
 
 export const ImageUpload = ({
   label,
+  tooltip,
   value,
   onChange,
   onRemove,
+  cropAspectRatio = null,
+  enableCrop = true,
   className,
-}: ImageUploadProps) => (
-  <div className={cn("space-y-1.5", className)}>
-    {label && (
-      <label className="block text-sm font-medium text-foreground">
-        {label}
-      </label>
-    )}
-    {value ? (
-      <div className="relative group w-full aspect-video rounded-lg overflow-hidden border border-border">
-        <img
-          src={value}
-          alt="Upload preview"
-          className="w-full h-full object-cover"
-        />
-        {onRemove && (
-          <button
-            type="button"
-            onClick={onRemove}
-            className="absolute top-2 right-2 bg-error text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            Remove
-          </button>
-        )}
-      </div>
-    ) : (
-      <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary/40 transition-colors">
-        <div className="text-center p-4">
-          <p className="text-sm text-text-secondary">Click to upload</p>
-          <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
+}: ImageUploadProps) => {
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [showCrop, setShowCrop] = useState(false);
+
+  const handleFileSelect = (file: File) => {
+    if (enableCrop) {
+      setPendingFile(file);
+      setShowCrop(true);
+    } else {
+      processAndUpload(file);
+    }
+  };
+
+  const processAndUpload = async (file: File) => {
+    const compressed = await compressImage(file);
+    onChange(compressed);
+  };
+
+  const handleCropped = (croppedFile: File) => {
+    processAndUpload(croppedFile);
+    setPendingFile(null);
+  };
+
+  return (
+    <div className={cn("space-y-1.5", className)}>
+      {label && (
+        <FieldLabel label={label} tooltip={tooltip} />
+      )}
+      {value ? (
+        <div className="relative group w-full aspect-video rounded-lg overflow-hidden border border-border">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={value}
+            alt="Upload preview"
+            className="w-full h-full object-cover"
+          />
+          {onRemove && (
+            <button
+              type="button"
+              onClick={onRemove}
+              className="absolute top-2 right-2 bg-error text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              Remove
+            </button>
+          )}
         </div>
-        <input
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) onChange(file);
-          }}
-        />
-      </label>
-    )}
-  </div>
-);
+      ) : (
+        <label className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-primary/40 transition-colors">
+          <div className="text-center p-4">
+            <p className="text-sm text-text-secondary">Click to upload</p>
+            <p className="text-xs text-text-muted">PNG, JPG up to 5MB</p>
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFileSelect(file);
+            }}
+          />
+        </label>
+      )}
+
+      <ImageCropDialog
+        open={showCrop}
+        onClose={() => { setShowCrop(false); setPendingFile(null); }}
+        imageFile={pendingFile}
+        aspectRatio={cropAspectRatio}
+        onCrop={handleCropped}
+      />
+    </div>
+  );
+};

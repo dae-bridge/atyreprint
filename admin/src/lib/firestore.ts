@@ -151,10 +151,7 @@ export async function getAllDocuments<T extends BaseDocument>(
   sortField: string = "createdAt",
   sortDir: "asc" | "desc" = "desc",
 ): Promise<T[]> {
-  const q = query(
-    collection(db, collectionName),
-    orderBy(sortField, sortDir),
-  );
+  const q = query(collection(db, collectionName), orderBy(sortField, sortDir));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as T);
 }

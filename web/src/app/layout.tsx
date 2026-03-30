@@ -57,21 +57,12 @@ export const metadata: Metadata = {
     title: "AtyrePrint | Custom Clothing & Gifts that Speak for You",
     description:
       "Premium print-on-demand and embroidery services. Custom t-shirts, hoodies, mugs, tote bags & more. Serving the UK, Africa & Europe.",
-    images: [
-      {
-        url: "/images/og/og-default.jpg",
-        width: 1200,
-        height: 630,
-        alt: "AtyrePrint - Custom Clothing & Gifts",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AtyrePrint | Custom Clothing & Gifts that Speak for You",
     description:
       "Premium print-on-demand and embroidery services. Custom t-shirts, hoodies, mugs, tote bags & more.",
-    images: ["/images/og/og-default.jpg"],
   },
   robots: {
     index: true,
@@ -85,8 +76,18 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/images/icons/atyreprint-logo.png",
-    apple: "/images/icons/atyreprint-logo.png",
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
 
@@ -96,10 +97,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${jost.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${jost.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>

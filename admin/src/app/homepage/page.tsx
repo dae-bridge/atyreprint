@@ -12,8 +12,20 @@ import {
   Award,
   Megaphone,
 } from "lucide-react";
-import { PageHeader, Card, CardHeader, CardBody, Badge, Button } from "@/components/ui";
-import { Input, Textarea, Toggle, ImageUpload } from "@/components/ui/FormFields";
+import {
+  PageHeader,
+  Card,
+  CardHeader,
+  CardBody,
+  Badge,
+  Button,
+} from "@/components/ui";
+import {
+  Input,
+  Textarea,
+  Toggle,
+  ImageUpload,
+} from "@/components/ui/FormFields";
 import { getSingleton, setSingleton } from "@/lib/firestore";
 import { uploadFile, deleteFile } from "@/lib/storage";
 import type {
@@ -120,7 +132,10 @@ export default function HomepageCMSPage() {
   };
 
   const handleSlideImageUpload = async (index: number, file: File) => {
-    const { url, storagePath } = await uploadFile(file, `cms/hero/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `cms/hero/${Date.now()}-${file.name}`,
+    );
     updateHeroSlide(index, { image: { url, alt: file.name, storagePath } });
   };
 
@@ -138,7 +153,10 @@ export default function HomepageCMSPage() {
     ]);
   };
 
-  const updateFeatureBadge = (index: number, updates: Partial<FeatureBadge>) => {
+  const updateFeatureBadge = (
+    index: number,
+    updates: Partial<FeatureBadge>,
+  ) => {
     setFeatureBadges((prev) =>
       prev.map((b, i) => (i === index ? { ...b, ...updates } : b)),
     );
@@ -178,7 +196,10 @@ export default function HomepageCMSPage() {
   };
 
   const handleBannerImageUpload = async (index: number, file: File) => {
-    const { url, storagePath } = await uploadFile(file, `cms/promos/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `cms/promos/${Date.now()}-${file.name}`,
+    );
     updatePromoBanner(index, { image: { url, alt: file.name, storagePath } });
   };
 
@@ -226,7 +247,10 @@ export default function HomepageCMSPage() {
   };
 
   const handleLogoUpload = async (index: number, file: File) => {
-    const { url, storagePath } = await uploadFile(file, `cms/brands/${Date.now()}-${file.name}`);
+    const { url, storagePath } = await uploadFile(
+      file,
+      `cms/brands/${Date.now()}-${file.name}`,
+    );
     updateBrandLogo(index, { logo: { url, alt: file.name, storagePath } });
   };
 
@@ -275,7 +299,10 @@ export default function HomepageCMSPage() {
             <Card key={slide.id}>
               <div className="px-6 py-3 border-b border-[var(--border)] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab" />
+                  <GripVertical
+                    size={14}
+                    className="text-[var(--text-muted)] cursor-grab"
+                  />
                   <span className="text-sm font-semibold">Slide {i + 1}</span>
                   {slide.active && <Badge variant="success">Active</Badge>}
                 </div>
@@ -306,36 +333,49 @@ export default function HomepageCMSPage() {
                   <Input
                     label="Overline"
                     value={slide.overline}
-                    onChange={(e) => updateHeroSlide(i, { overline: e.target.value })}
+                    onChange={(e) =>
+                      updateHeroSlide(i, { overline: e.target.value })
+                    }
                     placeholder="e.g. Premium Quality"
                   />
                   <Input
                     label="Highlight"
                     value={slide.highlight}
-                    onChange={(e) => updateHeroSlide(i, { highlight: e.target.value })}
+                    onChange={(e) =>
+                      updateHeroSlide(i, { highlight: e.target.value })
+                    }
                     placeholder="e.g. Custom Printing"
                   />
                 </div>
                 <Input
                   label="Title"
                   value={slide.title}
-                  onChange={(e) => updateHeroSlide(i, { title: e.target.value })}
+                  onChange={(e) =>
+                    updateHeroSlide(i, { title: e.target.value })
+                  }
                 />
                 <Textarea
                   label="Description"
                   value={slide.description}
-                  onChange={(e) => updateHeroSlide(i, { description: e.target.value })}
+                  onChange={(e) =>
+                    updateHeroSlide(i, { description: e.target.value })
+                  }
                   rows={2}
                 />
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-3">
-                    <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Primary CTA</p>
+                    <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                      Primary CTA
+                    </p>
                     <Input
                       label="Label"
                       value={slide.primaryCta.label}
                       onChange={(e) =>
                         updateHeroSlide(i, {
-                          primaryCta: { ...slide.primaryCta, label: e.target.value },
+                          primaryCta: {
+                            ...slide.primaryCta,
+                            label: e.target.value,
+                          },
                         })
                       }
                     />
@@ -344,19 +384,27 @@ export default function HomepageCMSPage() {
                       value={slide.primaryCta.href}
                       onChange={(e) =>
                         updateHeroSlide(i, {
-                          primaryCta: { ...slide.primaryCta, href: e.target.value },
+                          primaryCta: {
+                            ...slide.primaryCta,
+                            href: e.target.value,
+                          },
                         })
                       }
                     />
                   </div>
                   <div className="space-y-3">
-                    <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Secondary CTA</p>
+                    <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase">
+                      Secondary CTA
+                    </p>
                     <Input
                       label="Label"
                       value={slide.secondaryCta.label}
                       onChange={(e) =>
                         updateHeroSlide(i, {
-                          secondaryCta: { ...slide.secondaryCta, label: e.target.value },
+                          secondaryCta: {
+                            ...slide.secondaryCta,
+                            label: e.target.value,
+                          },
                         })
                       }
                     />
@@ -365,7 +413,10 @@ export default function HomepageCMSPage() {
                       value={slide.secondaryCta.href}
                       onChange={(e) =>
                         updateHeroSlide(i, {
-                          secondaryCta: { ...slide.secondaryCta, href: e.target.value },
+                          secondaryCta: {
+                            ...slide.secondaryCta,
+                            href: e.target.value,
+                          },
                         })
                       }
                     />
@@ -387,23 +438,32 @@ export default function HomepageCMSPage() {
             <Card key={badge.id}>
               <CardBody>
                 <div className="flex items-start gap-4">
-                  <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab mt-3" />
+                  <GripVertical
+                    size={14}
+                    className="text-[var(--text-muted)] cursor-grab mt-3"
+                  />
                   <div className="flex-1 grid md:grid-cols-3 gap-4">
                     <Input
                       label="Icon"
                       value={badge.icon}
-                      onChange={(e) => updateFeatureBadge(i, { icon: e.target.value })}
+                      onChange={(e) =>
+                        updateFeatureBadge(i, { icon: e.target.value })
+                      }
                       hint="Lucide icon name"
                     />
                     <Input
                       label="Title"
                       value={badge.title}
-                      onChange={(e) => updateFeatureBadge(i, { title: e.target.value })}
+                      onChange={(e) =>
+                        updateFeatureBadge(i, { title: e.target.value })
+                      }
                     />
                     <Input
                       label="Description"
                       value={badge.description}
-                      onChange={(e) => updateFeatureBadge(i, { description: e.target.value })}
+                      onChange={(e) =>
+                        updateFeatureBadge(i, { description: e.target.value })
+                      }
                     />
                   </div>
                   <button
@@ -416,7 +476,11 @@ export default function HomepageCMSPage() {
               </CardBody>
             </Card>
           ))}
-          <Button variant="outline" onClick={addFeatureBadge} className="w-full">
+          <Button
+            variant="outline"
+            onClick={addFeatureBadge}
+            className="w-full"
+          >
             <Plus size={16} /> Add Feature Badge
           </Button>
         </div>
@@ -429,7 +493,10 @@ export default function HomepageCMSPage() {
             <Card key={banner.id}>
               <div className="px-6 py-3 border-b border-[var(--border)] flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab" />
+                  <GripVertical
+                    size={14}
+                    className="text-[var(--text-muted)] cursor-grab"
+                  />
                   <span className="text-sm font-semibold">Banner {i + 1}</span>
                   {banner.active && <Badge variant="success">Active</Badge>}
                 </div>
@@ -459,31 +526,41 @@ export default function HomepageCMSPage() {
                 <Input
                   label="Overline"
                   value={banner.overline}
-                  onChange={(e) => updatePromoBanner(i, { overline: e.target.value })}
+                  onChange={(e) =>
+                    updatePromoBanner(i, { overline: e.target.value })
+                  }
                 />
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
                     label="Title Line 1"
                     value={banner.title}
-                    onChange={(e) => updatePromoBanner(i, { title: e.target.value })}
+                    onChange={(e) =>
+                      updatePromoBanner(i, { title: e.target.value })
+                    }
                   />
                   <Input
                     label="Title Line 2"
                     value={banner.titleLine2}
-                    onChange={(e) => updatePromoBanner(i, { titleLine2: e.target.value })}
+                    onChange={(e) =>
+                      updatePromoBanner(i, { titleLine2: e.target.value })
+                    }
                   />
                 </div>
                 <Textarea
                   label="Description"
                   value={banner.description}
-                  onChange={(e) => updatePromoBanner(i, { description: e.target.value })}
+                  onChange={(e) =>
+                    updatePromoBanner(i, { description: e.target.value })
+                  }
                   rows={2}
                 />
                 <div className="grid md:grid-cols-2 gap-4">
                   <Input
                     label="BG Overlay Class"
                     value={banner.bgOverlay}
-                    onChange={(e) => updatePromoBanner(i, { bgOverlay: e.target.value })}
+                    onChange={(e) =>
+                      updatePromoBanner(i, { bgOverlay: e.target.value })
+                    }
                     hint="e.g. bg-primary/80"
                   />
                   <Input
@@ -521,18 +598,25 @@ export default function HomepageCMSPage() {
             <Card key={stat.id}>
               <CardBody>
                 <div className="flex items-start gap-4">
-                  <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab mt-3" />
+                  <GripVertical
+                    size={14}
+                    className="text-[var(--text-muted)] cursor-grab mt-3"
+                  />
                   <div className="flex-1 grid md:grid-cols-2 gap-4">
                     <Input
                       label="Value"
                       value={stat.value}
-                      onChange={(e) => updateTrustStat(i, { value: e.target.value })}
+                      onChange={(e) =>
+                        updateTrustStat(i, { value: e.target.value })
+                      }
                       placeholder="e.g. 10,000+"
                     />
                     <Input
                       label="Label"
                       value={stat.label}
-                      onChange={(e) => updateTrustStat(i, { label: e.target.value })}
+                      onChange={(e) =>
+                        updateTrustStat(i, { label: e.target.value })
+                      }
                       placeholder="e.g. Happy Customers"
                     />
                   </div>
@@ -559,18 +643,25 @@ export default function HomepageCMSPage() {
             <Card key={logo.id}>
               <CardBody>
                 <div className="flex items-start gap-4">
-                  <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab mt-3" />
+                  <GripVertical
+                    size={14}
+                    className="text-[var(--text-muted)] cursor-grab mt-3"
+                  />
                   <div className="flex-1 space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <Input
                         label="Brand Name"
                         value={logo.name}
-                        onChange={(e) => updateBrandLogo(i, { name: e.target.value })}
+                        onChange={(e) =>
+                          updateBrandLogo(i, { name: e.target.value })
+                        }
                       />
                       <Input
                         label="URL"
                         value={logo.url ?? ""}
-                        onChange={(e) => updateBrandLogo(i, { url: e.target.value })}
+                        onChange={(e) =>
+                          updateBrandLogo(i, { url: e.target.value })
+                        }
                         hint="Optional link"
                       />
                     </div>

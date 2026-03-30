@@ -10,7 +10,10 @@ import { formatMoney, formatDate } from "@/lib/utils";
 import type { Order, OrderStatus } from "@/types";
 import { COLLECTIONS } from "@/types";
 
-const statusColors: Record<OrderStatus, "success" | "warning" | "info" | "default" | "error"> = {
+const statusColors: Record<
+  OrderStatus,
+  "success" | "warning" | "info" | "default" | "error"
+> = {
   pending: "warning",
   confirmed: "info",
   processing: "info",
@@ -21,7 +24,10 @@ const statusColors: Record<OrderStatus, "success" | "warning" | "info" | "defaul
   refunded: "error",
 };
 
-const paymentColors: Record<string, "success" | "warning" | "error" | "default"> = {
+const paymentColors: Record<
+  string,
+  "success" | "warning" | "error" | "default"
+> = {
   paid: "success",
   pending: "warning",
   failed: "error",
@@ -61,8 +67,7 @@ export default function OrdersPage() {
       o.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
       o.customerName.toLowerCase().includes(search.toLowerCase()) ||
       o.customerEmail.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || o.status === statusFilter;
+    const matchesStatus = statusFilter === "all" || o.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -90,7 +95,9 @@ export default function OrdersPage() {
       key: "items",
       label: "Items",
       render: (o) => (
-        <span className="text-sm">{o.items.length} item{o.items.length !== 1 ? "s" : ""}</span>
+        <span className="text-sm">
+          {o.items.length} item{o.items.length !== 1 ? "s" : ""}
+        </span>
       ),
     },
     {
@@ -112,11 +119,7 @@ export default function OrdersPage() {
     {
       key: "status",
       label: "Status",
-      render: (o) => (
-        <Badge variant={statusColors[o.status]}>
-          {o.status}
-        </Badge>
-      ),
+      render: (o) => <Badge variant={statusColors[o.status]}>{o.status}</Badge>,
     },
     {
       key: "date",
@@ -131,7 +134,10 @@ export default function OrdersPage() {
 
   return (
     <>
-      <PageHeader title="Orders" description="View and manage customer orders." />
+      <PageHeader
+        title="Orders"
+        description="View and manage customer orders."
+      />
 
       {/* Filters */}
       <Card className="mb-6">
