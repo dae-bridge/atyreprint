@@ -18,6 +18,7 @@ import {
   Button,
   EmptyState,
 } from "@/components/ui";
+import { Dialog } from "@/components/ui/Dialog";
 import { Input, Textarea, Select } from "@/components/ui/FormFields";
 import {
   queryDocuments,
@@ -37,7 +38,7 @@ export default function FAQPage() {
   const [expandedCat, setExpandedCat] = useState<string | null>(null);
 
   // Category form
-  const [showCatForm, setShowCatForm] = useState(false);
+  const [showCatDialog, setShowCatDialog] = useState(false);
   const [editingCat, setEditingCat] = useState<FAQCategory | null>(null);
   const [catName, setCatName] = useState("");
   const [catSlug, setCatSlug] = useState("");
@@ -45,7 +46,7 @@ export default function FAQPage() {
   const [savingCat, setSavingCat] = useState(false);
 
   // Item form
-  const [showItemForm, setShowItemForm] = useState(false);
+  const [showItemDialog, setShowItemDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<FAQItem | null>(null);
   const [itemCatId, setItemCatId] = useState("");
   const [itemQuestion, setItemQuestion] = useState("");
@@ -93,7 +94,7 @@ export default function FAQPage() {
     setCatSlug("");
     setCatSortOrder(0);
     setEditingCat(null);
-    setShowCatForm(false);
+    setShowCatDialog(false);
   };
 
   const openEditCat = (cat: FAQCategory) => {
@@ -101,8 +102,8 @@ export default function FAQPage() {
     setCatName(cat.name);
     setCatSlug(cat.slug);
     setCatSortOrder(cat.sortOrder);
-    setShowCatForm(true);
-    setShowItemForm(false);
+    setShowCatDialog(true);
+    setShowItemDialog(false);
   };
 
   const handleSaveCat = async () => {
@@ -157,14 +158,14 @@ export default function FAQPage() {
     setItemStatus("published");
     setItemCatId("");
     setEditingItem(null);
-    setShowItemForm(false);
+    setShowItemDialog(false);
   };
 
   const openNewItem = (catId: string) => {
     resetItemForm();
     setItemCatId(catId);
-    setShowItemForm(true);
-    setShowCatForm(false);
+    setShowItemDialog(true);
+    setShowCatDialog(false);
   };
 
   const openEditItem = (item: FAQItem) => {
@@ -174,8 +175,8 @@ export default function FAQPage() {
     setItemAnswer(item.answer);
     setItemSortOrder(item.sortOrder);
     setItemStatus(item.status);
-    setShowItemForm(true);
-    setShowCatForm(false);
+    setShowItemDialog(true);
+    setShowCatDialog(false);
   };
 
   const handleSaveItem = async () => {
@@ -234,7 +235,7 @@ export default function FAQPage() {
           onClick={() => {
             resetItemForm();
             resetCatForm();
-            setShowCatForm(true);
+            setShowCatDialog(true);
           }}
         >
           <Plus size={16} /> Add Category
@@ -243,7 +244,7 @@ export default function FAQPage() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* FAQ tree */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           {loading ? (
             <div className="animate-pulse space-y-3">
               {[...Array(3)].map((_, i) => (
@@ -257,7 +258,7 @@ export default function FAQPage() {
                 title="No FAQ categories yet"
                 description="Create a category to start adding FAQs."
                 action={
-                  <Button onClick={() => setShowCatForm(true)}>
+                  <Button onClick={() => setShowCatDialog(true)}>
                     <Plus size={16} /> Add Category
                   </Button>
                 }
@@ -371,126 +372,123 @@ export default function FAQPage() {
             </div>
           )}
         </div>
-
-        {/* Side form panel */}
-        <div>
-          {/* Category form */}
-          {showCatForm && (
-            <Card>
-              <div className="px-6 py-4 border-b border-[var(--border)]">
-                <h2 className="text-base font-semibold">
-                  {editingCat ? "Edit Category" : "New Category"}
-                </h2>
-              </div>
-              <CardBody className="space-y-4">
-                <Input
-                  label="Name"
-                  value={catName}
-                  onChange={(e) => {
-                    setCatName(e.target.value);
-                    if (!editingCat) setCatSlug(slugify(e.target.value));
-                  }}
-                />
-                <Input
-                  label="Slug"
-                  value={catSlug}
-                  disabled
-                  onChange={() => {}}
-                  hint="Auto-generated from name"
-                />
-                <Input
-                  label="Sort Order"
-                  type="number"
-                  value={catSortOrder}
-                  onChange={(e) => setCatSortOrder(Number(e.target.value))}
-                />
-                <div className="flex gap-3">
-                  <Button
-                    onClick={handleSaveCat}
-                    loading={savingCat}
-                    className="flex-1"
-                  >
-                    {editingCat ? "Update" : "Create"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={resetCatForm}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          )}
-
-          {/* Item form */}
-          {showItemForm && (
-            <Card className={showCatForm ? "mt-6" : ""}>
-              <div className="px-6 py-4 border-b border-[var(--border)]">
-                <h2 className="text-base font-semibold">
-                  {editingItem ? "Edit Question" : "New Question"}
-                </h2>
-              </div>
-              <CardBody className="space-y-4">
-                <Select
-                  label="Category"
-                  value={itemCatId}
-                  onChange={(e) => setItemCatId(e.target.value)}
-                  options={categories.map((c) => ({
-                    value: c.id,
-                    label: c.name,
-                  }))}
-                />
-                <Input
-                  label="Question"
-                  value={itemQuestion}
-                  onChange={(e) => setItemQuestion(e.target.value)}
-                />
-                <Textarea
-                  label="Answer"
-                  value={itemAnswer}
-                  onChange={(e) => setItemAnswer(e.target.value)}
-                  rows={4}
-                  placeholder="Supports markdown"
-                />
-                <Input
-                  label="Sort Order"
-                  type="number"
-                  value={itemSortOrder}
-                  onChange={(e) => setItemSortOrder(Number(e.target.value))}
-                />
-                <Select
-                  label="Status"
-                  value={itemStatus}
-                  onChange={(e) => setItemStatus(e.target.value)}
-                  options={[
-                    { value: "draft", label: "Draft" },
-                    { value: "published", label: "Published" },
-                    { value: "archived", label: "Archived" },
-                  ]}
-                />
-                <div className="flex gap-3">
-                  <Button
-                    onClick={handleSaveItem}
-                    loading={savingItem}
-                    className="flex-1"
-                  >
-                    {editingItem ? "Update" : "Create"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={resetItemForm}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          )}
-        </div>
       </div>
+
+      {/* Category Dialog */}
+      <Dialog
+        open={showCatDialog}
+        onClose={resetCatForm}
+        title={editingCat ? "Edit Category" : "New Category"}
+        description="FAQ categories group related questions together."
+        size="md"
+      >
+        <div className="space-y-4">
+          <Input
+            label="Name"
+            value={catName}
+            onChange={(e) => {
+              setCatName(e.target.value);
+              if (!editingCat) setCatSlug(slugify(e.target.value));
+            }}
+          />
+          <Input
+            label="Slug"
+            value={catSlug}
+            disabled
+            onChange={() => {}}
+            hint="Auto-generated from name"
+          />
+          <Input
+            label="Sort Order"
+            type="number"
+            value={catSortOrder}
+            onChange={(e) => setCatSortOrder(Number(e.target.value))}
+          />
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSaveCat}
+              loading={savingCat}
+              className="flex-1"
+            >
+              {editingCat ? "Update" : "Create"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={resetCatForm}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* Item Dialog */}
+      <Dialog
+        open={showItemDialog}
+        onClose={resetItemForm}
+        title={editingItem ? "Edit Question" : "New Question"}
+        description="Add a question and answer to this FAQ category."
+        size="md"
+      >
+        <div className="space-y-4">
+          <Select
+            label="Category"
+            value={itemCatId}
+            onChange={(e) => setItemCatId(e.target.value)}
+            options={categories.map((c) => ({
+              value: c.id,
+              label: c.name,
+            }))}
+          />
+          <Input
+            label="Question"
+            value={itemQuestion}
+            onChange={(e) => setItemQuestion(e.target.value)}
+          />
+          <Textarea
+            label="Answer"
+            value={itemAnswer}
+            onChange={(e) => setItemAnswer(e.target.value)}
+            rows={4}
+            placeholder="Supports markdown"
+          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              label="Sort Order"
+              type="number"
+              value={itemSortOrder}
+              onChange={(e) => setItemSortOrder(Number(e.target.value))}
+            />
+            <Select
+              label="Status"
+              value={itemStatus}
+              onChange={(e) => setItemStatus(e.target.value)}
+              options={[
+                { value: "draft", label: "Draft" },
+                { value: "published", label: "Published" },
+                { value: "archived", label: "Archived" },
+              ]}
+            />
+          </div>
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSaveItem}
+              loading={savingItem}
+              className="flex-1"
+            >
+              {editingItem ? "Update" : "Create"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={resetItemForm}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }

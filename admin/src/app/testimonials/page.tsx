@@ -17,6 +17,7 @@ import {
   Button,
   EmptyState,
 } from "@/components/ui";
+import { Dialog } from "@/components/ui/Dialog";
 import {
   Input,
   Textarea,
@@ -37,7 +38,7 @@ import { COLLECTIONS } from "@/types";
 export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -82,7 +83,7 @@ export default function TestimonialsPage() {
     setFormSortOrder(0);
     setFormAvatar(null);
     setEditing(null);
-    setShowForm(false);
+    setShowDialog(false);
   };
 
   const openEdit = (t: Testimonial) => {
@@ -96,7 +97,7 @@ export default function TestimonialsPage() {
     setFormStatus(t.status);
     setFormSortOrder(t.sortOrder);
     setFormAvatar(t.avatar);
-    setShowForm(true);
+    setShowDialog(true);
   };
 
   const handleSave = async () => {
@@ -165,16 +166,15 @@ export default function TestimonialsPage() {
         <Button
           onClick={() => {
             resetForm();
-            setShowForm(true);
+            setShowDialog(true);
           }}
         >
           <Plus size={16} /> Add Testimonial
         </Button>
       </PageHeader>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* List */}
-        <div className="lg:col-span-2">
+      <div>
+        <div>
           {loading ? (
             <div className="animate-pulse space-y-3">
               {[...Array(3)].map((_, i) => (
@@ -188,7 +188,7 @@ export default function TestimonialsPage() {
                 title="No testimonials yet"
                 description="Add customer testimonials to display on the site."
                 action={
-                  <Button onClick={() => setShowForm(true)}>
+                  <Button onClick={() => setShowDialog(true)}>
                     <Plus size={16} /> Add Testimonial
                   </Button>
                 }
@@ -268,111 +268,116 @@ export default function TestimonialsPage() {
             </div>
           )}
         </div>
-
-        {/* Form panel */}
-        {showForm && (
-          <Card>
-            <div className="px-6 py-4 border-b border-[var(--border)]">
-              <h2 className="text-base font-semibold">
-                {editing ? "Edit Testimonial" : "New Testimonial"}
-              </h2>
-            </div>
-            <CardBody className="space-y-4">
-              <Input
-                label="Name"
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-              />
-              <Input
-                label="Location"
-                value={formLocation}
-                onChange={(e) => setFormLocation(e.target.value)}
-                placeholder="e.g. London, UK"
-              />
-              <Input
-                label="Role"
-                value={formRole}
-                onChange={(e) => setFormRole(e.target.value)}
-                placeholder="e.g. Business Owner"
-              />
-              <Textarea
-                label="Testimonial Text"
-                value={formText}
-                onChange={(e) => setFormText(e.target.value)}
-                rows={4}
-              />
-              <div>
-                <label className="block text-sm font-medium text-[var(--foreground)] mb-1.5">
-                  Rating
-                </label>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setFormRating(s)}
-                      className="focus:outline-none"
-                    >
-                      <Star
-                        size={20}
-                        className={
-                          s <= formRating
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        }
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <ImageUpload
-                label="Avatar"
-                value={formAvatar?.url}
-                onChange={handleAvatarUpload}
-                onRemove={() => setFormAvatar(null)}
-              />
-              <Input
-                label="Sort Order"
-                type="number"
-                value={formSortOrder}
-                onChange={(e) => setFormSortOrder(Number(e.target.value))}
-              />
-              <Select
-                label="Status"
-                value={formStatus}
-                onChange={(e) => setFormStatus(e.target.value)}
-                options={[
-                  { value: "draft", label: "Draft" },
-                  { value: "published", label: "Published" },
-                  { value: "archived", label: "Archived" },
-                ]}
-              />
-              <Toggle
-                label="Featured"
-                description="Show prominently on homepage"
-                checked={formFeatured}
-                onChange={setFormFeatured}
-              />
-              <div className="flex gap-3 pt-2">
-                <Button
-                  onClick={handleSave}
-                  loading={saving}
-                  className="flex-1"
-                >
-                  {editing ? "Update" : "Create"}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={resetForm}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </CardBody>
-          </Card>
-        )}
       </div>
+
+      {/* Dialog form */}
+      <Dialog
+        open={showDialog}
+        onClose={resetForm}
+        title={editing ? "Edit Testimonial" : "New Testimonial"}
+        description="Customer feedback displayed on the storefront."
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              label="Name"
+              value={formName}
+              onChange={(e) => setFormName(e.target.value)}
+            />
+            <Input
+              label="Location"
+              value={formLocation}
+              onChange={(e) => setFormLocation(e.target.value)}
+              placeholder="e.g. London, UK"
+            />
+          </div>
+          <Input
+            label="Role"
+            value={formRole}
+            onChange={(e) => setFormRole(e.target.value)}
+            placeholder="e.g. Business Owner"
+          />
+          <Textarea
+            label="Testimonial Text"
+            value={formText}
+            onChange={(e) => setFormText(e.target.value)}
+            rows={4}
+          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Rating
+              </label>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setFormRating(s)}
+                    className="focus:outline-none"
+                  >
+                    <Star
+                      size={20}
+                      className={
+                        s <= formRating
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
+                      }
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Select
+              label="Status"
+              value={formStatus}
+              onChange={(e) => setFormStatus(e.target.value)}
+              options={[
+                { value: "draft", label: "Draft" },
+                { value: "published", label: "Published" },
+                { value: "archived", label: "Archived" },
+              ]}
+            />
+          </div>
+          <ImageUpload
+            label="Avatar"
+            value={formAvatar?.url}
+            onChange={handleAvatarUpload}
+            onRemove={() => setFormAvatar(null)}
+          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <Input
+              label="Sort Order"
+              type="number"
+              value={formSortOrder}
+              onChange={(e) => setFormSortOrder(Number(e.target.value))}
+            />
+            <Toggle
+              label="Featured"
+              description="Show prominently on homepage"
+              checked={formFeatured}
+              onChange={setFormFeatured}
+            />
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button
+              onClick={handleSave}
+              loading={saving}
+              className="flex-1"
+            >
+              {editing ? "Update" : "Create"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={resetForm}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }
