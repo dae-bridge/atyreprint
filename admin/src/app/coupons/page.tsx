@@ -105,7 +105,7 @@ export default function CouponsPage() {
         discountValue: formDiscountValue,
         minimumOrderValue:
           formMinOrder > 0 ? { amount: formMinOrder, currency: "GBP" } : null,
-        maxUses: formMaxUses > 0 ? formMaxUses : null,
+        maxUses: formMaxUses > 0 ? formMaxUses : 0,
         usedCount: editing?.usedCount ?? 0,
         validFrom: formValidFrom
           ? Timestamp.fromDate(new Date(formValidFrom))

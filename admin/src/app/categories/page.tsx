@@ -135,9 +135,9 @@ export default function CategoriesPage() {
           slug: slugify(formNewParent.trim()),
           description: "",
           image: null,
-          icon: undefined,
-          parentId: null,
-          parentSlug: null,
+          icon: "",
+          parentId: "",
+          parentSlug: "",
           ancestorSlugs: [] as string[],
           depth: 0,
           sortOrder: categories.length,
@@ -157,7 +157,7 @@ export default function CategoriesPage() {
       }
 
       const parent = parentId
-        ? categories.find((c) => c.id === parentId) ?? null
+        ? (categories.find((c) => c.id === parentId) ?? null)
         : null;
       const ancestorSlugs = parent
         ? [...parent.ancestorSlugs, parent.slug]
@@ -168,9 +168,9 @@ export default function CategoriesPage() {
         slug: formSlug || slugify(formName),
         description: formDescription,
         image: formImage,
-        icon: formIcon || undefined,
-        parentId: parentId || null,
-        parentSlug: parent?.slug ?? null,
+        icon: formIcon || "",
+        parentId: parentId || "",
+        parentSlug: parent?.slug ?? "",
         ancestorSlugs,
         depth: ancestorSlugs.length,
         sortOrder: formSortOrder,
@@ -424,13 +424,9 @@ export default function CategoriesPage() {
           })}
 
           {/* Orphan categories (no parent, but parentId is set to a missing parent) */}
-          {categories
-            .filter(
-              (c) =>
-                c.parentId &&
-                !categories.find((p) => p.id === c.parentId),
-            )
-            .length > 0 && (
+          {categories.filter(
+            (c) => c.parentId && !categories.find((p) => p.id === c.parentId),
+          ).length > 0 && (
             <Card>
               <div className="px-6 py-3 border-b border-border">
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wide">
@@ -440,8 +436,7 @@ export default function CategoriesPage() {
               {categories
                 .filter(
                   (c) =>
-                    c.parentId &&
-                    !categories.find((p) => p.id === c.parentId),
+                    c.parentId && !categories.find((p) => p.id === c.parentId),
                 )
                 .map((cat) => (
                   <div
@@ -613,11 +608,7 @@ export default function CategoriesPage() {
 
           {/* Actions */}
           <div className="flex gap-3 pt-2 border-t border-border">
-            <Button
-              onClick={handleSave}
-              loading={saving}
-              className="flex-1"
-            >
+            <Button onClick={handleSave} loading={saving} className="flex-1">
               {editing ? "Update Category" : "Create Category"}
             </Button>
             <Button variant="outline" onClick={resetForm} className="flex-1">

@@ -112,7 +112,7 @@ export default function SettingsPage() {
         tagline,
         description,
         url: siteUrl,
-        ogImage,
+        ogImage: ogImage ?? null,
         contact: { email, phone, address },
         social: { facebook, instagram, twitter, tiktok, youtube },
         businessHours: { weekdays, weekend },
@@ -130,6 +130,7 @@ export default function SettingsPage() {
       alert("Settings saved!");
     } catch (err) {
       console.error("Failed to save settings:", err);
+      alert("Failed to save settings. Check console for details.");
     } finally {
       setSaving(false);
     }

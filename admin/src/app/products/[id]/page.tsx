@@ -286,7 +286,7 @@ export default function ProductFormPage() {
           .filter(Boolean),
         inStock: data.inStock,
         stockQuantity: data.stockQuantity,
-        badge: data.badge || null,
+        badge: data.badge || "",
         buttonLabel: data.buttonLabel || "Add to Cart",
         featured: data.featured,
         customisable: data.customisable,

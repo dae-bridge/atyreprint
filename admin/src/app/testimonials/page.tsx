@@ -106,7 +106,7 @@ export default function TestimonialsPage() {
       const data = {
         name: formName,
         location: formLocation,
-        role: formRole || undefined,
+        role: formRole || "",
         avatar: formAvatar,
         text: formText,
         rating: formRating,

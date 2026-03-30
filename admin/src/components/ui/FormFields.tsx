@@ -271,9 +271,7 @@ export const ImageUpload = ({
 
   return (
     <div className={cn("space-y-1.5", className)}>
-      {label && (
-        <FieldLabel label={label} tooltip={tooltip} />
-      )}
+      {label && <FieldLabel label={label} tooltip={tooltip} />}
       {value ? (
         <div className="relative group w-full aspect-video rounded-lg overflow-hidden border border-border">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -312,7 +310,10 @@ export const ImageUpload = ({
 
       <ImageCropDialog
         open={showCrop}
-        onClose={() => { setShowCrop(false); setPendingFile(null); }}
+        onClose={() => {
+          setShowCrop(false);
+          setPendingFile(null);
+        }}
         imageFile={pendingFile}
         aspectRatio={cropAspectRatio}
         onCrop={handleCropped}

@@ -10,7 +10,14 @@ import {
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
-import { PageHeader, Card, CardBody, Badge, Button, EmptyState } from "@/components/ui";
+import {
+  PageHeader,
+  Card,
+  CardBody,
+  Badge,
+  Button,
+  EmptyState,
+} from "@/components/ui";
 import { Input, Textarea, Select } from "@/components/ui/FormFields";
 import {
   queryDocuments,
@@ -54,10 +61,13 @@ export default function FAQPage() {
   const loadAll = async () => {
     try {
       setLoading(true);
-      const cats = await queryDocuments<FAQCategory>(COLLECTIONS.FAQ_CATEGORIES, {
-        sortBy: "sortOrder",
-        sortDirection: "asc",
-      });
+      const cats = await queryDocuments<FAQCategory>(
+        COLLECTIONS.FAQ_CATEGORIES,
+        {
+          sortBy: "sortOrder",
+          sortDirection: "asc",
+        },
+      );
       setCategories(cats);
 
       // Load items for each category
@@ -127,7 +137,10 @@ export default function FAQPage() {
       // Delete items first
       const catItems = items[id] ?? [];
       for (const item of catItems) {
-        await deleteDocument(`${COLLECTIONS.FAQ_CATEGORIES}/${id}/items`, item.id);
+        await deleteDocument(
+          `${COLLECTIONS.FAQ_CATEGORIES}/${id}/items`,
+          item.id,
+        );
       }
       await deleteDocument(COLLECTIONS.FAQ_CATEGORIES, id);
       loadAll();
@@ -197,7 +210,10 @@ export default function FAQPage() {
   const handleDeleteItem = async (catId: string, itemId: string) => {
     if (!confirm("Delete this FAQ?")) return;
     try {
-      await deleteDocument(`${COLLECTIONS.FAQ_CATEGORIES}/${catId}/items`, itemId);
+      await deleteDocument(
+        `${COLLECTIONS.FAQ_CATEGORIES}/${catId}/items`,
+        itemId,
+      );
       loadAll();
     } catch (err) {
       console.error("Failed to delete FAQ item:", err);
@@ -260,14 +276,24 @@ export default function FAQPage() {
                       className="flex items-center gap-3 px-6 py-4 cursor-pointer"
                       onClick={() => setExpandedCat(isExpanded ? null : cat.id)}
                     >
-                      {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                      {isExpanded ? (
+                        <ChevronDown size={16} />
+                      ) : (
+                        <ChevronRight size={16} />
+                      )}
                       <div className="flex-1">
-                        <p className="font-semibold text-[var(--foreground)]">{cat.name}</p>
+                        <p className="font-semibold text-[var(--foreground)]">
+                          {cat.name}
+                        </p>
                         <p className="text-xs text-[var(--text-muted)]">
-                          {catItems.length} question{catItems.length !== 1 ? "s" : ""}
+                          {catItems.length} question
+                          {catItems.length !== 1 ? "s" : ""}
                         </p>
                       </div>
-                      <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                      <div
+                        className="flex items-center gap-1"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
                           onClick={() => openNewItem(cat.id)}
                           className="p-1.5 rounded hover:bg-gray-100 text-[var(--primary)]"
@@ -303,7 +329,10 @@ export default function FAQPage() {
                               key={item.id}
                               className="flex items-start gap-3 px-6 py-3 border-b border-[var(--border)] last:border-b-0 hover:bg-gray-50/50"
                             >
-                              <GripVertical size={14} className="text-[var(--text-muted)] cursor-grab mt-0.5" />
+                              <GripVertical
+                                size={14}
+                                className="text-[var(--text-muted)] cursor-grab mt-0.5"
+                              />
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-[var(--foreground)]">
                                   {item.question}
@@ -312,7 +341,9 @@ export default function FAQPage() {
                                   {item.answer}
                                 </p>
                               </div>
-                              <Badge variant={statusColors[item.status]}>{item.status}</Badge>
+                              <Badge variant={statusColors[item.status]}>
+                                {item.status}
+                              </Badge>
                               <div className="flex items-center gap-1">
                                 <button
                                   onClick={() => openEditItem(item)}
@@ -321,7 +352,9 @@ export default function FAQPage() {
                                   <Pencil size={12} />
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteItem(cat.id, item.id)}
+                                  onClick={() =>
+                                    handleDeleteItem(cat.id, item.id)
+                                  }
                                   className="p-1 rounded hover:bg-red-50 text-[var(--text-muted)] hover:text-red-500"
                                 >
                                   <Trash2 size={12} />
@@ -358,7 +391,13 @@ export default function FAQPage() {
                     if (!editingCat) setCatSlug(slugify(e.target.value));
                   }}
                 />
-                <Input label="Slug" value={catSlug} disabled onChange={() => {}} hint="Auto-generated from name" />
+                <Input
+                  label="Slug"
+                  value={catSlug}
+                  disabled
+                  onChange={() => {}}
+                  hint="Auto-generated from name"
+                />
                 <Input
                   label="Sort Order"
                   type="number"
@@ -366,10 +405,18 @@ export default function FAQPage() {
                   onChange={(e) => setCatSortOrder(Number(e.target.value))}
                 />
                 <div className="flex gap-3">
-                  <Button onClick={handleSaveCat} loading={savingCat} className="flex-1">
+                  <Button
+                    onClick={handleSaveCat}
+                    loading={savingCat}
+                    className="flex-1"
+                  >
                     {editingCat ? "Update" : "Create"}
                   </Button>
-                  <Button variant="outline" onClick={resetCatForm} className="flex-1">
+                  <Button
+                    variant="outline"
+                    onClick={resetCatForm}
+                    className="flex-1"
+                  >
                     Cancel
                   </Button>
                 </div>
@@ -390,7 +437,10 @@ export default function FAQPage() {
                   label="Category"
                   value={itemCatId}
                   onChange={(e) => setItemCatId(e.target.value)}
-                  options={categories.map((c) => ({ value: c.id, label: c.name }))}
+                  options={categories.map((c) => ({
+                    value: c.id,
+                    label: c.name,
+                  }))}
                 />
                 <Input
                   label="Question"
@@ -421,10 +471,18 @@ export default function FAQPage() {
                   ]}
                 />
                 <div className="flex gap-3">
-                  <Button onClick={handleSaveItem} loading={savingItem} className="flex-1">
+                  <Button
+                    onClick={handleSaveItem}
+                    loading={savingItem}
+                    className="flex-1"
+                  >
                     {editingItem ? "Update" : "Create"}
                   </Button>
-                  <Button variant="outline" onClick={resetItemForm} className="flex-1">
+                  <Button
+                    variant="outline"
+                    onClick={resetItemForm}
+                    className="flex-1"
+                  >
                     Cancel
                   </Button>
                 </div>

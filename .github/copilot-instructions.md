@@ -66,6 +66,17 @@ firebase deploy  # deploys everything
 
 Never place Firebase config files (firebase.json, .firebaserc, rules, functions/) at the monorepo root.
 
+### Firestore Data Safety
+
+**Never save `undefined` to Firestore** — Firestore rejects `undefined` values and throws errors. Follow these rules for all document writes:
+
+- **Optional string fields:** Use `""` (empty string), never `undefined` or `null`
+- **Optional numeric fields:** Use `0`, never `undefined`
+- **Optional array fields:** Use `[]` (empty array), never `undefined` or `null`
+- **Optional object fields (e.g. ImageAsset):** Use `null` only when the field represents an absent object (e.g. no image uploaded). Never `undefined`.
+- **Conditional values:** Use `value || ""` instead of `value || undefined`
+- **The CRUD layer in `lib/firestore.ts` has a `stripUndefined()` safety net** that converts any `undefined` to `""` before writing — but code should still avoid passing `undefined` in the first place.
+
 ## Code Conventions
 
 - Use `src/` directory structure with App Router
