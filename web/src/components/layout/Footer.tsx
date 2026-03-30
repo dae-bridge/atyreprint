@@ -44,7 +44,7 @@ export const Footer = () => {
             <Link href="/" className="inline-block mb-4">
               <div className="relative w-[180px] h-[50px] brightness-0 invert opacity-90">
                 <Image
-                  src="/images/icons/atyreprint-logo.png"
+                  src="/logo.png"
                   alt={`${siteConfig.name} Logo`}
                   fill
                   className="object-contain object-left"

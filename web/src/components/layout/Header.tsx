@@ -9,7 +9,14 @@ import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
 import { CartDrawer } from "./CartDrawer";
 import { Container } from "@/components/ui/Container";
-import { Search, ShoppingBag, User, Menu, Heart, ChevronDown } from "lucide-react";
+import {
+  Search,
+  ShoppingBag,
+  User,
+  Menu,
+  Heart,
+  ChevronDown,
+} from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { cn } from "@/lib/utils";
 
@@ -55,7 +62,7 @@ export const Header = () => {
               <Link href="/" className="flex items-center">
                 <div className="relative w-[260px] h-[85px]">
                   <Image
-                    src="/images/icons/atyreprint-logo.png"
+                    src="/logo.png"
                     alt={`${siteConfig.name} Logo`}
                     fill
                     className="object-contain object-left"
@@ -68,7 +75,9 @@ export const Header = () => {
             {/* Center: Search Bar */}
             <div className="hidden md:flex flex-1 max-w-3xl bg-surface-alt rounded-md overflow-hidden border border-border group focus-within:border-primary transition-colors h-12">
               <div className="flex items-center px-4 py-2 border-r border-border cursor-pointer hover:bg-surface transition-colors min-w-[140px] h-full">
-                <span className="text-[15px] font-medium text-text-secondary mr-2">All Categories</span>
+                <span className="text-[15px] font-medium text-text-secondary mr-2">
+                  All Categories
+                </span>
                 <ChevronDown size={14} className="text-text-muted" />
               </div>
               <div className="flex-1 flex items-center relative h-full">
@@ -94,7 +103,9 @@ export const Header = () => {
                   <User size={28} strokeWidth={1.5} />
                 </div>
                 <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
-                  <span className="text-text-secondary font-medium">Sign In</span>
+                  <span className="text-text-secondary font-medium">
+                    Sign In
+                  </span>
                   <span className="font-bold text-[15px]">Account</span>
                 </div>
               </Link>
@@ -117,13 +128,19 @@ export const Header = () => {
                 className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors cursor-pointer group"
               >
                 <div className="relative">
-                  <ShoppingBag size={26} strokeWidth={1.5} className="group-hover:scale-110 transition-transform" />
+                  <ShoppingBag
+                    size={26}
+                    strokeWidth={1.5}
+                    className="group-hover:scale-110 transition-transform"
+                  />
                   <span className="absolute -top-1 -right-1.5 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
                     {totalItems()}
                   </span>
                 </div>
                 <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap items-start">
-                  <span className="text-text-secondary font-medium whitespace-nowrap">£{totalPrice().toFixed(2)}</span>
+                  <span className="text-text-secondary font-medium whitespace-nowrap">
+                    £{totalPrice().toFixed(2)}
+                  </span>
                   <span className="font-bold text-[15px]">My Cart</span>
                 </div>
               </button>
@@ -132,17 +149,21 @@ export const Header = () => {
         </Container>
 
         {/* Bottom Level: Desktop Navigation */}
-        <div className={cn(
-          "hidden lg:block border-t border-border bg-white transition-all duration-300",
-          isSticky ? "fixed top-0 left-0 w-full z-50 shadow-md transform-gpu" : "relative"
-        )}>
+        <div
+          className={cn(
+            "hidden lg:block border-t border-border bg-white transition-all duration-300",
+            isSticky
+              ? "fixed top-0 left-0 w-full z-50 shadow-md transform-gpu"
+              : "relative",
+          )}
+        >
           <Container>
             <div className="flex items-center justify-between relative h-full">
               <DesktopNav />
-              
+
               {/* Today's Deal */}
-              <Link 
-                href="/deals" 
+              <Link
+                href="/deals"
                 className="flex items-center gap-2 py-3 text-foreground hover:text-primary transition-colors font-semibold text-[15px]"
               >
                 <div className="w-5 h-5 flex items-center justify-center rounded-full border-2 border-primary text-primary">
@@ -162,10 +183,7 @@ export const Header = () => {
       />
 
       {/* Cart Drawer */}
-      <CartDrawer 
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-      />
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 };
