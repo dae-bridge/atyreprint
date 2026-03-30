@@ -6,6 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ProductData } from "@/lib/products";
 import { shippingAndReturnInfo } from "@/lib/products";
+import { formatPrice, priceToPounds, getImageUrl } from "@/types";
 import { useCartStore } from "@/lib/cartStore";
 import {
   Minus,
@@ -52,11 +53,11 @@ function UrgencyTicker({ messages }: { messages: string[] }) {
           key={i}
           className={cn(
             "absolute inset-0 flex items-center text-[13px] font-medium transition-all duration-700 ease-in-out",
-            i === index 
-              ? "translate-y-0 opacity-100" 
+            i === index
+              ? "translate-y-0 opacity-100"
               : i < index || (index === 0 && i === messages.length - 1)
                 ? "-translate-y-full opacity-0"
-                : "translate-y-full opacity-0"
+                : "translate-y-full opacity-0",
           )}
         >
           {msg}
@@ -82,13 +83,12 @@ const StarRating = ({
         className={cn(
           star <= Math.round(rating)
             ? "fill-[#ffc107] text-[#ffc107]"
-            : "fill-gray-200 text-gray-200"
+            : "fill-gray-200 text-gray-200",
         )}
       />
     ))}
   </div>
 );
-
 
 /* ─── Tabs ─── */
 type TabId = "description" | "additional" | "reviews" | "shipping";
@@ -103,7 +103,7 @@ const tabs: { id: TabId; label: string }[] = [
 export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(
-    product.colors[0]?.name ?? ""
+    product.colors[0]?.name ?? "",
   );
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
@@ -124,8 +124,8 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      price: product.price,
-      image: product.images[0],
+      price: priceToPounds(product.price),
+      image: getImageUrl(product.images?.[0]),
       color: selectedColor,
       variants: selectedVariants,
       quantity,
@@ -144,7 +144,6 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           TOP SECTION — Image Gallery + Product Info
          ════════════════════════════════════════════════ */}
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-14">
-        
         {/* ─── Image Gallery & Trust Badges ─── */}
         <div className="flex flex-col gap-6">
           <div className="flex gap-6 lg:gap-8">
@@ -153,7 +152,9 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
               {/* Removed flex-1 wrapper so arrows sit flush with thumbs */}
               <button
                 className="w-full h-8 flex items-center justify-center text-gray-400 hover:text-black transition-colors shrink-0"
-                onClick={() => setSelectedImage((prev) => Math.max(0, prev - 1))}
+                onClick={() =>
+                  setSelectedImage((prev) => Math.max(0, prev - 1))
+                }
                 aria-label="Previous image"
               >
                 <ChevronUp size={20} className="font-light" />
@@ -161,17 +162,17 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
               <div className="flex flex-col gap-3 py-1 overflow-y-auto scrollbar-hide">
                 {product.images.map((img, i) => (
                   <button
-                    key={img}
+                    key={getImageUrl(img)}
                     onClick={() => setSelectedImage(i)}
                     className={cn(
                       "relative aspect-square overflow-hidden border transition-all p-1 bg-white shrink-0",
                       i === selectedImage
                         ? "border-[#a9cb5b] shadow-sm"
-                        : "border-gray-200 hover:border-gray-400"
+                        : "border-gray-200 hover:border-gray-400",
                     )}
                   >
                     <Image
-                      src={img}
+                      src={getImageUrl(img)}
                       alt={`${product.name} view ${i + 1}`}
                       fill
                       className="object-contain"
@@ -184,7 +185,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 className="w-full h-8 flex items-center justify-center text-gray-400 hover:text-black transition-colors shrink-0"
                 onClick={() =>
                   setSelectedImage((prev) =>
-                    Math.min(product.images.length - 1, prev + 1)
+                    Math.min(product.images.length - 1, prev + 1),
                   )
                 }
                 aria-label="Next image"
@@ -196,7 +197,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
             {/* Main Image */}
             <div className="relative flex-1 aspect-square overflow-hidden bg-white border border-gray-100/50 rounded-sm">
               <Image
-                src={product.images[selectedImage]}
+                src={getImageUrl(product.images[selectedImage])}
                 alt={product.name}
                 fill
                 className="object-contain object-top transition-opacity duration-300"
@@ -204,20 +205,22 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
-            
+
             {/* Mobile Thumbnails */}
             <div className="md:hidden grid grid-cols-4 gap-2 mt-3 w-full">
               {product.images.map((img, i) => (
                 <button
-                  key={img}
+                  key={getImageUrl(img)}
                   onClick={() => setSelectedImage(i)}
                   className={cn(
                     "relative aspect-square overflow-hidden border transition-all p-1 bg-white",
-                    i === selectedImage ? "border-[#a9cb5b]" : "border-gray-200"
+                    i === selectedImage
+                      ? "border-[#a9cb5b]"
+                      : "border-gray-200",
                   )}
                 >
                   <Image
-                    src={img}
+                    src={getImageUrl(img)}
                     alt={`${product.name} view ${i + 1}`}
                     fill
                     className="object-contain"
@@ -231,12 +234,16 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           {/* Trust Badges Bar */}
           <div className="hidden md:flex items-stretch text-[11px] xl:text-[12px] font-bold text-[#354562] bg-[#f8fbff] rounded border border-[#e4ecf6]">
             <div className="flex-1 flex items-center justify-center gap-2.5 py-3 px-4 border-r border-[#e4ecf6]">
-              <Truck size={20} className="text-[#3b5998] shrink-0" /> 
-              <span className="leading-snug text-left lg:text-center">Estimated Delivery : Up to 4 business days</span>
+              <Truck size={20} className="text-[#3b5998] shrink-0" />
+              <span className="leading-snug text-left lg:text-center">
+                Estimated Delivery : Up to 4 business days
+              </span>
             </div>
             <div className="flex-1 flex items-center justify-center gap-2.5 py-3 px-4">
-              <RotateCcw size={20} className="text-[#3b5998] shrink-0" /> 
-              <span className="leading-snug text-left lg:text-center">Free Shipping & Returns : On all orders over $200</span>
+              <RotateCcw size={20} className="text-[#3b5998] shrink-0" />
+              <span className="leading-snug text-left lg:text-center">
+                Free Shipping & Returns : On all orders over $200
+              </span>
             </div>
           </div>
         </div>
@@ -246,7 +253,9 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           {/* Brand */}
           <p className="text-[13px] text-text-muted mb-1.5 flex gap-1">
             Brand:{" "}
-            <span className="text-[#a9cb5b] hover:underline cursor-pointer font-medium">AtyrePrint</span>
+            <span className="text-[#a9cb5b] hover:underline cursor-pointer font-medium">
+              AtyrePrint
+            </span>
           </p>
 
           {/* Title */}
@@ -257,7 +266,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           {/* Price + Rating on same line */}
           <div className="flex items-center flex-wrap gap-4 mb-4">
             <span className="text-2xl font-bold text-[#1a1a1a]">
-              £{product.price.toFixed(2)}
+              £{formatPrice(product.price)}
             </span>
             <div className="flex items-center gap-1.5">
               <StarRating rating={product.rating} size={13} />
@@ -272,12 +281,14 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           <div className="h-[24px] overflow-hidden mb-6 flex items-center gap-2 text-[#ef4444]">
             <Flame size={15} className="shrink-0" />
             <div className="relative h-full flex-1">
-              <UrgencyTicker messages={[
-                `${Math.floor(Math.random() * 20) + 5} products sold in last 10 hours`,
-                `${Math.floor(Math.random() * 50) + 15} people are viewing this right now`,
-                "Hurry! Only a few items left in stock",
-                "Flash Sale: Limited time offer!"
-              ]} />
+              <UrgencyTicker
+                messages={[
+                  `${Math.floor(Math.random() * 20) + 5} products sold in last 10 hours`,
+                  `${Math.floor(Math.random() * 50) + 15} people are viewing this right now`,
+                  "Hurry! Only a few items left in stock",
+                  "Flash Sale: Limited time offer!",
+                ]}
+              />
             </div>
           </div>
 
@@ -307,12 +318,12 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                         "w-[60px] h-[60px] border-[2px] overflow-hidden transition-all relative block bg-white",
                         selectedColor === color.name
                           ? "border-[#a9cb5b]"
-                          : "border-gray-200 hover:border-gray-400"
+                          : "border-gray-200 hover:border-gray-400",
                       )}
                       aria-label={`Select color ${color.name}`}
                     >
                       <Image
-                        src={product.images[color.imageIndex]}
+                        src={getImageUrl(product.images[color.imageIndex])}
                         alt={color.name}
                         fill
                         className="object-cover p-1"
@@ -326,34 +337,42 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           )}
 
           {/* ─── Variant Selectors ─── */}
-          {product.variants.map((variant) => (
-            <div key={variant.label} className="mb-6">
-              <p className="text-sm font-bold text-foreground mb-3">
-                {variant.label}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {variant.options.map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() =>
-                      setSelectedVariants((prev) => ({
-                        ...prev,
-                        [variant.label]: opt,
-                      }))
-                    }
-                    className={cn(
-                      "px-4 py-2 border text-[13px] font-medium transition-all min-w-[40px]",
-                      selectedVariants[variant.label] === opt
-                        ? "border-[#222] bg-[#222] text-white"
-                        : "border-gray-300 text-foreground hover:border-foreground"
-                    )}
-                  >
-                    {opt}
-                  </button>
-                ))}
+          {(product.variants ?? []).map((variant) => {
+            const options = Array.isArray(variant.options)
+              ? variant.options
+              : String(variant.options ?? "")
+                  .split(",")
+                  .map((s) => s.trim())
+                  .filter(Boolean);
+            return (
+              <div key={variant.label} className="mb-6">
+                <p className="text-sm font-bold text-foreground mb-3">
+                  {variant.label}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {options.map((opt) => (
+                    <button
+                      key={opt}
+                      onClick={() =>
+                        setSelectedVariants((prev) => ({
+                          ...prev,
+                          [variant.label]: opt,
+                        }))
+                      }
+                      className={cn(
+                        "px-4 py-2 border text-[13px] font-medium transition-all min-w-[40px]",
+                        selectedVariants[variant.label] === opt
+                          ? "border-[#222] bg-[#222] text-white"
+                          : "border-gray-300 text-foreground hover:border-foreground",
+                      )}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* ─── Stock Status ─── */}
           <div className="mb-6">
@@ -370,7 +389,12 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
 
           {/* ─── Quantity, Add to Cart & Buy Now ─── */}
           <div className="flex items-center gap-3 mb-6">
-            {product.buttonLabel === "CUSTOMISE" || !(product.variants && product.variants.length > 0 && product.variants[0].options.length > 0) ? (
+            {product.buttonLabel === "CUSTOMISE" ||
+            !(
+              product.variants &&
+              product.variants.length > 0 &&
+              product.variants[0].options.length > 0
+            ) ? (
               <Link
                 href={`/personalise-it?product=${product.slug}`}
                 className="flex-1 h-[46px] bg-[#a9cb5b] text-white flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:bg-[#8ba83a] transition-colors rounded-sm shadow-sm"
@@ -407,12 +431,12 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                     "flex-[1.5] h-[46px] flex items-center justify-center font-bold transition-colors text-sm tracking-widest uppercase rounded-sm",
                     addedToCart
                       ? "bg-[#1a3014] text-white"
-                      : "bg-[#a9cb5b] text-white hover:bg-[#8ba83a]"
+                      : "bg-[#a9cb5b] text-white hover:bg-[#8ba83a]",
                   )}
                 >
                   {addedToCart ? "ADDED!" : "ADD TO CART"}
                 </button>
-                
+
                 {/* Buy Now Button */}
                 <button className="flex-[1.5] h-[46px] bg-[#222] text-white flex items-center justify-center font-bold text-sm tracking-widest uppercase hover:bg-black transition-colors rounded-sm">
                   BUY NOW
@@ -448,7 +472,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 "py-5 text-[15px] font-bold uppercase tracking-widest transition-all duration-300 relative group",
                 activeTab === tab.id
                   ? "text-black"
-                  : "text-gray-400 hover:text-black"
+                  : "text-gray-400 hover:text-black",
               )}
             >
               {tab.label}
@@ -458,11 +482,11 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 </span>
               )}
               {/* Active Indicator Bar */}
-              <span 
+              <span
                 className={cn(
                   "absolute bottom-[-1px] left-0 right-0 h-[2.5px] bg-[#e91e63] transition-all duration-300 origin-center scale-x-0 group-hover:scale-x-100",
-                  activeTab === tab.id && "scale-x-100"
-                )} 
+                  activeTab === tab.id && "scale-x-100",
+                )}
               />
             </button>
           ))}
@@ -571,7 +595,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 <div>
                   <StarRating rating={product.rating} size={18} />
                   <p className="text-[13px] text-text-muted mt-2 font-medium">
-                    Based on {product.reviewCount} {" "}
+                    Based on {product.reviewCount}{" "}
                     {product.reviewCount === 1 ? "review" : "reviews"}
                   </p>
                 </div>
@@ -710,7 +734,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
                           .replace(
                             /^- (.*)/gm,
-                            '<li class="ml-4 list-disc">$1</li>'
+                            '<li class="ml-4 list-disc">$1</li>',
                           ),
                       }}
                     />
@@ -732,7 +756,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
                           .replace(
                             /^\d+\. (.*)/gm,
-                            '<li class="ml-4 list-decimal">$1</li>'
+                            '<li class="ml-4 list-decimal">$1</li>',
                           ),
                       }}
                     />

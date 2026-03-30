@@ -5,22 +5,20 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { ProductDetailClient } from "@/components/sections/ProductDetailClient";
 import { RelatedProductsCarousel } from "@/components/sections/RelatedProductsCarousel";
-import { products, getProductBySlug, getRelatedProducts } from "@/lib/products";
-import { ChevronRight } from "lucide-react";
+import { getProductBySlug, getRelatedProducts } from "@/lib/products";
+import { getImageUrl, formatPrice } from "@/types";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: "Product Not Found | AtyrePrint" };
 
   return {
@@ -29,18 +27,26 @@ export async function generateMetadata({
     openGraph: {
       title: product.name,
       description: product.description.slice(0, 160),
-      images: [{ url: product.images[0], width: 800, height: 800 }],
+      images: [
+        { url: getImageUrl(product.images[0]), width: 800, height: 800 },
+      ],
     },
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
 
-  const related = getRelatedProducts(slug, 6);
+  const related = await getRelatedProducts(product, 6);
+
+  // Derive category name from categoryPath for breadcrumb
+  const categoryName =
+    product.categoryPath?.length > 0
+      ? product.categoryPath[product.categoryPath.length - 1]
+      : "Shop";
 
   return (
     <>
@@ -49,8 +55,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {/* Banner Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={product.bannerImage}
-            alt={product.category}
+            src={getImageUrl(
+              product.bannerImage,
+              "/images/banners/apparel-banner.png",
+            )}
+            alt={categoryName}
             fill
             className="object-cover object-top"
             priority
@@ -77,8 +86,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </Link>
               </li>
               <li className="text-gray-400">/</li>
-              <li className="text-gray-400 truncate max-w-[200px] md:max-w-none">
-                {product.category}
+              <li className="text-gray-400 truncate max-w-[200px] md:max-w-none capitalize">
+                {categoryName}
               </li>
               <li className="text-gray-400">/</li>
               <li className="text-foreground font-bold truncate max-w-[200px] md:max-w-none">

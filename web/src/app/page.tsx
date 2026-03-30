@@ -1,3 +1,4 @@
+import { getHomepageCMS } from "@/lib/settings";
 import { HeroBanner } from "@/components/sections/HeroBanner";
 import { FeatureBadges } from "@/components/sections/FeatureBadges";
 import { TriplePromoBanners } from "@/components/sections/TriplePromoBanners";
@@ -10,18 +11,20 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { BrandLogos } from "@/components/sections/BrandLogos";
 import { NewsletterSignup } from "@/components/sections/NewsletterSignup";
 
-export default function Home() {
+export default async function Home() {
+  const cms = await getHomepageCMS();
+
   return (
     <>
-      <HeroBanner />
+      <HeroBanner heroSlides={cms.heroSlides} />
       <TwinPromoBanners />
       <TopCategories />
       <Activities />
       <TrendingProducts />
-      <FeatureBadges />
+      <FeatureBadges featureBadges={cms.featureBadges} />
       <TriplePromoBanners />
       <Testimonials />
-      <BrandLogos />
+      <BrandLogos brandLogos={cms.brandLogos} />
       <NewsletterSignup />
     </>
   );

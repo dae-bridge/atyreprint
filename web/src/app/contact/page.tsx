@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { siteConfig } from "@/config/site";
+import { getSiteSettings } from "@/lib/settings";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { ContactForm } from "@/components/forms/ContactForm";
 
@@ -10,34 +10,35 @@ export const metadata: Metadata = {
     "Get in touch with AtyrePrint for custom printing, embroidery and design enquiries. Email, call, or send us a message — we reply within 24 hours.",
 };
 
-const contactInfo = [
-  {
-    icon: Phone,
-    label: "Phone",
-    value: siteConfig.contact.phone,
-    href: `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`,
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    value: siteConfig.contact.email,
-    href: `mailto:${siteConfig.contact.email}`,
-  },
-  {
-    icon: MapPin,
-    label: "Address",
-    value: siteConfig.contact.address,
-    href: undefined,
-  },
-  {
-    icon: Clock,
-    label: "Business Hours",
-    value: `Weekdays: ${siteConfig.businessHours.weekdays} · Weekend: ${siteConfig.businessHours.weekend}`,
-    href: undefined,
-  },
-];
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
 
-export default function ContactPage() {
+  const contactInfo = [
+    {
+      icon: Phone,
+      label: "Phone",
+      value: settings.contact.phone,
+      href: `tel:${settings.contact.phone.replace(/\s/g, "")}`,
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      value: settings.contact.email,
+      href: `mailto:${settings.contact.email}`,
+    },
+    {
+      icon: MapPin,
+      label: "Address",
+      value: settings.contact.address,
+      href: undefined,
+    },
+    {
+      icon: Clock,
+      label: "Business Hours",
+      value: `Weekdays: ${settings.businessHours.weekdays} · Weekend: ${settings.businessHours.weekend}`,
+      href: undefined,
+    },
+  ];
   return (
     <>
       <PageHeader

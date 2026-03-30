@@ -3,67 +3,67 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { siteConfig } from "@/config/site";
 import { TopBar } from "./TopBar";
 import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
 import { CartDrawer } from "./CartDrawer";
 import { Container } from "@/components/ui/Container";
-import {
-  Search,
-  ShoppingBag,
-  User,
-  Menu,
-  Heart,
-  ChevronDown,
-} from "lucide-react";
+import { Search, ShoppingBag, User, Menu, Heart, X } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { cn } from "@/lib/utils";
+import type { SiteSettings } from "@/types";
 
-export const Header = () => {
+export interface NavCategory {
+  id: string;
+  name: string;
+  slug: string;
+  children: { id: string; name: string; slug: string }[];
+}
+
+interface HeaderProps {
+  navCategories?: NavCategory[];
+  settings: SiteSettings;
+}
+
+export const Header = ({ navCategories = [], settings }: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems);
   const totalPrice = useCartStore((s) => s.totalPrice);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Sticky after scrolling past TopBar + Middle level (~145px)
-      if (window.scrollY > 145) {
-        setIsSticky(true);
-      } else {
-        setIsSticky(false);
-      }
+      setIsSticky(window.scrollY > 145);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
-      <TopBar />
+      <TopBar settings={settings} />
 
       <header className="bg-white">
         {/* Middle Level: Logo, Search, Actions */}
         <Container>
-          <div className="flex items-center justify-between py-3 gap-8 relative">
-            {/* Left: Logo */}
-            <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center justify-between py-2 md:py-3 gap-3 md:gap-8 relative">
+            {/* Left: Hamburger + Logo */}
+            <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
               <button
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden p-2 text-foreground hover:text-primary transition-colors"
+                className="lg:hidden p-1.5 text-foreground hover:text-primary transition-colors"
                 aria-label="Open menu"
               >
-                <Menu size={24} />
+                <Menu size={22} />
               </button>
 
               <Link href="/" className="flex items-center">
-                <div className="relative w-[260px] h-[85px]">
+                <div className="relative w-[140px] h-[45px] sm:w-[180px] sm:h-[55px] md:w-[220px] md:h-[70px] lg:w-[260px] lg:h-[85px]">
                   <Image
                     src="/logo.png"
-                    alt={`${siteConfig.name} Logo`}
+                    alt={`${settings.siteName} Logo`}
                     fill
                     className="object-contain object-left"
                     priority
@@ -72,14 +72,8 @@ export const Header = () => {
               </Link>
             </div>
 
-            {/* Center: Search Bar */}
+            {/* Center: Search Bar (desktop) */}
             <div className="hidden md:flex flex-1 max-w-3xl bg-surface-alt rounded-md overflow-hidden border border-border group focus-within:border-primary transition-colors h-12">
-              <div className="flex items-center px-4 py-2 border-r border-border cursor-pointer hover:bg-surface transition-colors min-w-[140px] h-full">
-                <span className="text-[15px] font-medium text-text-secondary mr-2">
-                  All Categories
-                </span>
-                <ChevronDown size={14} className="text-text-muted" />
-              </div>
               <div className="flex-1 flex items-center relative h-full">
                 <input
                   type="text"
@@ -93,14 +87,23 @@ export const Header = () => {
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-1 lg:gap-4 flex-shrink-0">
+            <div className="flex items-center gap-0.5 sm:gap-1 lg:gap-4 flex-shrink-0">
+              {/* Mobile Search Toggle */}
+              <button
+                onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                className="md:hidden p-1.5 text-foreground hover:text-primary transition-colors"
+                aria-label="Search"
+              >
+                {mobileSearchOpen ? <X size={20} /> : <Search size={20} />}
+              </button>
+
               {/* Account */}
               <Link
                 href="/login"
                 className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
               >
                 <div className="flex items-center justify-center">
-                  <User size={28} strokeWidth={1.5} />
+                  <User size={22} strokeWidth={1.5} className="sm:w-7 sm:h-7" />
                 </div>
                 <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
                   <span className="text-text-secondary font-medium">
@@ -113,11 +116,15 @@ export const Header = () => {
               {/* Favourites */}
               <Link
                 href="/wishlist"
-                className="relative p-2 text-foreground hover:text-primary transition-colors"
+                className="relative p-1.5 text-foreground hover:text-primary transition-colors hidden sm:block"
                 aria-label="Favourites"
               >
-                <Heart size={26} strokeWidth={1.5} />
-                <span className="absolute top-1 right-0.5 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                <Heart
+                  size={22}
+                  strokeWidth={1.5}
+                  className="sm:w-[26px] sm:h-[26px]"
+                />
+                <span className="absolute top-0 right-0 w-4 h-4 sm:w-5 sm:h-5 bg-accent text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
                   0
                 </span>
               </Link>
@@ -125,15 +132,15 @@ export const Header = () => {
               {/* My Cart */}
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors cursor-pointer group"
+                className="flex items-center gap-2 lg:gap-3 p-1 text-foreground hover:text-primary transition-colors cursor-pointer group"
               >
                 <div className="relative">
                   <ShoppingBag
-                    size={26}
+                    size={22}
                     strokeWidth={1.5}
-                    className="group-hover:scale-110 transition-transform"
+                    className="group-hover:scale-110 transition-transform sm:w-[26px] sm:h-[26px]"
                   />
-                  <span className="absolute -top-1 -right-1.5 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                  <span className="absolute -top-1 -right-1.5 w-4 h-4 sm:w-5 sm:h-5 bg-accent text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
                     {totalItems()}
                   </span>
                 </div>
@@ -143,6 +150,25 @@ export const Header = () => {
                   </span>
                   <span className="font-bold text-[15px]">My Cart</span>
                 </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Search Bar (expandable) */}
+          <div
+            className={cn(
+              "md:hidden overflow-hidden transition-all duration-300",
+              mobileSearchOpen ? "max-h-14 pb-3" : "max-h-0",
+            )}
+          >
+            <div className="flex bg-surface-alt rounded-md overflow-hidden border border-border h-11">
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="flex-1 px-4 text-sm bg-transparent outline-none text-foreground placeholder-text-muted"
+              />
+              <button className="px-4 text-text-secondary hover:text-primary transition-colors">
+                <Search size={18} />
               </button>
             </div>
           </div>
@@ -159,7 +185,7 @@ export const Header = () => {
         >
           <Container>
             <div className="flex items-center justify-between relative h-full">
-              <DesktopNav />
+              <DesktopNav navCategories={navCategories} />
 
               {/* Today's Deal */}
               <Link
@@ -169,7 +195,7 @@ export const Header = () => {
                 <div className="w-5 h-5 flex items-center justify-center rounded-full border-2 border-primary text-primary">
                   <span className="text-[10px] font-bold">%</span>
                 </div>
-                Today's Deal
+                Today&apos;s Deal
               </Link>
             </div>
           </Container>
@@ -180,10 +206,16 @@ export const Header = () => {
       <MobileNav
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
+        navCategories={navCategories}
+        settings={settings}
       />
 
       {/* Cart Drawer */}
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        freeShippingThreshold={settings.freeShippingThreshold}
+      />
     </>
   );
 };

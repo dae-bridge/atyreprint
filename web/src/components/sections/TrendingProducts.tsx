@@ -4,7 +4,14 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { ChevronLeft, ChevronRight, Heart, RefreshCw, Eye, Star } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  RefreshCw,
+  Eye,
+  Star,
+} from "lucide-react";
 
 const trendingProducts = [
   {
@@ -116,7 +123,10 @@ const ProductCard = ({ product }: { product: any }) => {
         </div>
 
         {/* Image */}
-        <Link href={`/shop/product/${product.slug}`} className="relative w-full h-full block">
+        <Link
+          href={`/shop/product/${product.slug}`}
+          className="relative w-full h-full block"
+        >
           {/* Default Image */}
           <Image
             src={product.image}
@@ -154,14 +164,18 @@ const ProductCard = ({ product }: { product: any }) => {
             {product.name}
           </h3>
         </Link>
-        
+
         {/* Ratings */}
         <div className="flex gap-0.5 mb-3">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
               size={13}
-              className={i < product.rating ? "fill-[#ffb503] text-[#ffb503]" : "fill-gray-200 text-gray-200"}
+              className={
+                i < product.rating
+                  ? "fill-[#ffb503] text-[#ffb503]"
+                  : "fill-gray-200 text-gray-200"
+              }
             />
           ))}
         </div>
@@ -180,7 +194,7 @@ const ProductCard = ({ product }: { product: any }) => {
 
         {/* Action Button */}
         {product.buttonLabel === "CUSTOMISE" ? (
-          <Link 
+          <Link
             href={`/personalise-it?product=${product.slug}`}
             className="w-full py-3 bg-[#eeeeee] text-[13px] font-bold text-foreground hover:bg-accent hover:text-white transition-colors tracking-wide uppercase font-jost text-center block"
           >
@@ -213,11 +227,11 @@ export const TrendingProducts = () => {
     <section className="pt-10 md:pt-12 pb-6 md:pb-8 bg-white overflow-hidden relative">
       <Container>
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="text-accent text-xs font-bold tracking-[0.2em] uppercase mb-4 block font-jost">
+        <div className="text-center mb-8 md:mb-16">
+          <span className="text-accent text-xs font-bold tracking-[0.2em] uppercase mb-3 md:mb-4 block font-jost">
             BEST SELLING PRODUCTS
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-jost">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6 font-jost">
             Browsing Our Trending Items
           </h2>
           <div className="w-16 h-0.5 bg-accent mx-auto" />
@@ -231,7 +245,10 @@ export const TrendingProducts = () => {
             style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
           >
             {trendingProducts.map((product) => (
-              <div key={product.id} className="flex-none w-[85%] sm:w-[45%] lg:w-[18.2%] snap-start">
+              <div
+                key={product.id}
+                className="flex-none w-[70%] sm:w-[45%] md:w-[30%] lg:w-[18.2%] snap-start"
+              >
                 <ProductCard product={product} />
               </div>
             ))}

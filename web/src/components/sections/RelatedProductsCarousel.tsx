@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { ProductData } from "@/lib/products";
+import { formatPrice, getImageUrl } from "@/types";
 import { ChevronLeft, ChevronRight, Star, Heart, Eye } from "lucide-react";
 
 const StarRating = ({ rating }: { rating: number }) => (
@@ -77,7 +78,7 @@ export const RelatedProductsCarousel = ({
             {/* Image */}
             <div className="group/image relative aspect-[4/5] bg-[#f9f9f9] overflow-hidden">
               <Image
-                src={product.images[0]}
+                src={getImageUrl(product.images[0])}
                 alt={product.name}
                 fill
                 className="object-contain transition-transform duration-500 group-hover/image:scale-110"
@@ -118,11 +119,11 @@ export const RelatedProductsCarousel = ({
               <div className="flex items-center gap-2">
                 {product.compareAtPrice && (
                   <span className="text-[13px] text-gray-400 line-through font-medium">
-                    £{product.compareAtPrice.toFixed(2)}
+                    £{formatPrice(product.compareAtPrice)}
                   </span>
                 )}
                 <span className="text-[15px] font-bold text-[#1a1a1a]">
-                  £{product.price.toFixed(2)}
+                  £{formatPrice(product.price)}
                 </span>
               </div>
             </div>
