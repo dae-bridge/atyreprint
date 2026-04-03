@@ -1,16 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Heart, Eye, Star } from "lucide-react";
 import type { Product } from "@/types";
 import { formatPrice, priceToPounds, getImageUrl } from "@/types";
+import { useWishlistStore } from "@/lib/wishlistStore";
+import { QuickViewModal } from "@/components/ui/QuickViewModal";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
   const productHref = `/shop/product/${product.slug}`;
 
   const price = priceToPounds(product.price);
@@ -34,6 +38,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const hoverImage =
     product.images?.length > 1 ? getImageUrl(product.images[1]) : mainImage;
 
+  const toggleItem = useWishlistStore((s) => s.toggleItem);
+  const isInWishlist = useWishlistStore((s) => s.isInWishlist)(product.id);
+
   return (
     <div className="relative bg-white border border-transparent hover:border-gray-100 transition-all duration-500 w-full hover:shadow-2xl hover:z-30 group h-full flex flex-col">
       {/* Product Image Wrapper */}
@@ -47,19 +54,40 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Hover Action Icons */}
         <div className="absolute top-4 right-5 z-20 flex flex-col gap-2 translate-x-16 group-hover/image:translate-x-0 transition-transform duration-300">
-          {[
-            { icon: Heart, label: "Wishlist" },
-            { icon: Eye, label: "Quick View" },
-          ].map((item, idx) => (
-            <button
-              key={idx}
-              className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-foreground hover:bg-accent hover:text-primary transition-colors hover:scale-110 duration-200"
-              title={item.label}
-              onClick={(e) => e.preventDefault()}
-            >
-              <item.icon size={18} strokeWidth={1.5} />
-            </button>
-          ))}
+          <button
+            className={`w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-colors hover:scale-110 duration-200 ${
+              isInWishlist
+                ? "bg-red-50 text-red-500"
+                : "bg-white text-foreground hover:bg-accent hover:text-primary"
+            }`}
+            title="Wishlist"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleItem({
+                productId: product.id,
+                slug: product.slug,
+                name: product.name,
+                price,
+                image: mainImage,
+              });
+            }}
+          >
+            <Heart
+              size={18}
+              strokeWidth={1.5}
+              className={isInWishlist ? "fill-red-500" : ""}
+            />
+          </button>
+          <button
+            className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-foreground hover:bg-accent hover:text-primary transition-colors hover:scale-110 duration-200"
+            title="Quick View"
+            onClick={(e) => {
+              e.preventDefault();
+              setQuickViewOpen(true);
+            }}
+          >
+            <Eye size={18} strokeWidth={1.5} />
+          </button>
         </div>
 
         {/* Image */}
@@ -137,6 +165,14 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </button>
         )}
       </div>
+
+      {/* Quick View Modal */}
+      {quickViewOpen && (
+        <QuickViewModal
+          product={product}
+          onClose={() => setQuickViewOpen(false)}
+        />
+      )}
     </div>
   );
 };

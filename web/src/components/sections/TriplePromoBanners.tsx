@@ -1,47 +1,34 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import type { PromoBanner } from "@/types";
 
-const promos = [
-  {
-    id: "promo-1",
-    badge: null,
-    overline: "CUSTOM EMBROIDERY",
-    title: "Premium Embroidered Hoodies & Workwear",
-    image: "/images/services/embroidery.jpg",
-    alt: "Custom embroidered hoodie",
-    bgColor: "bg-[#edf4ec]",
-    linkText: "EXPLORE",
-    href: "/shop/clothing/hoodies",
-    buttonVariant: "link",
-  },
-  {
-    id: "promo-2",
-    badge: "BEST SELLER",
-    overline: "PERSONALISED GIFTS",
-    title: "Custom Mugs, Tumblers & Glassware",
-    image: "/images/services/printing.jpg",
-    alt: "Personalised mugs and tumblers",
-    bgColor: "bg-[#e5e1f1]",
-    linkText: "SHOP NOW",
-    href: "/shop/drinkware",
-    buttonVariant: "solid",
-  },
-  {
-    id: "promo-3",
-    badge: null,
-    overline: "DESIGN YOUR OWN",
-    title: "Tote Bags, Caps & Accessories",
-    image: "/images/services/design.jpg",
-    alt: "Custom printed tote bags and caps",
-    bgColor: "bg-[#f2ece2]",
-    linkText: "CUSTOMISE",
-    href: "/personalise-it",
-    buttonVariant: "link",
-  },
-];
+const bgColors = ["bg-[#edf4ec]", "bg-[#e5e1f1]", "bg-[#f2ece2]"];
 
-export const TriplePromoBanners = () => {
+interface TriplePromoBannersProps {
+  promoBanners?: PromoBanner[];
+}
+
+export const TriplePromoBanners = ({
+  promoBanners,
+}: TriplePromoBannersProps) => {
+  const cmsSlice = promoBanners?.filter((b) => b.active).slice(0, 3);
+
+  if (!cmsSlice || cmsSlice.length < 3) return null;
+
+  const promos = cmsSlice.map((b, i) => ({
+    id: b.id,
+    badge: i === 1 ? "BEST SELLER" : (null as string | null),
+    overline: b.overline,
+    title: b.title + (b.titleLine2 ? ` ${b.titleLine2}` : ""),
+    image: b.image?.url || "",
+    alt: b.image?.alt || b.title,
+    bgColor: b.bgOverlay || bgColors[i % bgColors.length],
+    linkText: b.cta?.label || "SHOP NOW",
+    href: b.cta?.href || "/shop",
+    buttonVariant: i === 1 ? "solid" : "link",
+  }));
   return (
     <section className="pb-12 md:pb-28 pt-2 bg-[#f8f9fa]">
       <Container>
@@ -60,13 +47,17 @@ export const TriplePromoBanners = () => {
 
               {/* Image */}
               <div className="relative w-full sm:w-[45%] h-[140px] sm:h-full sm:min-h-[200px] md:min-h-[240px] mb-3 sm:mb-0 sm:mr-4 flex-shrink-0 z-10 transition-transform duration-500 group-hover:scale-105">
-                <Image
-                  src={promo.image}
-                  alt={promo.alt}
-                  fill
-                  className="object-contain object-center"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+                {promo.image ? (
+                  <Image
+                    src={promo.image}
+                    alt={promo.alt}
+                    fill
+                    className="object-contain object-center"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                ) : (
+                  <PlaceholderImage type="service" />
+                )}
               </div>
 
               {/* Content */}

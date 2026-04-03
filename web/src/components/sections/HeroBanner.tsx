@@ -4,44 +4,9 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { HeroSlide } from "@/types";
-
-const defaultSlides = [
-  {
-    image: "/images/hero/hero-1.jpg",
-    alt: "Custom printed t-shirts and hoodies",
-    overline: "Premium Print-on-Demand & Embroidery",
-    title: "Custom Clothing & Gifts",
-    highlight: "that Speak for You",
-    description:
-      "5+ years crafting premium custom products — t-shirts, hoodies, mugs, tote bags & more. Serving the UK, Africa & Europe.",
-    cta: { label: "Shop Now", href: "/shop" },
-    ctaSecondary: { label: "Personalise It", href: "/personalise-it" },
-  },
-  {
-    image: "/images/hero/hero-2.jpg",
-    alt: "Embroidered corporate workwear",
-    overline: "Professional Embroidery Services",
-    title: "Your Logo, Stitched",
-    highlight: "to Perfection",
-    description:
-      "Premium embroidery for workwear, uniforms, team apparel & personalised gifts. Durable, detailed, and professionally finished.",
-    cta: { label: "Our Services", href: "/services" },
-    ctaSecondary: { label: "Get a Quote", href: "/contact" },
-  },
-  {
-    image: "/images/hero/hero-3.jpg",
-    alt: "Personalised mugs and accessories",
-    overline: "Design Your Own",
-    title: "Make It Personal,",
-    highlight: "Make It Yours",
-    description:
-      "Use our online design tool to create one-of-a-kind products. Upload your artwork, add text, and preview instantly.",
-    cta: { label: "Start Designing", href: "/personalise-it" },
-    ctaSecondary: { label: "Browse Products", href: "/shop" },
-  },
-];
 
 /** Map CMS HeroSlide[] to internal slide format */
 function mapCMSSlides(cmsSlides: HeroSlide[]) {
@@ -49,7 +14,7 @@ function mapCMSSlides(cmsSlides: HeroSlide[]) {
     .filter((s) => s.active)
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((s) => ({
-      image: s.image?.url || "/images/hero/hero-1.jpg",
+      image: s.image?.url || "",
       alt: s.image?.alt || s.title,
       overline: s.overline,
       title: s.title,
@@ -91,9 +56,10 @@ const tiles = buildTiles();
 
 export const HeroBanner = ({ heroSlides }: HeroBannerProps) => {
   const slides =
-    heroSlides && heroSlides.length > 0
-      ? mapCMSSlides(heroSlides)
-      : defaultSlides;
+    heroSlides && heroSlides.length > 0 ? mapCMSSlides(heroSlides) : [];
+
+  if (slides.length === 0) return null;
+
   const [current, setCurrent] = useState(0);
   const [outgoingIndex, setOutgoingIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -182,14 +148,18 @@ export const HeroBanner = ({ heroSlides }: HeroBannerProps) => {
       >
         {/* Incoming slide — shifted left for zero overlap with right-aligned text */}
         <div className="absolute inset-0 w-[115%] -left-[15%]">
-          <Image
-            src={slide.image}
-            alt={slide.alt}
-            fill
-            className="object-cover object-left"
-            priority
-            sizes="115vw"
-          />
+          {slide.image ? (
+            <Image
+              src={slide.image}
+              alt={slide.alt}
+              fill
+              className="object-cover object-left"
+              priority
+              sizes="115vw"
+            />
+          ) : (
+            <PlaceholderImage type="hero" />
+          )}
         </div>
 
         {/* Tile-switch grid of the outgoing slide */}

@@ -8,6 +8,7 @@ import type { ProductData } from "@/lib/products";
 import { shippingAndReturnInfo } from "@/lib/products";
 import { formatPrice, priceToPounds, getImageUrl } from "@/types";
 import { useCartStore } from "@/lib/cartStore";
+import { useWishlistStore } from "@/lib/wishlistStore";
 import {
   Minus,
   Plus,
@@ -126,6 +127,8 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [addedToCart, setAddedToCart] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>("description");
   const addItem = useCartStore((s) => s.addItem);
+  const toggleWishlist = useWishlistStore((s) => s.toggleItem);
+  const isInWishlist = useWishlistStore((s) => s.isInWishlist)(product.id);
 
   const handleAddToCart = () => {
     addItem({
@@ -459,8 +462,26 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
           {/* Action Links & Payment Methods */}
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mt-8 mb-8 border-t border-b border-gray-100 py-6">
             <div className="flex items-center flex-wrap gap-6 text-[12px] font-bold text-gray-800 tracking-wide">
-              <button className="inline-flex items-center gap-1.5 hover:text-[#a9cb5b] transition-colors uppercase whitespace-nowrap">
-                <Heart size={18} className="text-[#333]" /> Add to Wishlist
+              <button
+                onClick={() => {
+                  const p = product;
+                  toggleWishlist({
+                    productId: p.id,
+                    slug: p.slug,
+                    name: p.name,
+                    price: priceToPounds(p.price),
+                    image: getImageUrl(p.images?.[0]),
+                  });
+                }}
+                className="inline-flex items-center gap-1.5 hover:text-[#a9cb5b] transition-colors uppercase whitespace-nowrap"
+              >
+                <Heart
+                  size={18}
+                  className={
+                    isInWishlist ? "fill-red-500 text-red-500" : "text-[#333]"
+                  }
+                />
+                {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
               </button>
               <button className="inline-flex items-center gap-1.5 hover:text-[#a9cb5b] transition-colors uppercase whitespace-nowrap">
                 <Share2 size={18} className="text-[#333]" /> Share

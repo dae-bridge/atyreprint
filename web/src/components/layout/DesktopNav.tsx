@@ -39,104 +39,7 @@ function discountPercent(product: Product): string | null {
   return `-${pct}%`;
 }
 
-// ─── Hardcoded Fallbacks (used when Firestore has no data) ───────────────
-
-const fallbackFeaturedProducts = [
-  {
-    title: "Eco-Friendly T-Shirt",
-    slug: "custom-printed-tshirt",
-    price: "£22.00",
-    discountPrice: "£18.00",
-    discount: "-18%",
-    rating: 5,
-    image: "/images/categories/mega/1.jpg",
-    badge: "New",
-  },
-  {
-    title: "Premium Hoodie",
-    slug: "embroidered-hoodie",
-    price: "£45.00",
-    discountPrice: "£38.00",
-    discount: "-15%",
-    rating: 5,
-    image: "/images/categories/mega/2.jpg",
-  },
-  {
-    title: "Custom Ceramic Mug",
-    slug: "personalised-mug",
-    price: "£12.00",
-    rating: 4,
-    image: "/images/categories/mega/3.jpg",
-  },
-  {
-    title: "Printed Tote Bag",
-    slug: "custom-tote-bag",
-    price: "£15.00",
-    discountPrice: "£12.00",
-    discount: "-20%",
-    rating: 5,
-    image: "/images/categories/mega/4.jpg",
-  },
-  {
-    title: "Embroidered Cap",
-    slug: "branded-snapback-cap",
-    price: "£25.00",
-    rating: 5,
-    image: "/images/categories/mega/1.jpg",
-  },
-];
-
-const fallbackDealCategories = [
-  { label: "T-Shirts", image: "/images/categories/mega/1.jpg" },
-  { label: "Hoodies", image: "/images/categories/mega/2.jpg" },
-  { label: "Mugs", image: "/images/categories/mega/3.jpg" },
-  { label: "Tote Bags", image: "/images/categories/mega/4.jpg" },
-  { label: "Caps & Hats", image: "/images/categories/mega/3.jpg" },
-  { label: "Workwear", image: "/images/categories/mega/1.jpg" },
-  { label: "Drinkware", image: "/images/categories/mega/4.jpg" },
-  { label: "Accessories", image: "/images/categories/mega/2.jpg" },
-];
-
-const fallbackTopRatedProducts = [
-  {
-    title: "Custom Printed T-Shirt",
-    slug: "custom-printed-tshirt",
-    price: "£20",
-    image: "/images/categories/mega/3.jpg",
-  },
-  {
-    title: "Embroidered Hoodie",
-    slug: "embroidered-hoodie",
-    price: "£45",
-    oldPrice: "£50",
-    image: "/images/categories/mega/1.jpg",
-  },
-  {
-    title: "Personalised Mug",
-    slug: "personalised-mug",
-    price: "£13",
-    image: "/images/categories/mega/4.jpg",
-  },
-  {
-    title: "Branded Snapback Cap",
-    slug: "branded-snapback-cap",
-    price: "£20",
-    oldPrice: "£25",
-    image: "/images/categories/mega/2.jpg",
-  },
-  {
-    title: "Custom Tote Bag",
-    slug: "custom-tote-bag",
-    price: "£15",
-    image: "/images/categories/mega/4.jpg",
-  },
-  {
-    title: "Custom Glass Can",
-    slug: "custom-glass-can",
-    price: "£16",
-    image: "/images/categories/mega/1.jpg",
-  },
-];
+// ─── Hardcoded Fallbacks removed — all data comes from Firestore ───────────────
 
 /* ─── Product-Centric Mega Menu (5 columns) ─── */
 const ProductMegaMenu = ({
@@ -177,91 +80,19 @@ const ProductMegaMenu = ({
 
       <div className="p-8 bg-surface">
         <div className="grid grid-cols-5 gap-5">
-          {hasRealData
-            ? products.slice(0, 5).map((product) => {
-                const discount = discountPercent(product);
-                const img = productImage(product);
-                return (
-                  <div
-                    key={product.id}
-                    className="bg-white rounded-lg p-4 flex flex-col group transition-all hover:opacity-95"
-                  >
-                    <div className="relative aspect-square mb-4 bg-surface-alt rounded overflow-hidden">
-                      {discount && (
-                        <span className="absolute top-2 left-2 z-10 bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-                          {discount}
-                        </span>
-                      )}
-                      <Link
-                        href={`/shop/product/${product.slug}`}
-                        className="block relative w-full h-full"
-                      >
-                        <Image
-                          src={img}
-                          alt={productImageAlt(product)}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </Link>
-                    </div>
-                    <div className="flex flex-col flex-1">
-                      <Link href={`/shop/product/${product.slug}`}>
-                        <h4 className="text-[13px] font-bold text-foreground line-clamp-2 mb-1 hover:text-primary transition-colors cursor-pointer">
-                          {product.name}
-                        </h4>
-                      </Link>
-                      <div className="flex gap-0.5 mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <svg
-                            key={i}
-                            className={cn(
-                              "w-3 h-3",
-                              i < product.rating
-                                ? "text-yellow-400 fill-current"
-                                : "text-border",
-                            )}
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-2 mt-auto mb-4">
-                        {product.compareAtPrice &&
-                        product.compareAtPrice.amount > product.price.amount ? (
-                          <>
-                            <span className="text-accent font-bold text-[15px]">
-                              {fmtPrice(product.price)}
-                            </span>
-                            <span className="text-text-muted text-[12px] line-through">
-                              {fmtPrice(product.compareAtPrice)}
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-primary font-bold text-[15px]">
-                            {fmtPrice(product.price)}
-                          </span>
-                        )}
-                      </div>
-                      <Link
-                        href={`/personalise-it?product=${product.slug}`}
-                        className="w-full py-2 border border-border text-[11px] font-bold text-foreground hover:bg-primary hover:text-white transition-all uppercase rounded text-center block"
-                      >
-                        Customise
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })
-            : fallbackFeaturedProducts.map((product) => (
+          {hasRealData ? (
+            products.slice(0, 5).map((product) => {
+              const discount = discountPercent(product);
+              const img = productImage(product);
+              return (
                 <div
-                  key={product.title}
+                  key={product.id}
                   className="bg-white rounded-lg p-4 flex flex-col group transition-all hover:opacity-95"
                 >
                   <div className="relative aspect-square mb-4 bg-surface-alt rounded overflow-hidden">
-                    {product.discount && (
+                    {discount && (
                       <span className="absolute top-2 left-2 z-10 bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-                        {product.discount}
+                        {discount}
                       </span>
                     )}
                     <Link
@@ -269,8 +100,8 @@ const ProductMegaMenu = ({
                       className="block relative w-full h-full"
                     >
                       <Image
-                        src={product.image}
-                        alt={product.title}
+                        src={img}
+                        alt={productImageAlt(product)}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
@@ -279,7 +110,7 @@ const ProductMegaMenu = ({
                   <div className="flex flex-col flex-1">
                     <Link href={`/shop/product/${product.slug}`}>
                       <h4 className="text-[13px] font-bold text-foreground line-clamp-2 mb-1 hover:text-primary transition-colors cursor-pointer">
-                        {product.title}
+                        {product.name}
                       </h4>
                     </Link>
                     <div className="flex gap-0.5 mb-2">
@@ -299,18 +130,19 @@ const ProductMegaMenu = ({
                       ))}
                     </div>
                     <div className="flex items-center gap-2 mt-auto mb-4">
-                      {product.discountPrice ? (
+                      {product.compareAtPrice &&
+                      product.compareAtPrice.amount > product.price.amount ? (
                         <>
                           <span className="text-accent font-bold text-[15px]">
-                            {product.discountPrice}
+                            {fmtPrice(product.price)}
                           </span>
                           <span className="text-text-muted text-[12px] line-through">
-                            {product.price}
+                            {fmtPrice(product.compareAtPrice)}
                           </span>
                         </>
                       ) : (
                         <span className="text-primary font-bold text-[15px]">
-                          {product.price}
+                          {fmtPrice(product.price)}
                         </span>
                       )}
                     </div>
@@ -322,64 +154,18 @@ const ProductMegaMenu = ({
                     </Link>
                   </div>
                 </div>
-              ))}
+              );
+            })
+          ) : (
+            <div className="col-span-5 py-8 text-center text-text-muted text-sm">
+              No products available yet.
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
-
-const dealCategories = [
-  { label: "T-Shirts", image: "/images/categories/mega/1.jpg" },
-  { label: "Hoodies", image: "/images/categories/mega/2.jpg" },
-  { label: "Mugs", image: "/images/categories/mega/3.jpg" },
-  { label: "Tote Bags", image: "/images/categories/mega/4.jpg" },
-  { label: "Caps & Hats", image: "/images/categories/mega/3.jpg" },
-  { label: "Workwear", image: "/images/categories/mega/1.jpg" },
-  { label: "Drinkware", image: "/images/categories/mega/4.jpg" },
-  { label: "Accessories", image: "/images/categories/mega/2.jpg" },
-];
-
-const topRatedProducts = [
-  {
-    title: "Custom Printed T-Shirt",
-    slug: "custom-printed-tshirt",
-    price: "£20",
-    image: "/images/categories/mega/3.jpg",
-  },
-  {
-    title: "Embroidered Hoodie",
-    slug: "embroidered-hoodie",
-    price: "£45",
-    oldPrice: "£50",
-    image: "/images/categories/mega/1.jpg",
-  },
-  {
-    title: "Personalised Mug",
-    slug: "personalised-mug",
-    price: "£13",
-    image: "/images/categories/mega/4.jpg",
-  },
-  {
-    title: "Branded Snapback Cap",
-    slug: "branded-snapback-cap",
-    price: "£20",
-    oldPrice: "£25",
-    image: "/images/categories/mega/2.jpg",
-  },
-  {
-    title: "Custom Tote Bag",
-    slug: "custom-tote-bag",
-    price: "£15",
-    image: "/images/categories/mega/4.jpg",
-  },
-  {
-    title: "Custom Glass Can",
-    slug: "custom-glass-can",
-    price: "£16",
-    image: "/images/categories/mega/1.jpg",
-  },
-];
 
 /* ─── Shop Mega Menu (Links + Promo Banner) ─── */
 const ShopMegaMenu = ({
@@ -544,32 +330,40 @@ const DealsMegaMenu = ({
           Shop By
         </h3>
         <div className="grid grid-cols-4 gap-x-6 gap-y-10">
-          {(dynamicCategories || fallbackDealCategories).map((cat, idx) => (
-            <Link
-              key={cat.label}
-              href={`/shop/${"slug" in cat ? cat.slug : ""}`}
-              className="group flex flex-col items-center"
-            >
-              <div className="relative w-32 h-32 rounded-full border border-border/50 shadow-sm bg-white overflow-hidden flex items-center justify-center mb-3 group-hover:border-accent transition-colors">
-                <div className="relative w-24 h-24">
-                  <Image
-                    src={
-                      ("image" in cat && cat.image) ||
-                      fallbackDealCategories[
-                        idx % fallbackDealCategories.length
-                      ].image
-                    }
-                    alt={cat.label}
-                    fill
-                    className="object-contain group-hover:scale-110 transition-transform"
-                  />
+          {dynamicCategories && dynamicCategories.length > 0 ? (
+            dynamicCategories.map((cat) => (
+              <Link
+                key={cat.label}
+                href={`/shop/${cat.slug}`}
+                className="group flex flex-col items-center"
+              >
+                <div className="relative w-32 h-32 rounded-full border border-border/50 shadow-sm bg-white overflow-hidden flex items-center justify-center mb-3 group-hover:border-accent transition-colors">
+                  <div className="w-12 h-12 flex items-center justify-center text-text-muted">
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z"
+                      />
+                    </svg>
+                  </div>
                 </div>
-              </div>
-              <span className="text-[13px] font-bold text-text-secondary group-hover:text-primary transition-colors text-center">
-                {cat.label}
-              </span>
-            </Link>
-          ))}
+                <span className="text-[13px] font-bold text-text-secondary group-hover:text-primary transition-colors text-center">
+                  {cat.label}
+                </span>
+              </Link>
+            ))
+          ) : (
+            <div className="col-span-4 py-8 text-center text-text-muted text-sm">
+              No categories available yet.
+            </div>
+          )}
         </div>
       </div>
 
@@ -579,71 +373,44 @@ const DealsMegaMenu = ({
           Top Rated
         </h3>
         <div className="grid grid-cols-2 gap-4">
-          {hasRealTopRated
-            ? topRated.slice(0, 6).map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/shop/product/${product.slug}`}
-                  className="group flex items-center gap-4 bg-white p-4 rounded-md transition-all hover:bg-white/95"
-                >
-                  <div className="relative w-16 h-16 bg-surface-alt rounded overflow-hidden shrink-0">
-                    <Image
-                      src={productImage(product)}
-                      alt={productImageAlt(product)}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <h4 className="text-[14px] font-bold text-foreground leading-snug line-clamp-2 mb-1">
-                      {product.name}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-auto">
-                      <span className="text-accent font-bold text-[14px]">
-                        {fmtPrice(product.price)}
-                      </span>
-                      {product.compareAtPrice &&
-                        product.compareAtPrice.amount >
-                          product.price.amount && (
-                          <span className="text-text-muted text-[11px] line-through">
-                            {fmtPrice(product.compareAtPrice)}
-                          </span>
-                        )}
-                    </div>
-                  </div>
-                </Link>
-              ))
-            : fallbackTopRatedProducts.map((product) => (
-                <Link
-                  key={product.title}
-                  href={`/shop/product/${product.slug}`}
-                  className="group flex items-center gap-4 bg-white p-4 rounded-md transition-all hover:bg-white/95"
-                >
-                  <div className="relative w-16 h-16 bg-surface-alt rounded overflow-hidden shrink-0">
-                    <Image
-                      src={product.image}
-                      alt={product.title}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <h4 className="text-[14px] font-bold text-foreground leading-snug line-clamp-2 mb-1">
-                      {product.title}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-auto">
-                      <span className="text-accent font-bold text-[14px]">
-                        {product.price}
-                      </span>
-                      {product.oldPrice && (
+          {hasRealTopRated ? (
+            topRated.slice(0, 6).map((product) => (
+              <Link
+                key={product.id}
+                href={`/shop/product/${product.slug}`}
+                className="group flex items-center gap-4 bg-white p-4 rounded-md transition-all hover:bg-white/95"
+              >
+                <div className="relative w-16 h-16 bg-surface-alt rounded overflow-hidden shrink-0">
+                  <Image
+                    src={productImage(product)}
+                    alt={productImageAlt(product)}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <h4 className="text-[14px] font-bold text-foreground leading-snug line-clamp-2 mb-1">
+                    {product.name}
+                  </h4>
+                  <div className="flex items-center gap-2 mt-auto">
+                    <span className="text-accent font-bold text-[14px]">
+                      {fmtPrice(product.price)}
+                    </span>
+                    {product.compareAtPrice &&
+                      product.compareAtPrice.amount > product.price.amount && (
                         <span className="text-text-muted text-[11px] line-through">
-                          {product.oldPrice}
+                          {fmtPrice(product.compareAtPrice)}
                         </span>
                       )}
-                    </div>
                   </div>
-                </Link>
-              ))}
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="col-span-2 py-8 text-center text-text-muted text-sm">
+              No top-rated products yet.
+            </div>
+          )}
         </div>
       </div>
     </div>

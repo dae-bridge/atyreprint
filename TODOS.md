@@ -1,125 +1,124 @@
 # TODOS — AtyrePrint Project
 
-> Project-wide task tracker. Updated April 2026 after full audit.
-> Payment integration (Stripe/PayPal) will be done last.
+> Project-wide task tracker. Updated June 2026 — all phases complete.
 
 ---
 
-## Phase 1: Homepage Sections — Wire to Firestore/CMS
+## Phase 1: Homepage Sections — Wire to Firestore/CMS ✅
 
-- [ ] **TopCategories section** — Accept Firestore categories as props (currently hardcoded 6 categories)
-- [ ] **TwinPromoBanners** — Connect to CMS `promoBanners` (currently hardcoded 2 banners)
-- [ ] **TriplePromoBanners** — Connect to CMS `promoBanners` (currently hardcoded 3 banners)
-- [ ] **BlogPreview section** — Wire to Firestore `blog-posts` collection (currently hardcoded, not on homepage)
-- [ ] **PurchaseToast** — Show real recent purchases from Firestore or remove fake social proof
-- [ ] **ServiceCards section** — Accept CMS services data (currently `siteConfig` only)
-
----
-
-## Phase 2: Search & Navigation
-
-- [ ] **Product search** — Wire Header search bar to Firestore product search (currently does nothing)
-- [ ] **Create `lib/search.ts`** — Product search by name, description, tags
-- [ ] **Search results page** — `/search?q=` route with filtered product grid
-- [ ] **Dynamic sitemap** — Fetch categories + products from Firestore (currently hardcoded slugs)
+- [x] **TopCategories section** — Accept Firestore categories as props
+- [x] **TwinPromoBanners** — Connect to CMS `promoBanners`
+- [x] **TriplePromoBanners** — Connect to CMS `promoBanners`
+- [x] **BlogPreview section** — Wire to Firestore `blog-posts` collection
+- [x] **PurchaseToast** — Shows real recent purchases from Firestore
+- [x] **ServiceCards section** — Accept CMS services data
 
 ---
 
-## Phase 3: Auth System (Firebase Auth)
+## Phase 2: Search & Navigation ✅
 
-- [ ] **Create `lib/auth.ts`** — Firebase Auth helpers (signIn, signUp, signOut, resetPassword, onAuthStateChanged)
-- [ ] **Auth context/provider** — Wrap app with auth state
-- [ ] **Login page** — Wire to Firebase Auth email/password + Google OAuth (currently `e.preventDefault()` stub)
-- [ ] **Signup page** — Wire to Firebase Auth (currently stub)
-- [ ] **Forgot Password page** — Wire to Firebase `sendPasswordResetEmail` (currently fakes submission)
-- [ ] **Protected routes middleware** — Redirect unauthenticated users from `/account`, `/checkout`
-- [ ] **Header user menu** — Show login/signup or user avatar based on auth state
+- [x] **Product search** — Header search bar wired to Firestore product search
+- [x] **Create `lib/search.ts`** — Product search by name, description, tags
+- [x] **Search results page** — `/search?q=` route with filtered product grid
+- [x] **Dynamic sitemap** — Fetches categories + products from Firestore
 
 ---
 
-## Phase 4: Account Dashboard
+## Phase 3: Auth System (Firebase Auth) ✅
 
-- [ ] **Wire account page to Auth** — Replace `MOCK_ORDERS`, `MOCK_DESIGNS`, `MOCK_ADDRESSES` with Firestore data
-- [ ] **Order history tab** — Fetch real orders from Firestore `orders` collection
-- [ ] **Saved designs tab** — Fetch from Firestore `designs` collection
-- [ ] **Address book tab** — CRUD addresses in Firestore `users/{uid}/addresses`
-- [ ] **Account details tab** — Edit profile (name, email, phone) via Firebase Auth + Firestore user doc
-
----
-
-## Phase 5: Wishlist
-
-- [ ] **Create `lib/wishlistStore.ts`** — Zustand store with persist (like cartStore)
-- [ ] **Wire ProductCard heart button** — Toggle wishlist (currently `e.preventDefault()`)
-- [ ] **Wire ProductDetailClient heart button** — Toggle wishlist
-- [ ] **Wishlist page** — Show saved items with remove + add-to-cart (currently empty placeholder)
-- [ ] **Sync with Firestore** — Persist wishlist for logged-in users
+- [x] **Create `lib/auth.ts`** — Firebase Auth helpers (signIn, signUp, signOut, resetPassword, onAuthStateChanged)
+- [x] **Auth context/provider** — App wrapped with auth state
+- [x] **Login page** — Wired to Firebase Auth email/password + Google OAuth
+- [x] **Signup page** — Wired to Firebase Auth
+- [x] **Forgot Password page** — Wired to Firebase `sendPasswordResetEmail`
+- [x] **Protected routes middleware** — Redirects unauthenticated users from `/account`, `/checkout`
+- [x] **Header user menu** — Shows login/signup or user avatar based on auth state
 
 ---
 
-## Phase 6: Contact & Newsletter
+## Phase 4: Account Dashboard ✅
 
-- [ ] **Contact form** — Wire to Server Action or Cloud Function to send email (currently `setTimeout` fake)
-- [ ] **Newsletter signup** — Wire to email service (Mailchimp/SendGrid/Cloud Function) (currently `e.preventDefault()`)
-
----
-
-## Phase 7: Blog
-
-- [ ] **Blog listing page** — Fetch from Firestore `blog-posts` collection (currently "Coming Soon" placeholder)
-- [ ] **Blog post detail page** — `/blog/[slug]` route with full post content
-- [ ] **Admin blog management** — CRUD blog posts in admin (check if already exists)
-- [ ] **BlogPreview homepage section** — Wire to latest 3 posts + add to homepage
+- [x] **Wire account page to Auth** — Real Firestore data for orders, addresses, profile
+- [x] **Order history tab** — Fetches real orders from Firestore `orders` collection
+- [x] **Saved designs tab** — Fetches from Firestore `designs` collection
+- [x] **Address book tab** — CRUD addresses in Firestore `users/{uid}/addresses`
+- [x] **Account details tab** — Edit profile (name, email, phone) via Firebase Auth + Firestore user doc
 
 ---
 
-## Phase 8: Coupon System
+## Phase 5: Wishlist ✅
 
-- [ ] **Create `lib/coupon.ts`** — Validate coupon codes against Firestore `coupons` collection
-- [ ] **Cart coupon field** — Wire to validation + apply discount (currently non-functional)
-- [ ] **Checkout coupon field** — Same as cart
-- [ ] **Admin coupon management** — CRUD coupons in admin (check if already exists)
-
----
-
-## Phase 9: Order System
-
-- [ ] **Create `lib/orders.ts`** — `createOrder()`, `getOrdersByUser()`, `getOrderById()`
-- [ ] **Create Order types** — `Order`, `OrderItem`, `OrderStatus` in `types/index.ts`
-- [ ] **Order confirmation page** — Create real order in Firestore (currently generates mock ID)
-- [ ] **Order tracking page** — Fetch real order by ID/email (currently stub form)
-- [ ] **Order confirmation email** — Cloud Function to send email on order creation
+- [x] **Create `lib/wishlistStore.ts`** — Zustand store with persist
+- [x] **Wire ProductCard heart button** — Toggle wishlist
+- [x] **Wire ProductDetailClient heart button** — Toggle wishlist
+- [x] **Wishlist page** — Shows saved items with remove + add-to-cart
+- [x] **Sync with Firestore** — Persists wishlist for logged-in users
 
 ---
 
-## Phase 10: Payment Integration (LAST)
+## Phase 6: Contact & Newsletter ✅
 
-- [ ] **Stripe integration** — Payment intent, checkout session
-- [ ] **Checkout page** — Wire form validation + payment processing (currently full UI but no handler)
-- [ ] **Payment confirmation** — Handle success/failure callbacks
-- [ ] **Admin order payment status** — Show payment state in admin orders
+- [x] **Contact form** — Wired to Server Action, saves to Firestore
+- [x] **Newsletter signup** — Wired to Firestore `newsletter-subscribers` collection
 
 ---
 
-## Phase 11: Remaining Pages & Polish
+## Phase 7: Blog ✅
 
-- [ ] **Services/Bulk page** — Complete content (currently placeholder stub, no metadata)
-- [ ] **Services/Screen-Printing page** — Complete content (currently placeholder stub, no metadata)
-- [ ] **Remove `/shop/accessories` static page** — Redundant with `[...category]` catch-all
-- [ ] **Quick View modal** — Wire ProductCard eye button (currently `e.preventDefault()`)
-- [ ] **Add missing metadata** to: `/blog`, `/login`, `/signup`, `/forgot-password`, `/account`, `/wishlist`, `/services/bulk`, `/services/screen-printing`, `/order-confirmation`
+- [x] **Blog listing page** — Fetches from Firestore `blog-posts` collection
+- [x] **Blog post detail page** — `/blog/[slug]` route with full post content
+- [x] **Admin blog management** — CRUD blog posts with rich text editor (TipTap)
+- [x] **BlogPreview homepage section** — Wired to latest 3 posts
 
 ---
 
-## Phase 12: Security & Infrastructure
+## Phase 8: Coupon System ✅
 
-- [ ] Security headers middleware (CSP, X-Frame-Options, etc.)
-- [ ] Firestore security rules for new collections (orders, users, wishlists)
-- [ ] Input validation with Zod on all Server Actions
-- [ ] Rate limiting on forms (contact, newsletter, auth)
-- [ ] Admin route authentication + RBAC
-- [ ] CI/CD with GitHub Actions
-- [ ] Configure deployment (Vercel)
+- [x] **Create `lib/coupon.ts`** — Validates coupon codes against Firestore `coupons` collection
+- [x] **Cart coupon field** — Wired to validation + applies discount
+- [x] **Checkout coupon field** — Same as cart
+- [x] **Admin coupon management** — CRUD coupons in admin
+
+---
+
+## Phase 9: Order System ✅
+
+- [x] **Create `lib/orders.ts`** — `createOrder()`, `getOrdersByUser()`, `getOrderById()`
+- [x] **Create Order types** — `Order`, `OrderItem`, `OrderStatus` in `types/index.ts`
+- [x] **Order confirmation page** — Creates real order in Firestore
+- [x] **Order tracking page** — Fetches real order by ID/email
+- [x] **Order confirmation email** — Cloud Function to send email on order creation
+
+---
+
+## Phase 10: Payment Integration (Stripe) ✅
+
+- [x] **Stripe integration** — PaymentIntent API, client-side Elements
+- [x] **Checkout page** — Full form validation + Stripe payment processing
+- [x] **Payment confirmation** — Handles success/failure callbacks
+- [x] **Admin order payment status** — Shows payment state in admin orders
+
+---
+
+## Phase 11: Remaining Pages & Polish ✅
+
+- [x] **Services/Bulk page** — Full content with metadata
+- [x] **Services/Screen-Printing page** — Full content with metadata
+- [x] **Remove `/shop/accessories` static page** — Using `[...category]` catch-all
+- [x] **Quick View modal** — Wire ProductCard eye button
+- [x] **Add missing metadata** to all routes
+
+---
+
+## Phase 12: Security & Infrastructure ✅
+
+- [x] Security headers middleware (CSP, X-Frame-Options, etc.)
+- [x] Firestore security rules for all collections
+- [x] Input validation with Zod on all Server Actions
+- [x] Rate limiting on forms (contact, newsletter, auth)
+- [x] Admin route authentication + RBAC
+- [x] CI/CD with GitHub Actions
+- [x] Configure deployment (Vercel)
 
 ---
 

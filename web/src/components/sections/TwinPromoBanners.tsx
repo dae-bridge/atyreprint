@@ -1,31 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import type { PromoBanner } from "@/types";
 
-const banners = [
-  {
-    overline: "CUSTOM CLOTHING",
-    title: "Personalised",
-    titleLine2: "T-Shirts & Hoodies",
-    image: "/images/products/embroidered-hoodie/main.jpg",
-    alt: "Custom printed t-shirts and hoodies",
-    bgColor: "bg-[#f3efea]",
-    href: "/shop/custom-clothing",
-    cta: "Shop Clothing",
-  },
-  {
-    overline: "CORPORATE & GIFTS",
-    title: "Branded Mugs",
-    titleLine2: "& Drinkware",
-    image: "/images/products/personalised-mug/main.jpg",
-    alt: "Custom printed mugs and drinkware",
-    bgColor: "bg-[#e6f0e9]",
-    href: "/shop/drinkware-gifts",
-    cta: "Shop Drinkware",
-  },
-];
+const bgColors = ["bg-[#f3efea]", "bg-[#e6f0e9]"];
 
-export const TwinPromoBanners = () => {
+interface TwinPromoBannersProps {
+  promoBanners?: PromoBanner[];
+}
+
+export const TwinPromoBanners = ({ promoBanners }: TwinPromoBannersProps) => {
+  const cmsSlice = promoBanners?.filter((b) => b.active).slice(0, 2);
+
+  if (!cmsSlice || cmsSlice.length < 2) return null;
+
+  const banners = cmsSlice.map((b, i) => ({
+    overline: b.overline,
+    title: b.title,
+    titleLine2: b.titleLine2,
+    image: b.image?.url || "",
+    alt: b.image?.alt || b.title,
+    bgColor: b.bgOverlay || bgColors[i % bgColors.length],
+    href: b.cta?.href || "/shop",
+    cta: b.cta?.label || "Shop Now",
+  }));
   return (
     <section className="pt-4 md:pt-5 pb-0">
       <Container>
@@ -38,14 +37,18 @@ export const TwinPromoBanners = () => {
               <div className="flex items-center h-full">
                 {/* Image side */}
                 <div className="relative w-2/5 sm:w-1/2 h-full min-h-[200px] sm:min-h-[260px] md:min-h-[320px]">
-                  <Image
-                    src={banner.image}
-                    alt={banner.alt}
-                    fill
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                    sizes="(max-width: 640px) 40vw, (max-width: 768px) 50vw, 25vw"
-                    priority={i === 0}
-                  />
+                  {banner.image ? (
+                    <Image
+                      src={banner.image}
+                      alt={banner.alt}
+                      fill
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                      sizes="(max-width: 640px) 40vw, (max-width: 768px) 50vw, 25vw"
+                      priority={i === 0}
+                    />
+                  ) : (
+                    <PlaceholderImage type="product" />
+                  )}
                 </div>
 
                 {/* Content side */}

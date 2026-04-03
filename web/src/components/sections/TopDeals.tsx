@@ -4,6 +4,8 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { EmptyState } from "@/components/ui/EmptyState";
 import {
   ChevronLeft,
   ChevronRight,
@@ -19,81 +21,6 @@ import { getImageUrl } from "@/types";
 interface TopDealsProps {
   products?: Product[];
 }
-
-const fallbackDeals = [
-  {
-    id: "deal-1",
-    slug: "custom-printed-tshirt",
-    name: "Custom Printed T-Shirt",
-    originalPrice: "£24.99",
-    price: "£19.99",
-    discount: "-20%",
-    rating: 5,
-    image: "/images/products/custom-printed-tshirt/main.jpg",
-    hoverImage: "/images/products/custom-printed-tshirt/thumb-1.jpg",
-    buttonLabel: "CUSTOMISE",
-  },
-  {
-    id: "deal-2",
-    slug: "embroidered-hoodie",
-    name: "Embroidered Hoodie",
-    originalPrice: "£49.99",
-    price: "£39.99",
-    discount: "-20%",
-    rating: 5,
-    image: "/images/products/embroidered-hoodie/main.jpg",
-    hoverImage: "/images/products/embroidered-hoodie/thumb-1.jpg",
-    buttonLabel: "ADD TO CART",
-  },
-  {
-    id: "deal-3",
-    slug: "personalised-mug",
-    name: "Personalised Ceramic Mug",
-    originalPrice: "£15.99",
-    price: "£12.99",
-    discount: "-19%",
-    rating: 4,
-    image: "/images/products/personalised-mug/main.jpg",
-    hoverImage: "/images/products/personalised-mug/thumb-1.jpg",
-    buttonLabel: "CUSTOMISE",
-  },
-  {
-    id: "deal-4",
-    slug: "custom-tote-bag",
-    name: "Custom Tote Bag",
-    originalPrice: "£18.99",
-    price: "£14.99",
-    discount: "-21%",
-    rating: 5,
-    image: "/images/products/custom-tote-bag/main.jpg",
-    hoverImage: "/images/products/custom-tote-bag/thumb-1.jpg",
-    buttonLabel: "ADD TO CART",
-  },
-  {
-    id: "deal-5",
-    slug: "branded-snapback-cap",
-    name: "Branded Snapback Cap",
-    originalPrice: "£24.00",
-    price: "£16.99",
-    discount: "-29%",
-    rating: 5,
-    image: "/images/products/branded-snapback-cap/main.jpg",
-    hoverImage: "/images/products/branded-snapback-cap/thumb-1.jpg",
-    buttonLabel: "ADD TO CART",
-  },
-  {
-    id: "deal-6",
-    slug: "custom-glass-can",
-    name: "Custom Glass Can",
-    originalPrice: "£18.00",
-    price: "£15.99",
-    discount: "-11%",
-    rating: 4,
-    image: "/images/products/custom-glass-can/main.jpg",
-    hoverImage: "/images/products/custom-glass-can/thumb-1.jpg",
-    buttonLabel: "ADD TO CART",
-  },
-];
 
 function mapProduct(p: Product) {
   const price = p.price.amount / 100;
@@ -115,11 +42,7 @@ function mapProduct(p: Product) {
   };
 }
 
-const DealCard = ({
-  product,
-}: {
-  product: ReturnType<typeof mapProduct> | (typeof fallbackDeals)[number];
-}) => {
+const DealCard = ({ product }: { product: ReturnType<typeof mapProduct> }) => {
   return (
     <div className="relative bg-white border border-transparent hover:border-gray-100 transition-all duration-500 w-full snap-start hover:shadow-2xl hover:z-30 rounded-lg overflow-hidden">
       {/* Product Image Wrapper */}
@@ -153,13 +76,17 @@ const DealCard = ({
           href={`/shop/product/${product.slug}`}
           className="relative w-full h-full block"
         >
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-contain transition-opacity duration-500 group-hover/image:opacity-0"
-            sizes="(max-width: 768px) 100vw, 20vw"
-          />
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-contain transition-opacity duration-500 group-hover/image:opacity-0"
+              sizes="(max-width: 768px) 100vw, 20vw"
+            />
+          ) : (
+            <PlaceholderImage type="product" />
+          )}
           {"hoverImage" in product && product.hoverImage && (
             <Image
               src={product.hoverImage}
@@ -229,7 +156,17 @@ export const TopDeals = ({ products }: TopDealsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayProducts =
-    products && products.length > 0 ? products.map(mapProduct) : fallbackDeals;
+    products && products.length > 0 ? products.map(mapProduct) : [];
+
+  if (displayProducts.length === 0) {
+    return (
+      <section className="py-10 md:py-16 bg-surface">
+        <Container>
+          <EmptyState variant="deals" compact />
+        </Container>
+      </section>
+    );
+  }
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {

@@ -8,11 +8,13 @@ import {
   doc,
   getDoc,
   getDocs,
+  addDoc,
   query,
   where,
   orderBy,
   limit,
   Timestamp,
+  serverTimestamp,
   type WhereFilterOp,
   type QueryConstraint,
 } from "firebase/firestore";
@@ -26,11 +28,15 @@ import { db } from "@/lib/firebase";
  */
 export function serialize<T>(data: T): T {
   if (data === null || data === undefined) return data;
-  if (data instanceof Timestamp) return data.toDate().toISOString() as unknown as T;
-  if (Array.isArray(data)) return data.map((item) => serialize(item)) as unknown as T;
+  if (data instanceof Timestamp)
+    return data.toDate().toISOString() as unknown as T;
+  if (Array.isArray(data))
+    return data.map((item) => serialize(item)) as unknown as T;
   if (typeof data === "object") {
     const result: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+    for (const [key, value] of Object.entries(
+      data as Record<string, unknown>,
+    )) {
       result[key] = serialize(value);
     }
     return result as T;
@@ -111,4 +117,54 @@ export async function getSingleton<T>(
   const snap = await getDoc(doc(db, collectionName, docId));
   if (!snap.exists()) return null;
   return serialize(snap.data() as T);
+}
+
+// ─── Safety: strip undefined values ─────────────────────────────────────
+// Firestore rejects `undefined`. Recursively replace with "" so writes
+// never fail silently.
+
+function stripUndefined<T extends Record<string, unknown>>(obj: T): T {
+  const clean: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value === undefined) {
+      clean[key] = "";
+    } else if (
+      value !== null &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      !(value instanceof Timestamp) &&
+      !(value instanceof Date)
+    ) {
+      clean[key] = stripUndefined(value as Record<string, unknown>);
+    } else if (Array.isArray(value)) {
+      clean[key] = value.map((item) =>
+        item !== null &&
+        typeof item === "object" &&
+        !Array.isArray(item) &&
+        !(item instanceof Timestamp)
+          ? stripUndefined(item as Record<string, unknown>)
+          : item === undefined
+            ? ""
+            : item,
+      );
+    } else {
+      clean[key] = value;
+    }
+  }
+  return clean as T;
+}
+
+// ─── Write Operations (public forms only) ────────────────────────────────
+
+/** Add a document to a collection (for contact forms, newsletter, etc.) */
+export async function addDocument(
+  collectionName: string,
+  data: Record<string, unknown>,
+): Promise<string> {
+  const ref = await addDoc(collection(db, collectionName), {
+    ...stripUndefined(data),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  return ref.id;
 }

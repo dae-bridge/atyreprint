@@ -8,8 +8,11 @@ import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
 import { CartDrawer } from "./CartDrawer";
 import { Container } from "@/components/ui/Container";
+import { SearchBar } from "@/components/ui/SearchBar";
 import { Search, ShoppingBag, User, Menu, Heart, X } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
+import { useWishlistStore } from "@/lib/wishlistStore";
+import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import type { SiteSettings, Product } from "@/types";
 
@@ -58,6 +61,8 @@ export const Header = ({
   const [hydrated, setHydrated] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems);
   const totalPrice = useCartStore((s) => s.totalPrice);
+  const wishlistTotal = useWishlistStore((s) => s.totalItems);
+  const { user } = useAuth();
 
   useEffect(() => {
     setHydrated(true);
@@ -105,16 +110,10 @@ export const Header = ({
 
             {/* Center: Search Bar (desktop) */}
             <div className="hidden md:flex flex-1 max-w-3xl bg-surface-alt rounded-md overflow-hidden border border-border group focus-within:border-primary transition-colors h-12">
-              <div className="flex-1 flex items-center relative h-full">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full px-4 py-2 text-[15px] bg-transparent outline-none text-foreground placeholder-text-muted h-full"
-                />
-                <button className="px-5 text-text-secondary hover:text-primary transition-colors h-full flex items-center justify-center">
-                  <Search size={22} />
-                </button>
-              </div>
+              <SearchBar
+                className="flex-1 h-full"
+                inputClassName="w-full px-4 py-2 text-[15px] h-full"
+              />
             </div>
 
             {/* Right: Actions */}
@@ -130,7 +129,7 @@ export const Header = ({
 
               {/* Account */}
               <Link
-                href="/login"
+                href={user ? "/account" : "/login"}
                 className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
               >
                 <div className="flex items-center justify-center">
@@ -138,7 +137,7 @@ export const Header = ({
                 </div>
                 <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
                   <span className="text-text-secondary font-medium">
-                    Sign In
+                    {user ? "My" : "Sign In"}
                   </span>
                   <span className="font-bold text-[15px]">Account</span>
                 </div>
@@ -156,7 +155,7 @@ export const Header = ({
                   className="sm:w-[26px] sm:h-[26px]"
                 />
                 <span className="absolute top-0 right-0 w-4 h-4 sm:w-5 sm:h-5 bg-accent text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
-                  0
+                  {hydrated ? wishlistTotal() : 0}
                 </span>
               </Link>
 
@@ -193,14 +192,11 @@ export const Header = ({
             )}
           >
             <div className="flex bg-surface-alt rounded-md overflow-hidden border border-border h-11">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="flex-1 px-4 text-sm bg-transparent outline-none text-foreground placeholder-text-muted"
+              <SearchBar
+                className="flex-1 h-full"
+                inputClassName="flex-1 px-4 text-sm"
+                compact
               />
-              <button className="px-4 text-text-secondary hover:text-primary transition-colors">
-                <Search size={18} />
-              </button>
             </div>
           </div>
         </Container>

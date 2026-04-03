@@ -524,6 +524,19 @@ export interface DashboardStats {
   revenueByMonth: { month: string; amount: number }[];
 }
 
+// ─── Contact Messages ────────────────────────────────────────────────────
+
+export type ContactMessageStatus = "new" | "read" | "replied";
+
+/** Firestore: contact-messages/{id} */
+export interface ContactMessage extends BaseDocument {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: ContactMessageStatus;
+}
+
 // ─── Collection name constants ───────────────────────────────────────────
 
 export const COLLECTIONS = {
@@ -537,6 +550,7 @@ export const COLLECTIONS = {
   SERVICES: "services",
   COUPONS: "coupons",
   NEWSLETTER: "newsletter-subscribers",
+  CONTACT_MESSAGES: "contact-messages",
   DESIGNS: "designs",
   CMS: "cms",
   SETTINGS: "settings",

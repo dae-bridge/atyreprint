@@ -4,48 +4,28 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Category } from "@/types";
 
-const categories = [
-  {
-    title: "T-Shirts & Polos",
-    count: "Custom Print & Embroidery",
-    image: "/images/products/custom-printed-tshirt/main.jpg",
-    href: "/shop/custom-clothing/t-shirts",
-  },
-  {
-    title: "Hoodies & Sweatshirts",
-    count: "Personalised Designs",
-    image: "/images/products/embroidered-hoodie/main.jpg",
-    href: "/shop/custom-clothing/hoodies",
-  },
-  {
-    title: "Mugs & Drinkware",
-    count: "Ceramic, Glass & Tumblers",
-    image: "/images/products/personalised-mug/main.jpg",
-    href: "/shop/drinkware-gifts",
-  },
-  {
-    title: "Caps & Headwear",
-    count: "Embroidered & Printed",
-    image: "/images/products/branded-snapback-cap/main.jpg",
-    href: "/shop/accessories/caps-hats",
-  },
-  {
-    title: "Tote Bags",
-    count: "Canvas & Cotton",
-    image: "/images/products/custom-tote-bag/main.jpg",
-    href: "/shop/accessories/tote-bags",
-  },
-  {
-    title: "Workwear",
-    count: "Hi-Vis, Aprons & More",
-    image: "/images/products/custom-apron/main.jpg",
-    href: "/shop/custom-clothing/aprons",
-  },
-];
+interface TopCategoriesProps {
+  categoryTree?: { parent: Category; children: Category[] }[];
+}
 
-export const TopCategories = () => {
+export const TopCategories = ({ categoryTree }: TopCategoriesProps) => {
+  const categories =
+    categoryTree && categoryTree.length > 0
+      ? categoryTree.map((node) => ({
+          title: node.parent.name,
+          subtitle:
+            node.children.length > 0
+              ? node.children.map((c) => c.name).join(", ")
+              : node.parent.description || "Browse Products",
+          image: node.parent.image?.url || "",
+          href: `/shop/${node.parent.slug}`,
+        }))
+      : [];
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
@@ -54,6 +34,16 @@ export const TopCategories = () => {
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
+
+  if (categories.length === 0) {
+    return (
+      <section className="pt-8 md:pt-12 pb-4 md:pb-6 bg-white">
+        <Container>
+          <EmptyState variant="categories" compact />
+        </Container>
+      </section>
+    );
+  }
 
   return (
     <section className="pt-8 md:pt-12 pb-4 md:pb-6 bg-white overflow-hidden">
@@ -107,20 +97,24 @@ export const TopCategories = () => {
                   className="group block bg-white border border-border/40 transition-all hover:shadow-2xl hover:-translate-y-2 rounded-none w-[220px] sm:w-[260px] md:w-[calc((100%-48px)/2.5)] lg:w-[calc((100%-72px)/4.5)] flex-shrink-0 snap-start"
                 >
                   <div className="relative aspect-[4/5] w-full overflow-hidden rounded-none bg-[#f9f9f9]">
-                    <Image
-                      src={cat.image}
-                      alt={cat.title}
-                      fill
-                      className="object-contain p-1 scale-[1.1] group-hover:scale-[1.2] transition-transform duration-500"
-                      sizes="(max-width: 640px) 220px, (max-width: 768px) 260px, 25vw"
-                    />
+                    {cat.image ? (
+                      <Image
+                        src={cat.image}
+                        alt={cat.title}
+                        fill
+                        className="object-contain p-1 scale-[1.1] group-hover:scale-[1.2] transition-transform duration-500"
+                        sizes="(max-width: 640px) 220px, (max-width: 768px) 260px, 25vw"
+                      />
+                    ) : (
+                      <PlaceholderImage type="category" />
+                    )}
                   </div>
                   <div className="p-3 sm:p-4 pt-4 sm:pt-5 overflow-hidden">
                     <h3 className="text-sm sm:text-base font-bold text-foreground group-hover:text-accent transition-colors whitespace-nowrap truncate">
                       {cat.title}
                     </h3>
                     <p className="text-foreground/40 text-xs sm:text-sm mt-1">
-                      {cat.count}
+                      {cat.subtitle}
                     </p>
                   </div>
                 </Link>

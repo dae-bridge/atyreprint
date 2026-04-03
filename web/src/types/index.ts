@@ -289,10 +289,119 @@ export interface BlogPost {
   title: string;
   slug: string;
   excerpt: string;
-  coverImage: string;
+  content: string;
+  coverImage: ImageAsset;
   author: string;
   publishedAt: string;
   tags: string[];
+  featured: boolean;
+  status: PublishStatus;
+  seo: SEOMeta;
+}
+
+// ─── Contact Messages ────────────────────────────────────────────────────
+
+export interface ContactMessage extends BaseDocument {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "new" | "read" | "replied";
+}
+
+// ─── Newsletter ──────────────────────────────────────────────────────────
+
+export interface NewsletterSubscriber extends BaseDocument {
+  email: string;
+  active: boolean;
+  source: string;
+}
+
+// ─── Orders ──────────────────────────────────────────────────────────────
+
+export type OrderStatus =
+  | "pending"
+  | "confirmed"
+  | "processing"
+  | "printing"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | "refunded";
+
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
+
+export interface OrderItem {
+  productId: string;
+  productName: string;
+  productImage: string;
+  sku: string;
+  quantity: number;
+  unitPrice: Money;
+  totalPrice: Money;
+  selectedColor?: string;
+  selectedSize?: string;
+  selectedOptions?: Record<string, string>;
+  designId?: string;
+}
+
+export interface OrderStatusEvent {
+  status: OrderStatus;
+  timestamp: string;
+  note?: string;
+}
+
+export interface Address {
+  line1: string;
+  line2?: string;
+  city: string;
+  county?: string;
+  postcode: string;
+  country: string;
+}
+
+export interface Order extends BaseDocument {
+  orderNumber: string;
+  customerId: string | null;
+  customerEmail: string;
+  customerName: string;
+  customerPhone?: string;
+  shippingAddress: Address;
+  billingAddress: Address;
+  items: OrderItem[];
+  subtotal: Money;
+  shippingCost: Money;
+  discount: Money;
+  tax: Money;
+  total: Money;
+  couponCode: string | null;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod?: string;
+  shippingMethod: string;
+  trackingNumber: string | null;
+  trackingUrl: string | null;
+  statusHistory: OrderStatusEvent[];
+  customerNote?: string;
+}
+
+// ─── Coupons ─────────────────────────────────────────────────────────────
+
+export type DiscountType = "percentage" | "fixed";
+
+export interface Coupon extends BaseDocument {
+  code: string;
+  description: string;
+  discountType: DiscountType;
+  discountValue: number;
+  minimumOrderValue: Money | null;
+  maxUses: number | null;
+  usedCount: number;
+  validFrom: string;
+  validUntil: string;
+  applicableCategories: string[];
+  applicableProducts: string[];
+  active: boolean;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -309,10 +418,10 @@ export function priceToPounds(money: Money | null | undefined): number {
   return money.amount / 100;
 }
 
-/** Get image URL from ImageAsset, with fallback */
+/** Get image URL from ImageAsset, with optional fallback */
 export function getImageUrl(
   image: ImageAsset | null | undefined,
-  fallback = "/images/placeholder.jpg",
+  fallback = "",
 ): string {
   return image?.url || fallback;
 }

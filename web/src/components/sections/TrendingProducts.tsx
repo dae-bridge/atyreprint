@@ -4,6 +4,8 @@ import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { EmptyState } from "@/components/ui/EmptyState";
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,87 +20,6 @@ import { formatPrice, getImageUrl } from "@/types";
 interface TrendingProductsProps {
   products?: Product[];
 }
-
-const fallbackProducts = [
-  {
-    id: "1",
-    slug: "custom-printed-tshirt",
-    name: "Custom Printed T-Shirt",
-    originalPrice: "£24.99",
-    price: "£19.99",
-    discount: "-20%",
-    rating: 5,
-    image: "/images/products/custom-printed-tshirt/main.jpg",
-    hoverImage: "/images/products/custom-printed-tshirt/thumb-1.jpg",
-    countdown: "208d : 01h : 03m : 18s",
-    buttonLabel: "CUSTOMISE",
-  },
-  {
-    id: "2",
-    slug: "embroidered-hoodie",
-    name: "Embroidered Hoodie",
-    originalPrice: "£49.99",
-    price: "£39.99",
-    discount: "-20%",
-    rating: 5,
-    image: "/images/products/embroidered-hoodie/main.jpg",
-    hoverImage: "/images/products/embroidered-hoodie/thumb-1.jpg",
-    countdown: "237d : 01h : 03m : 18s",
-    buttonLabel: "ADD TO CART",
-  },
-  {
-    id: "3",
-    slug: "personalised-mug",
-    name: "Personalised Ceramic Mug",
-    originalPrice: null,
-    price: "£12.99",
-    discount: null,
-    rating: 4,
-    image: "/images/products/personalised-mug/main.jpg",
-    hoverImage: "/images/products/personalised-mug/thumb-1.jpg",
-    countdown: null,
-    buttonLabel: "CUSTOMISE",
-  },
-  {
-    id: "4",
-    slug: "custom-tote-bag",
-    name: "Custom Tote Bag",
-    originalPrice: null,
-    price: "£14.99",
-    discount: null,
-    rating: 5,
-    image: "/images/products/custom-tote-bag/main.jpg",
-    hoverImage: "/images/products/custom-tote-bag/thumb-1.jpg",
-    countdown: null,
-    buttonLabel: "ADD TO CART",
-  },
-  {
-    id: "5",
-    slug: "branded-snapback-cap",
-    name: "Branded Snapback Cap",
-    originalPrice: "£20.00",
-    price: "£16.99",
-    discount: "-15%",
-    rating: 5,
-    image: "/images/products/branded-snapback-cap/main.jpg",
-    hoverImage: "/images/products/branded-snapback-cap/thumb-1.jpg",
-    countdown: null,
-    buttonLabel: "CUSTOMISE",
-  },
-  {
-    id: "6",
-    slug: "custom-glass-can",
-    name: "Custom Glass Can",
-    originalPrice: "£18.00",
-    price: "£15.99",
-    discount: "-11%",
-    rating: 4,
-    image: "/images/products/custom-glass-can/main.jpg",
-    hoverImage: "/images/products/custom-glass-can/thumb-1.jpg",
-    countdown: "12d : 05h : 20m : 10s",
-    buttonLabel: "ADD TO CART",
-  },
-];
 
 /** Map a Firestore Product to the shape the ProductCard expects */
 function mapProduct(p: Product) {
@@ -156,13 +77,17 @@ const ProductCard = ({ product }: { product: any }) => {
           className="relative w-full h-full block"
         >
           {/* Default Image */}
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-contain transition-opacity duration-500 group-hover/image:opacity-0"
-            sizes="(max-width: 768px) 100vw, 20vw"
-          />
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-contain transition-opacity duration-500 group-hover/image:opacity-0"
+              sizes="(max-width: 768px) 100vw, 20vw"
+            />
+          ) : (
+            <PlaceholderImage type="product" />
+          )}
           {/* Hover Image */}
           {product.hoverImage && (
             <Image
@@ -242,9 +167,17 @@ export const TrendingProducts = ({ products }: TrendingProductsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayProducts =
-    products && products.length > 0
-      ? products.map(mapProduct)
-      : fallbackProducts;
+    products && products.length > 0 ? products.map(mapProduct) : [];
+
+  if (displayProducts.length === 0) {
+    return (
+      <section className="pt-10 md:pt-12 pb-6 md:pb-8 bg-white">
+        <Container>
+          <EmptyState variant="products" compact />
+        </Container>
+      </section>
+    );
+  }
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {

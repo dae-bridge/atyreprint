@@ -23,6 +23,7 @@ import {
   Bell,
   Search,
   Menu,
+  Mail,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -74,7 +75,11 @@ const navSections = [
   },
   {
     label: "People",
-    items: [{ label: "Customers", href: "/customers", icon: Users }],
+    items: [
+      { label: "Customers", href: "/customers", icon: Users },
+      { label: "Newsletter", href: "/newsletter", icon: Mail },
+      { label: "Messages", href: "/contacts", icon: MessageSquareQuote },
+    ],
   },
   {
     label: "System",

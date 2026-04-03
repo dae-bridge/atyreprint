@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/ui/CookieConsent";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
-import { PurchaseToast } from "@/components/ui/PurchaseToast";
+import { AuthProvider } from "@/lib/auth";
 import {
   getCategoryTree,
   getFeaturedProducts,
@@ -133,20 +133,21 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${jost.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Header
-          navCategories={navCategories}
-          settings={settings}
-          featuredProducts={featuredProducts}
-          bestSellingProducts={bestSellingProducts}
-          trendingProducts={trendingProducts}
-          popularProducts={popularProducts}
-          topRatedProducts={topRatedProducts}
-        />
-        <main className="flex-1">{children}</main>
-        <Footer settings={settings} />
-        <ScrollToTop />
-        <PurchaseToast />
-        <CookieConsent />
+        <AuthProvider>
+          <Header
+            navCategories={navCategories}
+            settings={settings}
+            featuredProducts={featuredProducts}
+            bestSellingProducts={bestSellingProducts}
+            trendingProducts={trendingProducts}
+            popularProducts={popularProducts}
+            topRatedProducts={topRatedProducts}
+          />
+          <main className="flex-1">{children}</main>
+          <Footer settings={settings} />
+          <ScrollToTop />
+          <CookieConsent />
+        </AuthProvider>
       </body>
     </html>
   );
