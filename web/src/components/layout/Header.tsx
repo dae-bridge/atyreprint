@@ -95,6 +95,7 @@ export const Header = ({
                     src="/logo.png"
                     alt={`${settings.siteName} Logo`}
                     fill
+                    sizes="(max-width: 640px) 140px, (max-width: 768px) 180px, (max-width: 1024px) 220px, 260px"
                     className="object-contain object-left"
                     priority
                   />

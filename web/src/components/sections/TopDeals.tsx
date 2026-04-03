@@ -115,7 +115,11 @@ function mapProduct(p: Product) {
   };
 }
 
-const DealCard = ({ product }: { product: ReturnType<typeof mapProduct> | (typeof fallbackDeals)[number] }) => {
+const DealCard = ({
+  product,
+}: {
+  product: ReturnType<typeof mapProduct> | (typeof fallbackDeals)[number];
+}) => {
   return (
     <div className="relative bg-white border border-transparent hover:border-gray-100 transition-all duration-500 w-full snap-start hover:shadow-2xl hover:z-30 rounded-lg overflow-hidden">
       {/* Product Image Wrapper */}
@@ -225,9 +229,7 @@ export const TopDeals = ({ products }: TopDealsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayProducts =
-    products && products.length > 0
-      ? products.map(mapProduct)
-      : fallbackDeals;
+    products && products.length > 0 ? products.map(mapProduct) : fallbackDeals;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -252,7 +254,8 @@ export const TopDeals = ({ products }: TopDealsProps) => {
           </h2>
           <div className="w-16 h-0.5 bg-error mx-auto mb-4" />
           <p className="text-text-secondary text-sm md:text-base max-w-lg mx-auto">
-            Grab our exclusive discounts on premium custom products before they&apos;re gone
+            Grab our exclusive discounts on premium custom products before
+            they&apos;re gone
           </p>
         </div>
 

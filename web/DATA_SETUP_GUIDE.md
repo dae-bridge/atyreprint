@@ -247,6 +247,7 @@ For the navbar and homepage to look complete:
 ### Featured Products
 
 Mark products as **Featured** (checkbox in admin) to show them in:
+
 - The **Personalise** nav mega menu (top 5 featured products)
 - Any future featured sections
 
@@ -257,11 +258,14 @@ Mark products as **Featured** (checkbox in admin) to show them in:
 The **Top Deals** section appears on the homepage between Feature Badges and Triple Promo Banners.
 
 ### Data Source
+
 - Fetches products tagged with `deals` from Firestore: `getProductsByTag("deals", 8)`
 - Falls back to 6 hardcoded placeholder products if none found
 
 ### What Products Need
+
 For a product to appear in Top Deals:
+
 1. **Tag**: Must have the `deals` tag
 2. **Status**: Must be `Published`
 3. **Compare At Price**: Should be set (original higher price) so the discount percentage badge shows
@@ -269,6 +273,7 @@ For a product to appear in Top Deals:
 5. **Badge** (optional): e.g. "SALE", "HOT" shown on the card
 
 ### Where Deals Appear
+
 | Location | Source | Max Items |
 |----------|--------|-----------|
 | Homepage "Top Deals" carousel | `getProductsByTag("deals", 8)` | 8 |
@@ -276,6 +281,7 @@ For a product to appear in Top Deals:
 | Nav "Top deals" mega menu | Top-rated products + categories | 6 |
 
 ### Example Deal Product Setup
+
 ```
 Name: Custom Printed T-Shirt
 Price: £19.99 (1999)

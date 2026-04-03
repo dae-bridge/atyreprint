@@ -166,6 +166,7 @@ export const MobileNav = ({
                 src="/logo.png"
                 alt={settings.siteName}
                 fill
+                sizes="120px"
                 className="object-contain object-left"
               />
             </div>
