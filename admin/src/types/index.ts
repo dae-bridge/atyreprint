@@ -119,7 +119,8 @@ export interface Product extends BaseDocument, SoftDeletable {
 export interface ProductColor {
   name: string;
   hex: string;
-  imageIndex: number;
+  imageIndex: number; // @deprecated — kept for backward compat
+  images: ImageAsset[]; // per-color gallery images
 }
 
 export interface ProductVariant {

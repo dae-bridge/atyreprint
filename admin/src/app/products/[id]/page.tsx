@@ -56,6 +56,14 @@ interface FormVariant {
   options: string; // stored as "XS, S, M, L, XL" in the form, converted to [] on save
 }
 
+/** Color in the form: images managed separately via colorImages state */
+interface FormColor {
+  name: string;
+  hex: string;
+  imageIndex: number;
+  images: ImageAsset[];
+}
+
 interface ProductFormData {
   name: string;
   sku: string;
@@ -74,7 +82,7 @@ interface ProductFormData {
   customisable: boolean;
   sortOrder: number;
   status: PublishStatus;
-  colors: ProductColor[];
+  colors: FormColor[];
   variants: FormVariant[];
   additionalInfo: ProductAdditionalInfo[];
   features: string;
@@ -249,7 +257,12 @@ export default function ProductFormPage() {
       customisable: product.customisable ?? false,
       sortOrder: product.sortOrder,
       status: product.status,
-      colors: product.colors,
+      colors: product.colors.map((c) => ({
+        name: c.name,
+        hex: c.hex,
+        imageIndex: c.imageIndex ?? 0,
+        images: c.images ?? [],
+      })),
       variants: product.variants.map((v) => ({
         label: v.label,
         options: Array.isArray(v.options)
@@ -289,6 +302,34 @@ export default function ProductFormPage() {
     setBannerImage({ url, alt: file.name, storagePath });
   }, []);
 
+  const handleColorImageUpload = useCallback(
+    async (colorIndex: number, file: File) => {
+      const { url, storagePath } = await uploadFile(
+        file,
+        `products/colors/${Date.now()}-${file.name}`,
+      );
+      const current: ImageAsset[] = watch(`colors.${colorIndex}.images`) ?? [];
+      setValue(`colors.${colorIndex}.images`, [
+        ...current,
+        { url, alt: file.name, storagePath },
+      ]);
+    },
+    [watch, setValue],
+  );
+
+  const handleRemoveColorImage = useCallback(
+    async (colorIndex: number, imgIndex: number) => {
+      const current: ImageAsset[] = watch(`colors.${colorIndex}.images`) ?? [];
+      const img = current[imgIndex];
+      if (img?.storagePath) await deleteFile(img.storagePath);
+      setValue(
+        `colors.${colorIndex}.images`,
+        current.filter((_, i) => i !== imgIndex),
+      );
+    },
+    [watch, setValue],
+  );
+
   const onSubmit = async (data: ProductFormData) => {
     setSaving(true);
     try {
@@ -327,7 +368,12 @@ export default function ProductFormPage() {
           .split(",")
           .map((t) => t.trim())
           .filter(Boolean),
-        colors: data.colors,
+        colors: data.colors.map((c) => ({
+          name: c.name,
+          hex: c.hex,
+          imageIndex: c.images.length > 0 ? 0 : (c.imageIndex ?? 0),
+          images: c.images ?? [],
+        })),
         variants: data.variants.map((v) => ({
           label: v.label,
           options: v.options
@@ -588,7 +634,12 @@ export default function ProductFormPage() {
                     variant="outline"
                     size="sm"
                     onClick={() =>
-                      appendColor({ name: "", hex: "#000000", imageIndex: 0 })
+                      appendColor({
+                        name: "",
+                        hex: "#000000",
+                        imageIndex: 0,
+                        images: [],
+                      })
                     }
                   >
                     <Plus size={14} /> Add Color
@@ -602,44 +653,96 @@ export default function ProductFormPage() {
                     multiple color options.
                   </p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {colorFields.map((field, index) => (
                       <div
                         key={field.id}
-                        className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-lg border border-gray-100"
+                        className="p-4 bg-gray-50/50 rounded-lg border border-gray-100"
                       >
-                        <div
-                          className="w-8 h-8 rounded-full border-2 border-white shadow-sm flex-shrink-0"
-                          style={{
-                            backgroundColor: watch(`colors.${index}.hex`),
-                          }}
-                        />
-                        <Input
-                          {...register(`colors.${index}.name`)}
-                          placeholder="Color name"
-                          className="flex-1 !py-1.5"
-                        />
-                        <input
-                          type="color"
-                          {...register(`colors.${index}.hex`)}
-                          className="h-8 w-10 rounded border border-border cursor-pointer"
-                        />
-                        <Input
-                          {...register(`colors.${index}.imageIndex`, {
-                            valueAsNumber: true,
-                          })}
-                          type="number"
-                          placeholder="#"
-                          className="w-16 !py-1.5"
-                          tooltip="Which gallery image index (0-based) to show when this color is selected"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeColor(index)}
-                          className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                        >
-                          <X size={14} />
-                        </button>
+                        {/* Color name, hex, remove row */}
+                        <div className="flex items-center gap-3 mb-3">
+                          <div
+                            className="w-8 h-8 rounded-full border-2 border-white shadow-sm flex-shrink-0"
+                            style={{
+                              backgroundColor: watch(`colors.${index}.hex`),
+                            }}
+                          />
+                          <Input
+                            {...register(`colors.${index}.name`)}
+                            placeholder="Color name"
+                            className="flex-1 !py-1.5"
+                          />
+                          <input
+                            type="color"
+                            {...register(`colors.${index}.hex`)}
+                            className="h-8 w-10 rounded border border-border cursor-pointer"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeColor(index)}
+                            className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+
+                        {/* Per-color images */}
+                        <div className="pl-11">
+                          <p className="text-xs font-medium text-text-secondary mb-2">
+                            Images for{" "}
+                            {watch(`colors.${index}.name`) || "this color"}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {(watch(`colors.${index}.images`) ?? []).map(
+                              (img: ImageAsset, imgIdx: number) => (
+                                <div
+                                  key={img.url}
+                                  className="relative w-20 h-20 rounded-md overflow-hidden border border-gray-200 group/thumb"
+                                >
+                                  <img
+                                    src={img.url}
+                                    alt={img.alt}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleRemoveColorImage(index, imgIdx)
+                                    }
+                                    className="absolute top-0.5 right-0.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/thumb:opacity-100 transition-opacity"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                  {imgIdx === 0 && (
+                                    <span className="absolute bottom-0 left-0 right-0 bg-primary/80 text-white text-[9px] text-center py-0.5">
+                                      Primary
+                                    </span>
+                                  )}
+                                </div>
+                              ),
+                            )}
+                            <label className="w-20 h-20 rounded-md border-2 border-dashed border-gray-300 hover:border-primary flex flex-col items-center justify-center cursor-pointer transition-colors">
+                              <Plus size={16} className="text-gray-400" />
+                              <span className="text-[9px] text-gray-400 mt-0.5">
+                                Upload
+                              </span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const files = e.target.files;
+                                  if (!files) return;
+                                  for (const file of Array.from(files)) {
+                                    await handleColorImageUpload(index, file);
+                                  }
+                                  e.target.value = "";
+                                }}
+                              />
+                            </label>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -959,10 +1062,57 @@ export default function ProductFormPage() {
                 />
                 <Input
                   label="Tags"
-                  tooltip="Comma-separated keywords for filtering and search. Example: 'summer, casual, cotton, unisex'. Tags help customers find products."
+                  tooltip="Comma-separated keywords for filtering and search. Example: 'summer, casual, cotton, unisex'. Tags help customers find products and drive nav mega menus."
                   {...register("tags")}
                   placeholder="e.g. summer, casual, cotton"
                 />
+                {/* Suggested nav tags */}
+                <div className="flex flex-wrap gap-1.5 -mt-2">
+                  {[
+                    "bestselling",
+                    "trending",
+                    "popular",
+                    "deals",
+                    "new-arrival",
+                  ].map((tag) => {
+                    const current = (watch("tags") || "")
+                      .split(",")
+                      .map((t: string) => t.trim().toLowerCase());
+                    const isActive = current.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          const tags = (watch("tags") || "")
+                            .split(",")
+                            .map((t: string) => t.trim())
+                            .filter(Boolean);
+                          if (isActive) {
+                            setValue(
+                              "tags",
+                              tags
+                                .filter((t: string) => t.toLowerCase() !== tag)
+                                .join(", "),
+                              { shouldDirty: true },
+                            );
+                          } else {
+                            setValue("tags", [...tags, tag].join(", "), {
+                              shouldDirty: true,
+                            });
+                          }
+                        }}
+                        className={`text-[11px] px-2.5 py-1 rounded-full font-medium transition-colors ${isActive ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                      >
+                        {isActive ? "✓ " : "+ "}
+                        {tag}
+                      </button>
+                    );
+                  })}
+                  <span className="text-[10px] text-gray-400 self-center ml-1">
+                    ← drives nav menus
+                  </span>
+                </div>
               </CardBody>
             </Card>
 

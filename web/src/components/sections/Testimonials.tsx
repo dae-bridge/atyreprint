@@ -5,8 +5,14 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
+import type { Testimonial as FirestoreTestimonial } from "@/types";
+import { getImageUrl } from "@/types";
 
-const testimonials = [
+interface TestimonialsProps {
+  testimonials?: FirestoreTestimonial[];
+}
+
+const fallbackTestimonials = [
   {
     name: "Sarah M.",
     location: "London, UK",
@@ -44,8 +50,22 @@ const testimonials = [
   },
 ];
 
-export const Testimonials = () => {
+export const Testimonials = ({
+  testimonials: firestoreTestimonials,
+}: TestimonialsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Map Firestore testimonials to display shape, or use fallback
+  const displayItems =
+    firestoreTestimonials && firestoreTestimonials.length > 0
+      ? firestoreTestimonials.map((t) => ({
+          name: t.name,
+          location: t.location,
+          rating: t.rating,
+          avatar: getImageUrl(t.avatar, "/images/testimonials/customer-1.jpg"),
+          text: t.text,
+        }))
+      : fallbackTestimonials;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -72,7 +92,7 @@ export const Testimonials = () => {
             className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8"
             style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
           >
-            {testimonials.map((item, index) => (
+            {displayItems.map((item, index) => (
               <div
                 key={index}
                 className="flex-none w-[90%] md:w-[45%] lg:w-[calc(33.333%-16px)] snap-start"
@@ -134,4 +154,3 @@ export const Testimonials = () => {
     </section>
   );
 };
-

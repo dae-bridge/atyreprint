@@ -33,7 +33,8 @@ export interface Money {
 export interface ProductColor {
   name: string;
   hex: string;
-  imageIndex: number;
+  imageIndex: number; // @deprecated — kept for backward compat
+  images: ImageAsset[]; // per-color gallery images
 }
 
 export interface ProductVariant {
@@ -254,13 +255,33 @@ export interface SocialLinks {
   instagram: string;
 }
 
-export interface Testimonial {
-  id: string;
+/** Firestore: testimonials/{id} */
+export interface Testimonial extends BaseDocument {
   name: string;
-  role: string;
-  content: string;
-  avatar?: string;
-  rating: number;
+  location: string;
+  role?: string;
+  avatar: ImageAsset | null;
+  text: string;
+  rating: number; // 1-5
+  featured: boolean;
+  sortOrder: number;
+  status: PublishStatus;
+}
+
+/** Firestore: faq-categories/{id} */
+export interface FAQCategory extends BaseDocument {
+  name: string;
+  slug: string;
+  sortOrder: number;
+}
+
+/** Firestore: faq-categories/{categoryId}/items/{id} */
+export interface FAQItem extends BaseDocument {
+  categoryId: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  status: PublishStatus;
 }
 
 export interface BlogPost {

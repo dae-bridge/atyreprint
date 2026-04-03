@@ -105,6 +105,14 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
   const [selectedColor, setSelectedColor] = useState(
     product.colors[0]?.name ?? "",
   );
+
+  // Derive the active image gallery based on the selected color
+  const activeColor = product.colors.find((c) => c.name === selectedColor);
+  const displayImages =
+    activeColor?.images && activeColor.images.length > 0
+      ? activeColor.images
+      : product.images;
+
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
   >(() => {
@@ -160,7 +168,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 <ChevronUp size={20} className="font-light" />
               </button>
               <div className="flex flex-col gap-3 py-1 overflow-y-auto scrollbar-hide">
-                {product.images.map((img, i) => (
+                {displayImages.map((img, i) => (
                   <button
                     key={getImageUrl(img)}
                     onClick={() => setSelectedImage(i)}
@@ -185,7 +193,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                 className="w-full h-8 flex items-center justify-center text-gray-400 hover:text-black transition-colors shrink-0"
                 onClick={() =>
                   setSelectedImage((prev) =>
-                    Math.min(product.images.length - 1, prev + 1),
+                    Math.min(displayImages.length - 1, prev + 1),
                   )
                 }
                 aria-label="Next image"
@@ -197,7 +205,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
             {/* Main Image */}
             <div className="relative flex-1 aspect-square overflow-hidden bg-white border border-gray-100/50 rounded-sm">
               <Image
-                src={getImageUrl(product.images[selectedImage])}
+                src={getImageUrl(displayImages[selectedImage])}
                 alt={product.name}
                 fill
                 className="object-contain object-top transition-opacity duration-300"
@@ -208,7 +216,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
 
             {/* Mobile Thumbnails */}
             <div className="md:hidden grid grid-cols-4 gap-2 mt-3 w-full">
-              {product.images.map((img, i) => (
+              {displayImages.map((img, i) => (
                 <button
                   key={getImageUrl(img)}
                   onClick={() => setSelectedImage(i)}
@@ -312,7 +320,7 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                     <button
                       onClick={() => {
                         setSelectedColor(color.name);
-                        setSelectedImage(color.imageIndex);
+                        setSelectedImage(0);
                       }}
                       className={cn(
                         "w-[60px] h-[60px] border-[2px] overflow-hidden transition-all relative block bg-white",
@@ -323,7 +331,11 @@ export const ProductDetailClient = ({ product }: ProductDetailClientProps) => {
                       aria-label={`Select color ${color.name}`}
                     >
                       <Image
-                        src={getImageUrl(product.images[color.imageIndex])}
+                        src={getImageUrl(
+                          color.images && color.images.length > 0
+                            ? color.images[0]
+                            : product.images[color.imageIndex],
+                        )}
                         alt={color.name}
                         fill
                         className="object-cover p-1"

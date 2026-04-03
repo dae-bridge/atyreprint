@@ -8,20 +8,21 @@ import {
   ChevronLeft,
   ChevronRight,
   Heart,
-  RefreshCw,
   Eye,
   Star,
+  Tag,
+  Clock,
 } from "lucide-react";
 import type { Product } from "@/types";
-import { formatPrice, getImageUrl } from "@/types";
+import { getImageUrl } from "@/types";
 
-interface TrendingProductsProps {
+interface TopDealsProps {
   products?: Product[];
 }
 
-const fallbackProducts = [
+const fallbackDeals = [
   {
-    id: "1",
+    id: "deal-1",
     slug: "custom-printed-tshirt",
     name: "Custom Printed T-Shirt",
     originalPrice: "£24.99",
@@ -30,11 +31,10 @@ const fallbackProducts = [
     rating: 5,
     image: "/images/products/custom-printed-tshirt/main.jpg",
     hoverImage: "/images/products/custom-printed-tshirt/thumb-1.jpg",
-    countdown: "208d : 01h : 03m : 18s",
     buttonLabel: "CUSTOMISE",
   },
   {
-    id: "2",
+    id: "deal-2",
     slug: "embroidered-hoodie",
     name: "Embroidered Hoodie",
     originalPrice: "£49.99",
@@ -43,50 +43,46 @@ const fallbackProducts = [
     rating: 5,
     image: "/images/products/embroidered-hoodie/main.jpg",
     hoverImage: "/images/products/embroidered-hoodie/thumb-1.jpg",
-    countdown: "237d : 01h : 03m : 18s",
     buttonLabel: "ADD TO CART",
   },
   {
-    id: "3",
+    id: "deal-3",
     slug: "personalised-mug",
     name: "Personalised Ceramic Mug",
-    originalPrice: null,
+    originalPrice: "£15.99",
     price: "£12.99",
-    discount: null,
+    discount: "-19%",
     rating: 4,
     image: "/images/products/personalised-mug/main.jpg",
     hoverImage: "/images/products/personalised-mug/thumb-1.jpg",
-    countdown: null,
     buttonLabel: "CUSTOMISE",
   },
   {
-    id: "4",
+    id: "deal-4",
     slug: "custom-tote-bag",
     name: "Custom Tote Bag",
-    originalPrice: null,
+    originalPrice: "£18.99",
     price: "£14.99",
-    discount: null,
+    discount: "-21%",
     rating: 5,
     image: "/images/products/custom-tote-bag/main.jpg",
     hoverImage: "/images/products/custom-tote-bag/thumb-1.jpg",
-    countdown: null,
     buttonLabel: "ADD TO CART",
   },
   {
-    id: "5",
+    id: "deal-5",
     slug: "branded-snapback-cap",
     name: "Branded Snapback Cap",
-    originalPrice: "£20.00",
+    originalPrice: "£24.00",
     price: "£16.99",
-    discount: "-15%",
+    discount: "-29%",
     rating: 5,
     image: "/images/products/branded-snapback-cap/main.jpg",
     hoverImage: "/images/products/branded-snapback-cap/thumb-1.jpg",
-    countdown: null,
-    buttonLabel: "CUSTOMISE",
+    buttonLabel: "ADD TO CART",
   },
   {
-    id: "6",
+    id: "deal-6",
     slug: "custom-glass-can",
     name: "Custom Glass Can",
     originalPrice: "£18.00",
@@ -95,12 +91,10 @@ const fallbackProducts = [
     rating: 4,
     image: "/images/products/custom-glass-can/main.jpg",
     hoverImage: "/images/products/custom-glass-can/thumb-1.jpg",
-    countdown: "12d : 05h : 20m : 10s",
     buttonLabel: "ADD TO CART",
   },
 ];
 
-/** Map a Firestore Product to the shape the ProductCard expects */
 function mapProduct(p: Product) {
   const price = p.price.amount / 100;
   const compareAt = p.compareAtPrice ? p.compareAtPrice.amount / 100 : null;
@@ -117,19 +111,19 @@ function mapProduct(p: Product) {
     rating: p.rating,
     image: getImageUrl(p.images?.[0]),
     hoverImage: p.images?.[1] ? getImageUrl(p.images[1]) : null,
-    countdown: null,
     buttonLabel: p.customisable ? "CUSTOMISE" : "ADD TO CART",
   };
 }
 
-const ProductCard = ({ product }: { product: any }) => {
+const DealCard = ({ product }: { product: ReturnType<typeof mapProduct> | (typeof fallbackDeals)[number] }) => {
   return (
-    <div className="relative bg-white border border-transparent hover:border-gray-100 transition-all duration-500 w-full snap-start hover:shadow-2xl hover:z-30">
+    <div className="relative bg-white border border-transparent hover:border-gray-100 transition-all duration-500 w-full snap-start hover:shadow-2xl hover:z-30 rounded-lg overflow-hidden">
       {/* Product Image Wrapper */}
       <div className="group/image relative aspect-[4/5] bg-[#f9f9f9] overflow-hidden">
         {/* Discount Badge */}
         {product.discount && (
-          <div className="absolute top-4 left-4 z-20 bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
+          <div className="absolute top-4 left-4 z-20 bg-error text-white text-[11px] font-bold px-2.5 py-1 rounded-sm flex items-center gap-1">
+            <Tag size={10} />
             {product.discount}
           </div>
         )}
@@ -155,7 +149,6 @@ const ProductCard = ({ product }: { product: any }) => {
           href={`/shop/product/${product.slug}`}
           className="relative w-full h-full block"
         >
-          {/* Default Image */}
           <Image
             src={product.image}
             alt={product.name}
@@ -163,8 +156,7 @@ const ProductCard = ({ product }: { product: any }) => {
             className="object-contain transition-opacity duration-500 group-hover/image:opacity-0"
             sizes="(max-width: 768px) 100vw, 20vw"
           />
-          {/* Hover Image */}
-          {product.hoverImage && (
+          {"hoverImage" in product && product.hoverImage && (
             <Image
               src={product.hoverImage}
               alt={`${product.name} - alternate`}
@@ -174,15 +166,6 @@ const ProductCard = ({ product }: { product: any }) => {
             />
           )}
         </Link>
-
-        {/* Countdown */}
-        {product.countdown && (
-          <div className="absolute bottom-4 left-4 right-4 z-20 bg-white/90 backdrop-blur-sm py-2 px-3 text-center">
-            <span className="text-[11px] font-bold text-accent tracking-wider uppercase">
-              {product.countdown}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Product Info */}
@@ -238,13 +221,13 @@ const ProductCard = ({ product }: { product: any }) => {
   );
 };
 
-export const TrendingProducts = ({ products }: TrendingProductsProps) => {
+export const TopDeals = ({ products }: TopDealsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const displayProducts =
     products && products.length > 0
       ? products.map(mapProduct)
-      : fallbackProducts;
+      : fallbackDeals;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -257,17 +240,20 @@ export const TrendingProducts = ({ products }: TrendingProductsProps) => {
   };
 
   return (
-    <section className="pt-10 md:pt-12 pb-6 md:pb-8 bg-white overflow-hidden relative">
+    <section className="py-10 md:py-16 bg-surface overflow-hidden relative">
       <Container>
         {/* Header */}
         <div className="text-center mb-8 md:mb-16">
-          <span className="text-accent text-xs font-bold tracking-[0.2em] uppercase mb-3 md:mb-4 block font-jost">
-            BEST SELLING PRODUCTS
+          <span className="text-error text-xs font-bold tracking-[0.2em] uppercase mb-3 md:mb-4 block font-jost">
+            LIMITED TIME OFFERS
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 md:mb-6 font-jost">
-            Browsing Our Trending Items
+            Today&apos;s Top Deals
           </h2>
-          <div className="w-16 h-0.5 bg-accent mx-auto" />
+          <div className="w-16 h-0.5 bg-error mx-auto mb-4" />
+          <p className="text-text-secondary text-sm md:text-base max-w-lg mx-auto">
+            Grab our exclusive discounts on premium custom products before they&apos;re gone
+          </p>
         </div>
 
         {/* Carousel Container */}
@@ -282,26 +268,37 @@ export const TrendingProducts = ({ products }: TrendingProductsProps) => {
                 key={product.id}
                 className="flex-none w-[70%] sm:w-[45%] md:w-[30%] lg:w-[18.2%] snap-start"
               >
-                <ProductCard product={product} />
+                <DealCard product={product} />
               </div>
             ))}
           </div>
 
-          {/* Navigation Buttons (Overlapping row, Hover only) */}
+          {/* Navigation Buttons */}
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-foreground hover:bg-accent hover:text-primary transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-1/2 group-hover/carousel:translate-x-0"
-            aria-label="Previous products"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-foreground hover:bg-error hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 -translate-x-1/2 group-hover/carousel:translate-x-0"
+            aria-label="Previous deals"
           >
             <ChevronLeft size={24} />
           </button>
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-foreground hover:bg-accent hover:text-primary transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-1/2 group-hover/carousel:translate-x-0"
-            aria-label="Next products"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-foreground hover:bg-error hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 translate-x-1/2 group-hover/carousel:translate-x-0"
+            aria-label="Next deals"
           >
             <ChevronRight size={24} />
           </button>
+        </div>
+
+        {/* View All Deals CTA */}
+        <div className="text-center mt-8 md:mt-12">
+          <Link
+            href="/deals"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-error text-white font-bold text-[13px] tracking-widest uppercase hover:bg-red-600 transition-all rounded shadow-lg font-jost"
+          >
+            <Tag size={16} />
+            VIEW ALL DEALS
+          </Link>
         </div>
       </Container>
     </section>
