@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { navLinks, type NavItem } from "@/config/site";
 import type { NavCategory } from "./Header";
-import type { SiteSettings } from "@/types";
+import type { SiteSettings, Product } from "@/types";
 import {
   X,
   ChevronDown,
@@ -86,8 +86,8 @@ const MobileNavItem = ({
           )}
         >
           <div className="bg-surface/50 pb-2">
-            {item.children!.map((child) => (
-              <div key={child.label}>
+            {item.children!.map((child, childIdx) => (
+              <div key={`${child.label}-${childIdx}`}>
                 <Link
                   href={child.href}
                   onClick={onClose}
@@ -97,9 +97,9 @@ const MobileNavItem = ({
                   <span className="font-medium">{child.label}</span>
                 </Link>
                 {/* Third level */}
-                {child.children?.map((sub) => (
+                {child.children?.map((sub, subIdx) => (
                   <Link
-                    key={sub.label}
+                    key={`${sub.href}-${subIdx}`}
                     href={sub.href}
                     onClick={onClose}
                     className="block px-12 py-2 text-sm text-text-muted hover:text-primary transition-colors"
@@ -122,6 +122,9 @@ interface MobileNavProps {
   onClose: () => void;
   navCategories?: NavCategory[];
   settings: SiteSettings;
+  bestSellingProducts?: Product[];
+  trendingProducts?: Product[];
+  popularProducts?: Product[];
 }
 
 export const MobileNav = ({
@@ -129,6 +132,9 @@ export const MobileNav = ({
   onClose,
   navCategories = [],
   settings,
+  bestSellingProducts = [],
+  trendingProducts = [],
+  popularProducts = [],
 }: MobileNavProps) => {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
@@ -160,6 +166,7 @@ export const MobileNav = ({
                 src="/logo.png"
                 alt={settings.siteName}
                 fill
+                sizes="120px"
                 className="object-contain object-left"
               />
             </div>
@@ -217,20 +224,62 @@ export const MobileNav = ({
                 ? pathname === "/"
                 : pathname.startsWith(item.href);
             // Replace hardcoded Categories children with dynamic data
-            const dynamicItem =
-              item.label === "Categories" && navCategories.length > 0
-                ? {
-                    ...item,
-                    children: navCategories.map((cat) => ({
-                      label: cat.name,
-                      href: `/shop/${cat.slug}`,
-                      children: cat.children.map((child) => ({
-                        label: child.name,
-                        href: `/shop/${cat.slug}/${child.slug}`,
+            let dynamicItem = item;
+            if (item.label === "Categories" && navCategories.length > 0) {
+              dynamicItem = {
+                ...item,
+                children: navCategories.map((cat) => ({
+                  label: cat.name,
+                  href: `/shop/${cat.slug}`,
+                  children: cat.children.map((child) => ({
+                    label: child.name,
+                    href: `/shop/${cat.slug}/${child.slug}`,
+                  })),
+                })),
+              };
+            }
+            // Overlay Shop product columns with Firestore data
+            if (item.label === "Shop" && item.children) {
+              dynamicItem = {
+                ...dynamicItem,
+                children: dynamicItem.children?.map((group) => {
+                  if (
+                    group.label === "Best Selling" &&
+                    bestSellingProducts.length > 0
+                  ) {
+                    return {
+                      ...group,
+                      children: bestSellingProducts.map((p) => ({
+                        label: p.name,
+                        href: `/shop/product/${p.slug}`,
                       })),
-                    })),
+                    };
                   }
-                : item;
+                  if (
+                    group.label === "Trending" &&
+                    trendingProducts.length > 0
+                  ) {
+                    return {
+                      ...group,
+                      children: trendingProducts.map((p) => ({
+                        label: p.name,
+                        href: `/shop/product/${p.slug}`,
+                      })),
+                    };
+                  }
+                  if (group.label === "Popular" && popularProducts.length > 0) {
+                    return {
+                      ...group,
+                      children: popularProducts.map((p) => ({
+                        label: p.name,
+                        href: `/shop/product/${p.slug}`,
+                      })),
+                    };
+                  }
+                  return group;
+                }),
+              };
+            }
             return (
               <MobileNavItem
                 key={item.label}

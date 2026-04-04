@@ -6,6 +6,7 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -42,6 +43,9 @@ export const db = createFirestore();
 
 // Storage
 export const storage = getStorage(app);
+
+// Auth
+export const auth = getAuth(app);
 
 // Analytics (client-side only)
 export const initAnalytics = async () => {

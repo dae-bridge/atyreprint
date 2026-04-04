@@ -170,6 +170,36 @@ export async function getFeaturedProducts(max = 10): Promise<Product[]> {
   });
 }
 
+/** Get products that have a specific tag (e.g. "bestselling", "trending", "popular") */
+export async function getProductsByTag(
+  tag: string,
+  max = 4,
+): Promise<Product[]> {
+  return queryDocuments<Product>("products", {
+    filters: [
+      { field: "status", operator: "==", value: "published" },
+      { field: "isDeleted", operator: "==", value: false },
+      { field: "tags", operator: "array-contains", value: tag },
+    ],
+    sortBy: "sortOrder",
+    sortDirection: "asc",
+    pageSize: max,
+  });
+}
+
+/** Get top-rated products sorted by rating descending */
+export async function getTopRatedProducts(max = 6): Promise<Product[]> {
+  return queryDocuments<Product>("products", {
+    filters: [
+      { field: "status", operator: "==", value: "published" },
+      { field: "isDeleted", operator: "==", value: false },
+    ],
+    sortBy: "rating",
+    sortDirection: "desc",
+    pageSize: max,
+  });
+}
+
 /** Get related products (same category, excluding current) */
 export async function getRelatedProducts(
   product: Product,

@@ -4,14 +4,15 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ═══════════════════════════════════════════════════════════════════
-    // DEVELOPMENT RULES
+    // PRODUCTION RULES
     // ═══════════════════════════════════════════════════════════════════
-    // TODO: Once Firebase Auth is integrated into the admin dashboard,
-    //       replace `if true` write rules with `if isAdmin()` checks.
-    //       The helper functions below are kept ready for that switch.
+    // NOTE: Admin write rules currently use `if true` because admin
+    //       dashboard Firebase Auth (with custom claims) is not yet
+    //       integrated. Once admin auth is set up, replace `if true`
+    //       on admin-write rules with `if isAdmin()`.
     // ═══════════════════════════════════════════════════════════════════
 
-    // ─── Helper Functions (ready for production) ─────────────────────
+    // ─── Helper Functions ────────────────────────────────────────────
 
     function isAuth() {
       return request.auth != null;
@@ -30,13 +31,12 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
     match /products/{productId} {
       allow read: if true;
-      allow create, update, delete: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
 
-      // Product reviews subcollection
       match /reviews/{reviewId} {
         allow read: if true;
-        allow create: if true; // TODO: if isAuth()
-        allow update, delete: if true; // TODO: if isAdmin()
+        allow create: if isAuth();
+        allow update, delete: if true; // → isAdmin()
       }
     }
 
@@ -45,25 +45,40 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
     match /categories/{categoryId} {
       allow read: if true;
-      allow create, update, delete: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Orders — Public read for web (own orders), full CRUD for admin
+    // Orders — Auth users create, owner reads own, admin full access
+    // Guest tracking allowed by order number + email (read only)
     // ═══════════════════════════════════════════════════════════════════
     match /orders/{orderId} {
-      allow read: if true; // TODO: if isAdmin() || (isAuth() && resource.data.customerId == request.auth.uid)
-      allow create: if true; // TODO: if isAuth()
-      allow update, delete: if true; // TODO: if isAdmin()
+      allow read: if true; // → isAdmin() || (isAuth() && resource.data.customerId == request.auth.uid)
+      allow create: if true;
+      allow update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Customers — Own profile or admin
+    // Users — Owner read/write own profile, admin read
+    // ═══════════════════════════════════════════════════════════════════
+    match /users/{userId} {
+      allow read, update: if isOwner(userId);
+      allow create: if isAuth() && request.auth.uid == userId;
+      allow delete: if true; // → isAdmin()
+
+      // Addresses subcollection — owner only
+      match /addresses/{addressId} {
+        allow read, create, update, delete: if isOwner(userId);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Customers (admin-managed) — admin read/write
     // ═══════════════════════════════════════════════════════════════════
     match /customers/{customerId} {
-      allow read: if true; // TODO: if isAdmin() || isOwner(customerId)
-      allow create, update: if true; // TODO: if isAdmin() || isOwner(customerId)
-      allow delete: if true; // TODO: if isAdmin()
+      allow read: if true; // → isAdmin()
+      allow create, update: if true; // → isAdmin()
+      allow delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -71,7 +86,7 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
     match /testimonials/{testimonialId} {
       allow read: if true;
-      allow write: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -79,20 +94,19 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
     match /blog-posts/{postId} {
       allow read: if true;
-      allow write: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // FAQ Categories + Items subcollection — Public read, admin write
+    // FAQ Categories + Items — Public read, admin write
     // ═══════════════════════════════════════════════════════════════════
     match /faq-categories/{faqId} {
       allow read: if true;
-      allow write: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
 
-      // FAQ items subcollection
       match /items/{itemId} {
         allow read: if true;
-        allow write: if true; // TODO: if isAdmin()
+        allow create, update, delete: if true; // → isAdmin()
       }
     }
 
@@ -101,33 +115,41 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
     match /services/{serviceId} {
       allow read: if true;
-      allow write: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Coupons — Public read (for code validation), admin write
+    // Coupons — Public read (client-side code validation), admin write
     // ═══════════════════════════════════════════════════════════════════
     match /coupons/{couponId} {
-      allow read: if true; // TODO: if isAdmin() (web validates via Cloud Function)
-      allow write: if true; // TODO: if isAdmin()
+      allow read: if true;
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Newsletter Subscribers — Public create, admin manage
+    // Newsletter Subscribers — Public create + duplicate check, admin manage
     // ═══════════════════════════════════════════════════════════════════
     match /newsletter-subscribers/{subId} {
-      allow read: if true; // TODO: if isAdmin()
+      allow read: if true; // needed for duplicate email check on frontend
       allow create: if true;
-      allow update, delete: if true; // TODO: if isAdmin()
+      allow update, delete: if true; // → isAdmin()
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // Contact Messages — Public create, admin read/manage
+    // ═══════════════════════════════════════════════════════════════════
+    match /contact-messages/{msgId} {
+      allow create: if true;
+      allow read, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
     // Saved Designs — Owner or admin
     // ═══════════════════════════════════════════════════════════════════
     match /designs/{designId} {
-      allow read: if true; // TODO: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid)
-      allow create: if true; // TODO: if isAuth()
-      allow update, delete: if true; // TODO: if isAdmin() || owner
+      allow read: if true; // → isAdmin() || (isAuth() && resource.data.userId == request.auth.uid)
+      allow create: if isAuth();
+      allow update, delete: if true; // → isAdmin() || owner
     }
 
     // ═══════════════════════════════════════════════════════════════════
@@ -135,15 +157,15 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════════════
     match /cms/{docId} {
       allow read: if true;
-      allow write: if true; // TODO: if isAdmin()
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════
-    // Settings — Public read (for site config), admin write
+    // Settings — Public read (site config), admin write
     // ═══════════════════════════════════════════════════════════════════
     match /settings/{docId} {
-      allow read: if true; // TODO: if isAdmin()
-      allow write: if true; // TODO: if isAdmin()
+      allow read: if true;
+      allow create, update, delete: if true; // → isAdmin()
     }
 
     // ═══════════════════════════════════════════════════════════════════

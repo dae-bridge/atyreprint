@@ -125,20 +125,47 @@ export const navLinks: NavItem[] = [
         label: "Best Selling",
         href: "/shop?sort=bestselling",
         children: [
-          { label: "Eco-Friendly T-Shirt", href: "/shop/product/custom-printed-tshirt" },
+          {
+            label: "Eco-Friendly T-Shirt",
+            href: "/shop/product/custom-printed-tshirt",
+          },
           { label: "Premium Hoodie", href: "/shop/product/embroidered-hoodie" },
-          { label: "Custom Ceramic Mug", href: "/shop/product/personalised-mug" },
-          { label: "Printed Tote Bag", href: "/shop/product/custom-tote-bag", badge: "POPULAR", badgeColor: "bg-orange-400" },
+          {
+            label: "Custom Ceramic Mug",
+            href: "/shop/product/personalised-mug",
+          },
+          {
+            label: "Printed Tote Bag",
+            href: "/shop/product/custom-tote-bag",
+            badge: "POPULAR",
+            badgeColor: "bg-orange-400",
+          },
         ],
       },
       {
         label: "Trending",
         href: "/shop?sort=trending",
         children: [
-          { label: "Branded Snapback", href: "/shop/product/branded-snapback-cap", badge: "NEW", badgeColor: "bg-blue-400" },
-          { label: "Personalised Pillowcase", href: "/shop/product/personalised-pillowcase" },
-          { label: "Custom Tumbler", href: "/shop/product/custom-tumbler", badge: "HOT", badgeColor: "bg-accent" },
-          { label: "Embroidered Sweatshirt", href: "/shop/product/embroidered-sweatshirt" },
+          {
+            label: "Branded Snapback",
+            href: "/shop/product/branded-snapback-cap",
+            badge: "NEW",
+            badgeColor: "bg-blue-400",
+          },
+          {
+            label: "Personalised Pillowcase",
+            href: "/shop/product/personalised-pillowcase",
+          },
+          {
+            label: "Custom Tumbler",
+            href: "/shop/product/custom-tumbler",
+            badge: "HOT",
+            badgeColor: "bg-accent",
+          },
+          {
+            label: "Embroidered Sweatshirt",
+            href: "/shop/product/embroidered-sweatshirt",
+          },
         ],
       },
       {
@@ -148,7 +175,12 @@ export const navLinks: NavItem[] = [
           { label: "Custom Glass Can", href: "/shop/product/custom-glass-can" },
           { label: "Tote Bags", href: "/shop/accessories/tote-bags" },
           { label: "Custom Aprons", href: "/shop/product/custom-apron" },
-          { label: "Mugs Collection", href: "/shop/drinkware/mugs", badge: "SALE", badgeColor: "bg-accent" },
+          {
+            label: "Mugs Collection",
+            href: "/shop/drinkware/mugs",
+            badge: "SALE",
+            badgeColor: "bg-accent",
+          },
         ],
       },
     ],

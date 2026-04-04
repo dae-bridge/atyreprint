@@ -20,6 +20,7 @@ import { formatPrice } from "@/lib/utils";
 import { PaymentIcons } from "@/components/ui/PaymentIcons";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { getFeaturedProducts } from "@/lib/products";
+import { validateCoupon, type CouponResult } from "@/lib/coupon";
 import type { Product } from "@/types";
 
 /**
@@ -59,7 +60,14 @@ export default function CartPage() {
   );
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [crossSellProducts, setCrossSellProducts] = useState<Product[]>([]);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponResult, setCouponResult] = useState<CouponResult | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
   const total = totalPrice();
+  const discountPounds =
+    couponResult?.valid && couponResult.discountAmount
+      ? couponResult.discountAmount / 100
+      : 0;
 
   // Free shipping logic (Threshold: £100)
   const threshold = 100;
@@ -68,7 +76,26 @@ export default function CartPage() {
   const isFreeShipping = total >= threshold;
 
   const shippingCost = isFreeShipping ? 0 : shippingMethod === "flat" ? 5 : 0;
+  const finalTotal = Math.max(0, total - discountPounds) + shippingCost;
   const count = totalItems();
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    try {
+      const result = await validateCoupon(couponCode, Math.round(total * 100));
+      setCouponResult(result);
+    } catch {
+      setCouponResult({ valid: false, error: "Failed to validate coupon." });
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode("");
+    setCouponResult(null);
+  };
 
   useEffect(() => {
     getFeaturedProducts(5)
@@ -124,7 +151,15 @@ export default function CartPage() {
                       code to get 10% off on your first order!
                     </p>
                   </div>
-                  <button className="px-5 py-2 bg-white border border-[#a9cb5b] text-[#a9cb5b] font-bold rounded text-xs uppercase tracking-widest hover:bg-[#a9cb5b] hover:text-white transition-all">
+                  <button
+                    onClick={() => {
+                      setCouponCode("ATYREFREE");
+                      validateCoupon("ATYREFREE", Math.round(total * 100)).then(
+                        setCouponResult,
+                      );
+                    }}
+                    className="px-5 py-2 bg-white border border-[#a9cb5b] text-[#a9cb5b] font-bold rounded text-xs uppercase tracking-widest hover:bg-[#a9cb5b] hover:text-white transition-all"
+                  >
                     Apply Coupon
                   </button>
                 </div>
@@ -324,15 +359,47 @@ export default function CartPage() {
 
                 {/* Bottom Actions */}
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-6">
-                  <div className="flex items-center w-full sm:w-auto gap-2">
-                    <input
-                      type="text"
-                      placeholder="Coupon code"
-                      className="flex-1 sm:w-64 h-12 px-4 border border-border rounded focus:outline-none focus:border-[#a9cb5b] text-sm"
-                    />
-                    <button className="h-12 px-6 bg-[#1a3014] text-white font-bold rounded uppercase tracking-widest text-[11px] hover:bg-black transition-colors">
-                      Apply Coupon
-                    </button>
+                  <div className="flex flex-col w-full sm:w-auto gap-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Coupon code"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleApplyCoupon()
+                        }
+                        className="flex-1 sm:w-64 h-12 px-4 border border-border rounded focus:outline-none focus:border-[#a9cb5b] text-sm"
+                      />
+                      <button
+                        onClick={handleApplyCoupon}
+                        disabled={couponLoading}
+                        className="h-12 px-6 bg-[#1a3014] text-white font-bold rounded uppercase tracking-widest text-[11px] hover:bg-black transition-colors disabled:opacity-50"
+                      >
+                        {couponLoading ? "Checking..." : "Apply Coupon"}
+                      </button>
+                    </div>
+                    {couponResult && !couponResult.valid && (
+                      <p className="text-red-500 text-xs">
+                        {couponResult.error}
+                      </p>
+                    )}
+                    {couponResult?.valid && couponResult.coupon && (
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-green-600 font-medium">
+                          ✓ {couponResult.coupon.code} —{" "}
+                          {couponResult.coupon.discountType === "percentage"
+                            ? `${couponResult.coupon.discountValue}% off`
+                            : `£${(couponResult.coupon.discountValue / 100).toFixed(2)} off`}
+                        </span>
+                        <button
+                          onClick={handleRemoveCoupon}
+                          className="text-red-400 hover:text-red-600 underline"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="flex gap-3 w-full sm:w-auto">
                     <button
@@ -532,13 +599,25 @@ export default function CartPage() {
                       )}
                     </div>
 
-                    <div className="border-t-2 border-border pt-6 flex justify-between items-center">
-                      <span className="text-lg font-bold font-jost uppercase tracking-widest text-[#1a3014]">
-                        Total
-                      </span>
-                      <span className="text-2xl font-bold text-[#a9cb5b]">
-                        {formatPrice(total + shippingCost)}
-                      </span>
+                    <div className="border-t-2 border-border pt-6 space-y-4">
+                      {discountPounds > 0 && (
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="font-medium text-green-600">
+                            Discount ({couponResult?.coupon?.code})
+                          </span>
+                          <span className="font-bold text-green-600">
+                            -{formatPrice(discountPounds)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-bold font-jost uppercase tracking-widest text-[#1a3014]">
+                          Total
+                        </span>
+                        <span className="text-2xl font-bold text-[#a9cb5b]">
+                          {formatPrice(finalTotal)}
+                        </span>
+                      </div>
                     </div>
 
                     <Link

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/ui/PageHeader";
 import Link from "next/link";
+import { getFAQsWithItems } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions | AtyrePrint",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
     "Find answers to common questions about AtyrePrint's custom printing, embroidery, ordering, shipping and returns.",
 };
 
-const faqs = [
+const fallbackFaqs = [
   {
     category: "Ordering",
     questions: [
@@ -79,7 +80,30 @@ const faqs = [
   },
 ];
 
-export default function FAQsPage() {
+export default async function FAQsPage() {
+  // Fetch from Firestore, fall back to hardcoded if empty
+  let faqSections: {
+    category: string;
+    questions: { q: string; a: string }[];
+  }[];
+
+  try {
+    const firestoreFaqs = await getFAQsWithItems();
+    if (firestoreFaqs.length > 0) {
+      faqSections = firestoreFaqs.map((section) => ({
+        category: section.category.name,
+        questions: section.items.map((item) => ({
+          q: item.question,
+          a: item.answer,
+        })),
+      }));
+    } else {
+      faqSections = fallbackFaqs;
+    }
+  } catch {
+    faqSections = fallbackFaqs;
+  }
+
   return (
     <>
       <PageHeader
@@ -90,7 +114,7 @@ export default function FAQsPage() {
 
       <section className="py-16 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {faqs.map((section) => (
+          {faqSections.map((section) => (
             <div key={section.category} className="mb-12 last:mb-0">
               <h2 className="font-jost text-xl font-bold text-foreground mb-6 pb-2 border-b border-border">
                 {section.category}

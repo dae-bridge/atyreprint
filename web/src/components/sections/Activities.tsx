@@ -43,7 +43,7 @@ export const Activities = () => {
           {/* Left: Image */}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-none shadow-xl">
             <Image
-              src="/images/sections/workshop-overview.jpg"
+              src="/images/services/embroidery.jpg"
               alt="AtyrePrint workshop and embroidery machines"
               fill
               className="object-cover"

@@ -12,6 +12,7 @@ import {
   Toggle,
   ImageUpload,
 } from "@/components/ui/FormFields";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import {
   getDocument,
   createDocument,
@@ -241,11 +242,15 @@ export default function BlogFormPage() {
             <h2 className="text-base font-semibold">Content</h2>
           </div>
           <CardBody>
-            <Textarea
-              label="Body"
-              {...register("content")}
-              rows={16}
-              hint="Supports Markdown"
+            <Controller
+              control={control}
+              name="content"
+              render={({ field }) => (
+                <RichTextEditor
+                  content={field.value}
+                  onChange={field.onChange}
+                />
+              )}
             />
           </CardBody>
         </Card>

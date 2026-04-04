@@ -4,8 +4,13 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/ui/CookieConsent";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
-import { PurchaseToast } from "@/components/ui/PurchaseToast";
-import { getCategoryTree } from "@/lib/products";
+import { AuthProvider } from "@/lib/auth";
+import {
+  getCategoryTree,
+  getFeaturedProducts,
+  getProductsByTag,
+  getTopRatedProducts,
+} from "@/lib/products";
 import { getSiteSettings } from "@/lib/settings";
 import "./globals.css";
 
@@ -98,10 +103,25 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch categories + settings server-side
+  // Fetch categories, settings, and nav product data server-side
+  // Product queries may fail if Firestore indexes aren't created yet — gracefully fallback to []
   const [categoryTree, settings] = await Promise.all([
     getCategoryTree(),
     getSiteSettings(),
+  ]);
+
+  const [
+    featuredProducts,
+    bestSellingProducts,
+    trendingProducts,
+    popularProducts,
+    topRatedProducts,
+  ] = await Promise.all([
+    getFeaturedProducts(5).catch(() => []),
+    getProductsByTag("bestselling", 4).catch(() => []),
+    getProductsByTag("trending", 4).catch(() => []),
+    getProductsByTag("popular", 4).catch(() => []),
+    getTopRatedProducts(6).catch(() => []),
   ]);
   const navCategories = categoryTree.map(({ parent, children }) => ({
     id: parent.id,
@@ -113,12 +133,21 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${jost.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Header navCategories={navCategories} settings={settings} />
-        <main className="flex-1">{children}</main>
-        <Footer settings={settings} />
-        <ScrollToTop />
-        <PurchaseToast />
-        <CookieConsent />
+        <AuthProvider>
+          <Header
+            navCategories={navCategories}
+            settings={settings}
+            featuredProducts={featuredProducts}
+            bestSellingProducts={bestSellingProducts}
+            trendingProducts={trendingProducts}
+            popularProducts={popularProducts}
+            topRatedProducts={topRatedProducts}
+          />
+          <main className="flex-1">{children}</main>
+          <Footer settings={settings} />
+          <ScrollToTop />
+          <CookieConsent />
+        </AuthProvider>
       </body>
     </html>
   );

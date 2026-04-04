@@ -8,10 +8,13 @@ import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
 import { CartDrawer } from "./CartDrawer";
 import { Container } from "@/components/ui/Container";
+import { SearchBar } from "@/components/ui/SearchBar";
 import { Search, ShoppingBag, User, Menu, Heart, X } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
+import { useWishlistStore } from "@/lib/wishlistStore";
+import { useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
-import type { SiteSettings } from "@/types";
+import type { SiteSettings, Product } from "@/types";
 
 export interface NavCategory {
   id: string;
@@ -20,18 +23,50 @@ export interface NavCategory {
   children: { id: string; name: string; slug: string }[];
 }
 
+/** Lightweight product shape for nav mega menus (serialized from server) */
+export interface NavProduct {
+  name: string;
+  slug: string;
+  price: { amount: number; currency: string };
+  compareAtPrice: { amount: number; currency: string } | null;
+  images: { url: string; alt: string }[];
+  badge: string | null;
+  rating: number;
+  featured: boolean;
+}
+
 interface HeaderProps {
   navCategories?: NavCategory[];
   settings: SiteSettings;
+  featuredProducts?: Product[];
+  bestSellingProducts?: Product[];
+  trendingProducts?: Product[];
+  popularProducts?: Product[];
+  topRatedProducts?: Product[];
 }
 
-export const Header = ({ navCategories = [], settings }: HeaderProps) => {
+export const Header = ({
+  navCategories = [],
+  settings,
+  featuredProducts = [],
+  bestSellingProducts = [],
+  trendingProducts = [],
+  popularProducts = [],
+  topRatedProducts = [],
+}: HeaderProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const totalItems = useCartStore((s) => s.totalItems);
   const totalPrice = useCartStore((s) => s.totalPrice);
+  const wishlistTotal = useWishlistStore((s) => s.totalItems);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,6 +100,7 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
                     src="/logo.png"
                     alt={`${settings.siteName} Logo`}
                     fill
+                    sizes="(max-width: 640px) 140px, (max-width: 768px) 180px, (max-width: 1024px) 220px, 260px"
                     className="object-contain object-left"
                     priority
                   />
@@ -74,16 +110,10 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
 
             {/* Center: Search Bar (desktop) */}
             <div className="hidden md:flex flex-1 max-w-3xl bg-surface-alt rounded-md overflow-hidden border border-border group focus-within:border-primary transition-colors h-12">
-              <div className="flex-1 flex items-center relative h-full">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="w-full px-4 py-2 text-[15px] bg-transparent outline-none text-foreground placeholder-text-muted h-full"
-                />
-                <button className="px-5 text-text-secondary hover:text-primary transition-colors h-full flex items-center justify-center">
-                  <Search size={22} />
-                </button>
-              </div>
+              <SearchBar
+                className="flex-1 h-full"
+                inputClassName="w-full px-4 py-2 text-[15px] h-full"
+              />
             </div>
 
             {/* Right: Actions */}
@@ -99,7 +129,7 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
 
               {/* Account */}
               <Link
-                href="/login"
+                href={user ? "/account" : "/login"}
                 className="flex items-center gap-3 p-1 text-foreground hover:text-primary transition-colors"
               >
                 <div className="flex items-center justify-center">
@@ -107,7 +137,7 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
                 </div>
                 <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap">
                   <span className="text-text-secondary font-medium">
-                    Sign In
+                    {user ? "My" : "Sign In"}
                   </span>
                   <span className="font-bold text-[15px]">Account</span>
                 </div>
@@ -125,7 +155,7 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
                   className="sm:w-[26px] sm:h-[26px]"
                 />
                 <span className="absolute top-0 right-0 w-4 h-4 sm:w-5 sm:h-5 bg-accent text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
-                  0
+                  {hydrated ? wishlistTotal() : 0}
                 </span>
               </Link>
 
@@ -141,12 +171,12 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
                     className="group-hover:scale-110 transition-transform sm:w-[26px] sm:h-[26px]"
                   />
                   <span className="absolute -top-1 -right-1.5 w-4 h-4 sm:w-5 sm:h-5 bg-accent text-white text-[9px] sm:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
-                    {totalItems()}
+                    {hydrated ? totalItems() : 0}
                   </span>
                 </div>
                 <div className="hidden lg:flex flex-col text-[11px] leading-tight text-nowrap items-start">
                   <span className="text-text-secondary font-medium whitespace-nowrap">
-                    £{totalPrice().toFixed(2)}
+                    £{hydrated ? totalPrice().toFixed(2) : "0.00"}
                   </span>
                   <span className="font-bold text-[15px]">My Cart</span>
                 </div>
@@ -162,14 +192,11 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
             )}
           >
             <div className="flex bg-surface-alt rounded-md overflow-hidden border border-border h-11">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="flex-1 px-4 text-sm bg-transparent outline-none text-foreground placeholder-text-muted"
+              <SearchBar
+                className="flex-1 h-full"
+                inputClassName="flex-1 px-4 text-sm"
+                compact
               />
-              <button className="px-4 text-text-secondary hover:text-primary transition-colors">
-                <Search size={18} />
-              </button>
             </div>
           </div>
         </Container>
@@ -185,7 +212,14 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
         >
           <Container>
             <div className="flex items-center justify-between relative h-full">
-              <DesktopNav navCategories={navCategories} />
+              <DesktopNav
+                navCategories={navCategories}
+                featuredProducts={featuredProducts}
+                bestSellingProducts={bestSellingProducts}
+                trendingProducts={trendingProducts}
+                popularProducts={popularProducts}
+                topRatedProducts={topRatedProducts}
+              />
 
               {/* Today's Deal */}
               <Link
@@ -208,6 +242,9 @@ export const Header = ({ navCategories = [], settings }: HeaderProps) => {
         onClose={() => setMobileMenuOpen(false)}
         navCategories={navCategories}
         settings={settings}
+        bestSellingProducts={bestSellingProducts}
+        trendingProducts={trendingProducts}
+        popularProducts={popularProducts}
       />
 
       {/* Cart Drawer */}

@@ -201,7 +201,100 @@ Here's a starter set of products to populate the store:
 
 ---
 
-## 4. Price Format Reference
+## 4. Product Tags — Navbar & Homepage Sections
+
+Tags drive the **navbar mega menus** and the **homepage sections**. Without the right tags, the site falls back to hardcoded placeholder data.
+
+### Available Tags
+
+| Tag | Where It Appears | Description |
+|-----|-----------------|-------------|
+| `bestselling` | **Shop** nav mega menu → "Best Selling" column | Top 4 products shown |
+| `trending` | **Shop** nav mega menu → "Trending" column + **Homepage** → "Trending Products" carousel | Top 4 in nav, top 8 on homepage |
+| `popular` | **Shop** nav mega menu → "Popular" column | Top 4 products shown |
+| `deals` | **Homepage** → "Top Deals" section + `/deals` page + **Top deals** nav mega menu | Products with active discounts |
+| `new-arrival` | Badge display | Shows "NEW" badge on product cards |
+
+### How to Add Tags in Admin
+
+1. Go to **Admin → Products → Edit Product**
+2. Scroll to the **Tags** section
+3. Click the tag chips: `bestselling`, `trending`, `popular`, `deals`, `new-arrival`
+4. Active tags are highlighted green
+5. Save the product
+
+### Minimum Products Per Tag
+
+For the navbar and homepage to look complete:
+
+| Tag | Minimum | Ideal |
+|-----|---------|-------|
+| `bestselling` | 4 | 6–8 |
+| `trending` | 4 (nav) / 8 (homepage) | 8 |
+| `popular` | 4 | 6–8 |
+| `deals` | 4 | 6–8 |
+
+**Important:** Products tagged `deals` should have a **Compare At Price** set (the original price before discount) so the discount badge and strikethrough pricing display correctly.
+
+### How It Works
+
+1. **`layout.tsx`** (server) fetches `getProductsByTag("bestselling", 4)`, `getProductsByTag("trending", 4)`, `getProductsByTag("popular", 4)` → passes to Header → DesktopNav/MobileNav
+2. **`page.tsx`** (server) fetches `getProductsByTag("trending", 8)` → TrendingProducts section, `getProductsByTag("deals", 8)` → TopDeals section
+3. **ShopMegaMenu** replaces "Best Selling", "Trending", "Popular" columns with real products when data exists
+4. **DealsMegaMenu** shows top-rated products + category circles
+5. If any query returns empty, **hardcoded fallback** data is displayed
+
+### Featured Products
+
+Mark products as **Featured** (checkbox in admin) to show them in:
+
+- The **Personalise** nav mega menu (top 5 featured products)
+- Any future featured sections
+
+---
+
+## 5. Top Deals Section — How It Works
+
+The **Top Deals** section appears on the homepage between Feature Badges and Triple Promo Banners.
+
+### Data Source
+
+- Fetches products tagged with `deals` from Firestore: `getProductsByTag("deals", 8)`
+- Falls back to 6 hardcoded placeholder products if none found
+
+### What Products Need
+
+For a product to appear in Top Deals:
+
+1. **Tag**: Must have the `deals` tag
+2. **Status**: Must be `Published`
+3. **Compare At Price**: Should be set (original higher price) so the discount percentage badge shows
+4. **Images**: At least 1 image (2 for hover effect)
+5. **Badge** (optional): e.g. "SALE", "HOT" shown on the card
+
+### Where Deals Appear
+
+| Location | Source | Max Items |
+|----------|--------|-----------|
+| Homepage "Top Deals" carousel | `getProductsByTag("deals", 8)` | 8 |
+| `/deals` page (full grid) | `getProductsByTag("deals", 20)` | 20 |
+| Nav "Top deals" mega menu | Top-rated products + categories | 6 |
+
+### Example Deal Product Setup
+
+```
+Name: Custom Printed T-Shirt
+Price: £19.99 (1999)
+Compare At Price: £24.99 (2499) ← shows -20% badge
+Tags: deals, bestselling
+Badge: SALE
+Featured: ✓
+Status: Published
+```
+
+---
+
+## 7. Price Format Reference
 
 Prices are stored in **pence** (integer) in Firestore:
 
@@ -214,14 +307,19 @@ Prices are stored in **pence** (integer) in Firestore:
 
 ---
 
-## 5. After Creating Data
+## 8. After Creating Data
 
 Once categories and products are created in the admin dashboard:
 
 1. The **web storefront** will automatically display them (pages use `force-dynamic` rendering)
 2. The **navbar** Categories mega menu will show your category tree
-3. The **shop page** will list all categories with images
-4. Category pages at `/shop/{parent-slug}` and `/shop/{parent-slug}/{child-slug}` will show filtered products
-5. Product pages at `/shop/product/{slug}` will show full product details
+3. The **Shop mega menu** will show real products in Best Selling / Trending / Popular columns (need tags assigned)
+4. The **Top Deals mega menu** will show top-rated products and category circles
+5. The **homepage** Trending Products carousel will show products tagged `trending`
+6. The **homepage** Top Deals section will show products tagged `deals`
+7. The **shop page** will list all categories with images
+8. Category pages at `/shop/{parent-slug}` and `/shop/{parent-slug}/{child-slug}` will show filtered products
+9. Product pages at `/shop/product/{slug}` will show full product details
+10. The `/deals` page will show all products tagged `deals` in a grid
 
 No code changes or redeployment needed — the web project reads directly from Firestore in real-time.

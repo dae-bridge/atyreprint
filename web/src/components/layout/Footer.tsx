@@ -62,6 +62,7 @@ export const Footer = ({ settings }: FooterProps) => {
                   src="/logo.png"
                   alt={`${siteName} Logo`}
                   fill
+                  sizes="(max-width: 768px) 150px, 180px"
                   className="object-contain object-left"
                 />
               </div>

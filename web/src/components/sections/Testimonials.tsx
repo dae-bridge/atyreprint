@@ -3,49 +3,43 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef } from "react";
+import type { Testimonial as FirestoreTestimonial } from "@/types";
+import { getImageUrl } from "@/types";
 
-const testimonials = [
-  {
-    name: "Sarah M.",
-    location: "London, UK",
-    rating: 5,
-    avatar: "/images/testimonials/customer-1.jpg",
-    text: "The embroidery quality on our team hoodies was outstanding. AtyrePrint really went above and beyond with the detail. Will definitely order again!",
-  },
-  {
-    name: "James K.",
-    location: "Manchester, UK",
-    rating: 5,
-    avatar: "/images/testimonials/customer-2.jpg",
-    text: "Ordered custom mugs for our office and they turned out brilliantly. The colours are vibrant and the turnaround was incredibly fast.",
-  },
-  {
-    name: "Amara O.",
-    location: "Lagos, Nigeria",
-    rating: 5,
-    avatar: "/images/testimonials/customer-3.jpg",
-    text: "I've used AtyrePrint for multiple bulk orders shipped to Africa. The quality is consistent and the communication is always excellent.",
-  },
-  {
-    name: "David T.",
-    location: "Accra, Ghana",
-    rating: 5,
-    avatar: "/images/testimonials/customer-2.jpg",
-    text: "Amazing customer service and top-notch materials. The custom t-shirts we ordered for our event were a huge hit!",
-  },
-  {
-    name: "Emily R.",
-    location: "Toronto, CA",
-    rating: 4,
-    avatar: "/images/testimonials/customer-1.jpg",
-    text: "Great turnaround time and solid printing quality. AtyrePrint is definitely our go-to for corporate gifting now.",
-  },
-];
+interface TestimonialsProps {
+  testimonials?: FirestoreTestimonial[];
+}
 
-export const Testimonials = () => {
+export const Testimonials = ({
+  testimonials: firestoreTestimonials,
+}: TestimonialsProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Map Firestore testimonials to display shape
+  const displayItems =
+    firestoreTestimonials && firestoreTestimonials.length > 0
+      ? firestoreTestimonials.map((t) => ({
+          name: t.name,
+          location: t.location,
+          rating: t.rating,
+          avatar: getImageUrl(t.avatar),
+          text: t.text,
+        }))
+      : [];
+
+  if (displayItems.length === 0) {
+    return (
+      <section className="pt-4 pb-16 md:pt-6 md:pb-20 bg-surface">
+        <Container>
+          <EmptyState variant="testimonials" compact />
+        </Container>
+      </section>
+    );
+  }
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -72,7 +66,7 @@ export const Testimonials = () => {
             className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8"
             style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
           >
-            {testimonials.map((item, index) => (
+            {displayItems.map((item, index) => (
               <div
                 key={index}
                 className="flex-none w-[90%] md:w-[45%] lg:w-[calc(33.333%-16px)] snap-start"
@@ -94,13 +88,17 @@ export const Testimonials = () => {
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full overflow-hidden relative">
-                      <Image
-                        src={item.avatar}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
+                      {item.avatar ? (
+                        <Image
+                          src={item.avatar}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          sizes="40px"
+                        />
+                      ) : (
+                        <PlaceholderImage type="testimonial" />
+                      )}
                     </div>
                     <div>
                       <p className="text-base md:text-lg font-semibold text-foreground">
@@ -134,4 +132,3 @@ export const Testimonials = () => {
     </section>
   );
 };
-
