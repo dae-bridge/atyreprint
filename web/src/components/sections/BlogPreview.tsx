@@ -44,9 +44,9 @@ export const BlogPreview = ({ posts }: BlogPreviewProps) => {
           {posts.slice(0, 3).map((post, i) => {
             const imageUrl = getImageUrl(post.coverImage);
             return (
-              <ScrollReveal key={post.id} variant="fade-up" delay={i * 120}>
-                <Link href={`/blog/${post.slug}`} className="group block">
-                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-4">
+              <ScrollReveal key={post.id} variant="fade-up" delay={i * 120} className="h-full">
+                <Link href={`/blog/${post.slug}`} className="group flex flex-col h-full bg-surface rounded-2xl overflow-hidden hover:shadow-md transition-shadow border border-border/40">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden">
                     {imageUrl ? (
                       <Image
                         src={imageUrl}
@@ -59,25 +59,27 @@ export const BlogPreview = ({ posts }: BlogPreviewProps) => {
                       <PlaceholderImage type="blog" />
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-text-muted text-xs mb-2">
-                    <Calendar size={13} />
-                    <time>
-                      {new Date(post.publishedAt).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </time>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 text-text-muted text-xs mb-3">
+                      <Calendar size={13} />
+                      <time>
+                        {new Date(post.publishedAt).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </time>
+                    </div>
+                    <h3 className="font-bold text-foreground group-hover:text-primary transition-colors mb-3 line-clamp-2 text-lg">
+                      {post.title}
+                    </h3>
+                    <p className="text-text-secondary text-sm line-clamp-2 mb-5 flex-grow">
+                      {post.excerpt}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-primary text-sm font-semibold group-hover:gap-2 transition-all mt-auto">
+                      Read More <ArrowRight size={14} />
+                    </span>
                   </div>
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-text-secondary text-sm line-clamp-2 mb-3">
-                    {post.excerpt}
-                  </p>
-                  <span className="inline-flex items-center gap-1 text-primary text-sm font-medium group-hover:gap-2 transition-all">
-                    Read More <ArrowRight size={14} />
-                  </span>
                 </Link>
               </ScrollReveal>
             );

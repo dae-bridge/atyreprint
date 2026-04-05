@@ -34,6 +34,7 @@ export const TopBar = ({ settings }: TopBarProps) => {
             {[
               { label: "About Us", href: "/about" },
               { label: "Contact Us", href: "/contact" },
+              { label: "Blog", href: "/blog" },
               { label: "FAQs", href: "/faqs" },
             ].map((link, idx, arr) => (
               <div key={link.label} className="flex items-center">

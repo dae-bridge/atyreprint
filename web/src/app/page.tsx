@@ -54,12 +54,9 @@ export default async function Home() {
       return [];
     }),
     queryDocuments<BlogPost>("blog-posts", {
-      filters: [{ field: "status", operator: "==", value: "published" }],
-      sortBy: "publishedAt",
-      sortDirection: "desc",
       pageSize: 3,
     }).catch((e) => {
-      console.error("[Home] Failed to fetch blog posts:", e);
+      console.error("[Home Debug] Failed to fetch blog posts:", e);
       return [];
     }),
   ]);

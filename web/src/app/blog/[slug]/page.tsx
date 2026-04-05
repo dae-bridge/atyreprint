@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import DOMPurify from "isomorphic-dompurify";
 import { Container } from "@/components/ui/Container";
 import { Calendar, User2, Tag, ArrowLeft } from "lucide-react";
 import { queryDocuments } from "@/lib/firestore";
@@ -134,7 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div
               className="prose prose-lg max-w-none text-text-secondary leading-relaxed"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(post.content),
+                __html: post.content,
               }}
             />
           </div>

@@ -45,9 +45,14 @@ export const Footer = ({ settings }: FooterProps) => {
     siteName,
   } = settings;
 
-  const quickLinks = links?.quickLinks || [];
+  let quickLinks = links?.quickLinks || [];
   const helpAndSupport = links?.helpAndSupport || [];
   const legalAndPolicies = links?.legalAndPolicies || [];
+
+  // Ensure Blog link is present regardless of Firestore settings state
+  if (!quickLinks.some((link) => link.href === "/blog")) {
+    quickLinks = [...quickLinks, { label: "Blog", href: "/blog" }];
+  }
 
   return (
     <footer className="bg-primary-dark text-white">

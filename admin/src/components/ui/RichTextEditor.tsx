@@ -71,6 +71,7 @@ export function RichTextEditor({
       TextStyle,
       Color,
     ],
+    immediatelyRender: false,
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());

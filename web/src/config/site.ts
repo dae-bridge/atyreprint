@@ -252,5 +252,6 @@ export const footerLinks = {
     { label: "Shop All", href: "/shop" },
     { label: "Custom Orders", href: "/personalise-it" },
     { label: "My Account", href: "/account" },
+    { label: "Blog", href: "/blog" },
   ],
 } as const;
