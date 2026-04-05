@@ -8,7 +8,7 @@ export const CTASection = () => {
       <Container>
         <ScrollReveal variant="zoom-in">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-foreground mb-4">
+            <h2 className="font-jost text-3xl md:text-4xl font-bold text-foreground mb-4">
               Let&apos;s Create Something Special
             </h2>
             <p className="text-text-secondary text-lg mb-8">

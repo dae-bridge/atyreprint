@@ -1,5 +1,10 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+  getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
@@ -16,7 +21,25 @@ const firebaseConfig = {
 const app =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-export const db = getFirestore(app);
+// Initialize Firestore with persistent cache so reads work even when
+// the connection hasn't been established yet (avoids "client is offline").
+function createFirestore() {
+  if (typeof window !== "undefined") {
+    try {
+      return initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
+      });
+    } catch {
+      // Already initialised (e.g. HMR) — fall back to the existing instance
+      return getFirestore(app);
+    }
+  }
+  return getFirestore(app);
+}
+
+export const db = createFirestore();
 export const storage = getStorage(app);
 
 export const initAnalytics = async () => {

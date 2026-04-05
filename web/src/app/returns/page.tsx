@@ -20,7 +20,7 @@ export default function ReturnsPage() {
       <section className="py-16 md:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               Custom Products
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -32,7 +32,7 @@ export default function ReturnsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               Our Quality Guarantee
             </h2>
             <p className="text-text-secondary leading-relaxed mb-4">
@@ -56,7 +56,7 @@ export default function ReturnsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               How to Report an Issue
             </h2>
             <ol className="space-y-3 list-decimal list-inside text-text-secondary leading-relaxed">
@@ -88,7 +88,7 @@ export default function ReturnsPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               Damaged During Delivery
             </h2>
             <p className="text-text-secondary leading-relaxed">

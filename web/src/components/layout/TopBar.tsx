@@ -1,61 +1,57 @@
-import { siteConfig } from "@/config/site";
-import { Mail, Phone } from "lucide-react";
-import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import Link from "next/link";
+import { Container } from "@/components/ui/Container";
+import type { SiteSettings } from "@/types";
 
-export const TopBar = () => {
+interface TopBarProps {
+  settings: SiteSettings;
+}
+
+export const TopBar = ({ settings }: TopBarProps) => {
+  const message =
+    settings.topBarMessage ||
+    "Free shipping world wide for all orders over £100";
+  const ctaLink = settings.topBarLink;
+
   return (
-    <div className="bg-primary-dark text-white text-sm hidden md:block">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-10">
-        {/* Left - Promo text */}
-        <p className="text-white/80">
-          Free UK shipping on orders over £50 —{" "}
-          <Link
-            href="/shop"
-            className="text-secondary hover:text-secondary-light underline"
-          >
-            Shop Now
-          </Link>
-        </p>
+    <div className="bg-primary text-white text-xs sm:text-sm hidden md:block border-b border-white/10">
+      <Container>
+        <div className="flex items-center justify-between h-9 relative">
+          {/* Left - Promo text */}
+          <div className="flex items-center gap-1">
+            <span>{message}</span>
+            {ctaLink && (
+              <Link
+                href={ctaLink.href}
+                className="font-bold underline hover:text-accent transition-colors ml-1"
+              >
+                {ctaLink.label}
+              </Link>
+            )}
+          </div>
 
-        {/* Right - Contact & Social */}
-        <div className="flex items-center gap-5">
-          <a
-            href={`mailto:${siteConfig.contact.email}`}
-            className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors"
-          >
-            <Mail size={14} />
-            <span>{siteConfig.contact.email}</span>
-          </a>
-          <a
-            href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`}
-            className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors"
-          >
-            <Phone size={14} />
-            <span>{siteConfig.contact.phone}</span>
-          </a>
-          <div className="flex items-center gap-3 ml-2 pl-3 border-l border-white/20">
-            <a
-              href={siteConfig.social.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="text-white/70 hover:text-white transition-colors"
-            >
-              <FacebookIcon size={14} />
-            </a>
-            <a
-              href={siteConfig.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="text-white/70 hover:text-white transition-colors"
-            >
-              <InstagramIcon size={14} />
-            </a>
+          {/* Right - Links */}
+          <div className="hidden lg:flex items-center">
+            {[
+              { label: "About Us", href: "/about" },
+              { label: "Contact Us", href: "/contact" },
+              { label: "Blog", href: "/blog" },
+              { label: "FAQs", href: "/faqs" },
+            ].map((link, idx, arr) => (
+              <div key={link.label} className="flex items-center">
+                <Link
+                  href={link.href}
+                  className="hover:text-accent transition-colors px-3 py-1"
+                >
+                  {link.label}
+                </Link>
+                {idx < arr.length - 1 && (
+                  <span className="h-3 w-px bg-white/30" />
+                )}
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 };

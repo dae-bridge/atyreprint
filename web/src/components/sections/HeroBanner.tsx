@@ -4,43 +4,30 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { HeroSlide } from "@/types";
 
-const slides = [
-  {
-    image: "/images/hero/hero-1.jpg",
-    alt: "Custom printed t-shirts and hoodies",
-    overline: "Premium Print-on-Demand & Embroidery",
-    title: "Custom Clothing & Gifts",
-    highlight: "that Speak for You",
-    description:
-      "5+ years crafting premium custom products — t-shirts, hoodies, mugs, tote bags & more. Serving the UK, Africa & Europe.",
-    cta: { label: "Shop Now", href: "/shop" },
-    ctaSecondary: { label: "Personalise It", href: "/personalise-it" },
-  },
-  {
-    image: "/images/hero/hero-2.jpg",
-    alt: "Embroidered corporate workwear",
-    overline: "Professional Embroidery Services",
-    title: "Your Logo, Stitched",
-    highlight: "to Perfection",
-    description:
-      "Premium embroidery for workwear, uniforms, team apparel & personalised gifts. Durable, detailed, and professionally finished.",
-    cta: { label: "Our Services", href: "/services" },
-    ctaSecondary: { label: "Get a Quote", href: "/contact" },
-  },
-  {
-    image: "/images/hero/hero-3.jpg",
-    alt: "Personalised mugs and accessories",
-    overline: "Design Your Own",
-    title: "Make It Personal,",
-    highlight: "Make It Yours",
-    description:
-      "Use our online design tool to create one-of-a-kind products. Upload your artwork, add text, and preview instantly.",
-    cta: { label: "Start Designing", href: "/personalise-it" },
-    ctaSecondary: { label: "Browse Products", href: "/shop" },
-  },
-];
+/** Map CMS HeroSlide[] to internal slide format */
+function mapCMSSlides(cmsSlides: HeroSlide[]) {
+  return cmsSlides
+    .filter((s) => s.active)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((s) => ({
+      image: s.image?.url || "",
+      alt: s.image?.alt || s.title,
+      overline: s.overline,
+      title: s.title,
+      highlight: s.highlight,
+      description: s.description,
+      cta: s.primaryCta,
+      ctaSecondary: s.secondaryCta,
+    }));
+}
+
+interface HeroBannerProps {
+  heroSlides?: HeroSlide[];
+}
 
 /* Tile grid config */
 const COLS = 8;
@@ -67,7 +54,12 @@ const buildTiles = () => {
 
 const tiles = buildTiles();
 
-export const HeroBanner = () => {
+export const HeroBanner = ({ heroSlides }: HeroBannerProps) => {
+  const slides =
+    heroSlides && heroSlides.length > 0 ? mapCMSSlides(heroSlides) : [];
+
+  if (slides.length === 0) return null;
+
   const [current, setCurrent] = useState(0);
   const [outgoingIndex, setOutgoingIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -148,115 +140,121 @@ export const HeroBanner = () => {
   }, [outgoingIndex]);
 
   return (
-    <section
-      className="relative min-h-[85vh] flex items-center overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      {/* Incoming slide — sits underneath the tile grid */}
-      <div className="absolute inset-0">
-        <Image
-          src={slide.image}
-          alt={slide.alt}
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
-      </div>
-
-      {/* Tile-switch grid of the outgoing slide */}
-      {tileGrid && (
-        <div className="absolute inset-0 z-[2] pointer-events-none">
-          {tileGrid}
+    <Container>
+      <section
+        className="relative min-h-[50vh] sm:min-h-[60vh] md:min-h-[70vh] flex items-center overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Incoming slide — shifted left for zero overlap with right-aligned text */}
+        <div className="absolute inset-0 w-[115%] -left-[15%]">
+          {slide.image ? (
+            <Image
+              src={slide.image}
+              alt={slide.alt}
+              fill
+              className="object-cover object-left"
+              priority
+              sizes="115vw"
+            />
+          ) : (
+            <PlaceholderImage type="hero" />
+          )}
         </div>
-      )}
 
-      {/* Multi-layer overlay — guarantees text readability on any image */}
-      <div className="absolute inset-0 z-[3]">
-        {/* Full-screen dark wash */}
-        <div className="absolute inset-0 bg-black/50" />
-        {/* Extra gradient on the left where text sits */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
-        {/* Bottom fade for dots / arrows */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-      </div>
+        {/* Tile-switch grid of the outgoing slide */}
+        {tileGrid && (
+          <div className="absolute inset-0 z-[2] pointer-events-none">
+            {tileGrid}
+          </div>
+        )}
 
-      {/* Content */}
-      <Container className="relative z-10 py-20">
-        <div className="max-w-2xl">
-          <p
-            key={`overline-${current}`}
-            className="text-secondary font-semibold tracking-wider uppercase text-sm mb-4 animate-fade-in-up drop-shadow-md"
-          >
-            {slide.overline}
-          </p>
-          <h1
-            key={`title-${current}`}
-            className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6 animate-fade-in-up animation-delay-100 drop-shadow-lg"
-          >
-            {slide.title}{" "}
-            <span className="text-secondary drop-shadow-md">
-              {slide.highlight}
-            </span>
-          </h1>
-          <p
-            key={`desc-${current}`}
-            className="text-lg text-white/90 max-w-lg mb-8 leading-relaxed animate-fade-in-up animation-delay-200 drop-shadow-md"
-          >
-            {slide.description}
-          </p>
-          <div
-            key={`cta-${current}`}
-            className="flex flex-col sm:flex-row gap-4 animate-fade-in-up animation-delay-300"
-          >
-            <Link
-              href={slide.cta.href}
-              className="inline-flex items-center justify-center px-8 py-3.5 bg-secondary text-primary-dark font-semibold rounded-lg hover:bg-secondary-light transition-colors text-lg shadow-lg"
-            >
-              {slide.cta.label}
-            </Link>
-            <Link
-              href={slide.ctaSecondary.href}
-              className="inline-flex items-center justify-center px-8 py-3.5 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary transition-colors text-lg shadow-lg"
-            >
-              {slide.ctaSecondary.label}
-            </Link>
+        {/* Multi-layer overlay — flipped for right-aligned text readability */}
+        <div className="absolute inset-0 z-[3]">
+          {/* Targeted gradient on the right where text sits */}
+          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/40 to-transparent" />
+          {/* Bottom fade for dots / arrows */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        </div>
+
+        {/* Content — Positioned to the right on desktop, centered on mobile */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center md:justify-end py-12 md:py-20 pointer-events-none">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center md:justify-end">
+            <div className="max-w-xl text-center md:text-left pointer-events-auto">
+              <p
+                key={`overline-${current}`}
+                className="text-secondary font-semibold tracking-wider uppercase text-xs sm:text-[13px] md:text-[15px] mb-3 md:mb-4 animate-fade-in-up drop-shadow-md"
+              >
+                {slide.overline}
+              </p>
+              <h1
+                key={`title-${current}`}
+                className="font-jost text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4 md:mb-6 animate-fade-in-up animation-delay-100 drop-shadow-lg"
+              >
+                {slide.title}{" "}
+                <span className="text-secondary drop-shadow-md">
+                  {slide.highlight}
+                </span>
+              </h1>
+              <p
+                key={`desc-${current}`}
+                className="text-sm sm:text-base md:text-lg text-white/90 max-w-lg mb-6 md:mb-8 leading-relaxed animate-fade-in-up animation-delay-200 drop-shadow-md mx-auto md:mx-0"
+              >
+                {slide.description}
+              </p>
+              <div
+                key={`cta-${current}`}
+                className="flex flex-col sm:flex-row gap-3 sm:gap-4 animate-fade-in-up animation-delay-300 items-center md:items-start"
+              >
+                <Link
+                  href={slide.cta.href}
+                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-3.5 bg-accent text-primary-dark font-semibold rounded-none hover:bg-primary hover:text-white transition-colors text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
+                >
+                  {slide.cta.label}
+                </Link>
+                <Link
+                  href={slide.ctaSecondary.href}
+                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-3.5 border-2 border-white text-white font-semibold rounded-none hover:bg-white hover:text-primary transition-colors text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
+                >
+                  {slide.ctaSecondary.label}
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </Container>
 
-      {/* Navigation arrows */}
-      <button
-        onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft size={22} />
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-        aria-label="Next slide"
-      >
-        <ChevronRight size={22} />
-      </button>
+        {/* Navigation arrows */}
+        <button
+          onClick={prev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-all shadow-lg active:scale-95"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft size={22} />
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-all shadow-lg active:scale-95"
+          aria-label="Next slide"
+        >
+          <ChevronRight size={22} />
+        </button>
 
-      {/* Indicator dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2.5">
-        {slides.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className={`h-2 rounded-full transition-all duration-500 ${
-              i === current
-                ? "w-8 bg-secondary"
-                : "w-2 bg-white/50 hover:bg-white/70"
-            }`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
-    </section>
+        {/* Indicator dots */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2.5">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`h-2 transition-all duration-500 rounded-full ${
+                i === current
+                  ? "w-8 bg-secondary"
+                  : "w-2 bg-white/50 hover:bg-white/70"
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </section>
+    </Container>
   );
 };

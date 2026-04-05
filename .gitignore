@@ -35,7 +35,6 @@ firestore-debug.log
 ui-debug.log
 database-debug.log
 storage-debug.log
-.firebaserc
 
 # ─── Logs ───
 npm-debug.log*

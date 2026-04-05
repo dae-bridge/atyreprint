@@ -1,8 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useDesignStore } from "@/hooks/useDesignStore";
 import { productTemplates } from "@/config/designerConfig";
 import { cn } from "@/lib/utils";
+
+const slugToTemplateId: Record<string, string> = {
+  "custom-printed-tshirt": "tshirt-classic",
+  "embroidered-hoodie": "hoodie-pullover",
+  "embroidered-sweatshirt": "sweatshirt-crew",
+  "custom-tote-bag": "tote-bag-standard",
+  "personalised-mug": "mug-ceramic",
+  "branded-snapback-cap": "cap-snapback",
+  "custom-apron": "apron-chef",
+  "custom-glass-can": "glass-can-16oz",
+  "custom-tumbler": "tumbler-20oz",
+  "personalised-pillowcase": "pillowcase-square",
+};
 
 export const ProductSelector = () => {
   const {
@@ -13,6 +28,25 @@ export const ProductSelector = () => {
     setProductColor,
     setActiveView,
   } = useDesignStore();
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const productSlug = searchParams.get("product");
+
+  // Auto-select product based on URL parameter on mount or slug change
+  useEffect(() => {
+    if (productSlug) {
+      const templateId = slugToTemplateId[productSlug];
+      if (templateId && (!selectedProduct || selectedProduct.id !== templateId)) {
+        const template = productTemplates.find((t) => t.id === templateId);
+        if (template) {
+          setProduct(template);
+        }
+      }
+    } else if (selectedProduct) {
+      useDesignStore.getState().resetDesign();
+    }
+  }, [productSlug, selectedProduct?.id, setProduct]);
 
   /* ─── Product not yet selected — show product picker ─── */
   if (!selectedProduct) {
@@ -25,7 +59,7 @@ export const ProductSelector = () => {
             <p className="text-secondary font-semibold tracking-wider uppercase text-sm mb-2">
               Personalise It
             </p>
-            <h1 className="font-[family-name:var(--font-playfair)] text-3xl md:text-4xl font-bold text-foreground mb-3">
+            <h1 className="font-jost text-3xl md:text-4xl font-bold text-foreground mb-3">
               Choose Your Product
             </h1>
             <p className="text-text-secondary max-w-lg mx-auto">
@@ -45,7 +79,13 @@ export const ProductSelector = () => {
                   .map((product) => (
                     <button
                       key={product.id}
-                      onClick={() => setProduct(product)}
+                      onClick={() => {
+                        setProduct(product);
+                        const slug = Object.keys(slugToTemplateId).find(key => slugToTemplateId[key] === product.id);
+                        if (slug) {
+                          router.replace(`/personalise-it?product=${slug}`, { scroll: false });
+                        }
+                      }}
                       className="group bg-white rounded-xl border border-border-light p-4 text-center hover:shadow-lg hover:border-primary/30 transition-all"
                     >
                       {/* Thumbnail placeholder */}
@@ -91,7 +131,10 @@ export const ProductSelector = () => {
     <div className="flex items-center gap-4 px-4 py-3 bg-white border-b border-border">
       {/* Product name */}
       <button
-        onClick={() => useDesignStore.getState().resetDesign()}
+        onClick={() => {
+          useDesignStore.getState().resetDesign();
+          router.replace('/personalise-it', { scroll: false });
+        }}
         className="text-sm text-text-secondary hover:text-primary transition-colors"
         title="Change product"
       >

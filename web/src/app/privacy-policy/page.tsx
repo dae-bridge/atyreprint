@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
           </p>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               1. Who We Are
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               2. Information We Collect
             </h2>
             <p className="text-text-secondary leading-relaxed mb-3">
@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               3. How We Use Your Data
             </h2>
             <ul className="space-y-2 text-text-secondary text-sm">
@@ -78,7 +78,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               4. Cookies
             </h2>
             <p className="text-text-secondary leading-relaxed mb-3">
@@ -103,7 +103,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               5. Data Sharing
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -114,7 +114,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               6. Your Rights
             </h2>
             <p className="text-text-secondary leading-relaxed mb-3">
@@ -147,7 +147,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div>
-            <h2 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-foreground mb-3">
+            <h2 className="font-jost text-xl font-bold text-foreground mb-3">
               7. Contact
             </h2>
             <p className="text-text-secondary leading-relaxed">

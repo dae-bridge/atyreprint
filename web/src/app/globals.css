@@ -1,15 +1,17 @@
 @import "tailwindcss";
+@plugin "../../node_modules/@tailwindcss/typography";
 
 :root {
   /* Brand Colors */
-  --color-primary: #3d6b1e;
-  --color-primary-light: #4a7c25;
-  --color-primary-dark: #1a3a10;
-  --color-accent: #a7cf45;
-  --color-accent-light: #c8e07d;
-  --color-secondary: #d4a853;
-  --color-secondary-light: #e8c97a;
-  --color-secondary-dark: #b8902f;
+  /* Brand Colors from Logo */
+  --color-primary: #1a3014; /* Deep Dark Green from logo text */
+  --color-primary-light: #2d4d2d;
+  --color-primary-dark: #12210e;
+  --color-accent: #a9cb5b; /* Updated Lime Green from logo preference */
+  --color-accent-light: #c1e075;
+  --color-secondary: #a9cb5b; /* Aligning secondary with the lime accent for brand consistency */
+  --color-secondary-light: #c1e075;
+  --color-secondary-dark: #8ba83a;
 
   /* Neutrals */
   --color-bg: #ffffff;
@@ -54,15 +56,18 @@
   --color-error: var(--color-error);
   --color-warning: var(--color-warning);
   --color-info: var(--color-info);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-playfair);
+  --font-sans: var(--font-jost);
+  --font-display: var(--font-jost);
+  --font-jost: var(--font-jost);
 }
 
 /* Base styles */
 body {
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-sans, "Inter", system-ui, sans-serif);
+  font-family: var(--font-sans, "Jost", system-ui, sans-serif);
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 /* Smooth scrolling */
@@ -78,17 +83,11 @@ html {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  display: none;
 }
-::-webkit-scrollbar-track {
-  background: var(--color-surface);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-accent);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary);
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Hero slider text animations */

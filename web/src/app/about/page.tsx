@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { siteConfig } from "@/config/site";
+import { getHomepageCMS } from "@/lib/settings";
 import { Heart, Globe, Award, Users } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -38,7 +38,16 @@ const values = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const cms = await getHomepageCMS();
+  const trustStats = cms.trustStats?.length
+    ? cms.trustStats
+    : [
+        { id: "1", value: "5+", label: "Years Experience", sortOrder: 0 },
+        { id: "2", value: "10K+", label: "Orders Completed", sortOrder: 1 },
+        { id: "3", value: "3", label: "Continents Served", sortOrder: 2 },
+        { id: "4", value: "98%", label: "Happy Customers", sortOrder: 3 },
+      ];
   return (
     <>
       <PageHeader
@@ -49,7 +58,7 @@ export default function AboutPage() {
 
       {/* Story section */}
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
               <Image
@@ -109,9 +118,9 @@ export default function AboutPage() {
 
       {/* Stats */}
       <section className="py-12 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {siteConfig.trustStats.map((stat) => (
+            {trustStats.map((stat) => (
               <div key={stat.label}>
                 <p className="text-3xl md:text-4xl font-bold text-secondary mb-1">
                   {stat.value}
@@ -125,12 +134,12 @@ export default function AboutPage() {
 
       {/* Values */}
       <section className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="text-secondary font-semibold text-sm uppercase tracking-wider">
               What Drives Us
             </span>
-            <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-foreground mt-2">
+            <h2 className="font-jost text-3xl font-bold text-foreground mt-2">
               Our Values
             </h2>
           </div>
@@ -162,7 +171,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="py-16 bg-surface">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-[family-name:var(--font-playfair)] text-2xl md:text-3xl font-bold text-foreground mb-4">
+          <h2 className="font-jost text-2xl md:text-3xl font-bold text-foreground mb-4">
             Let&apos;s Create Something Together
           </h2>
           <p className="text-text-secondary mb-8">

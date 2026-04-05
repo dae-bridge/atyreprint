@@ -1,6 +1,12 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+  getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -17,11 +23,29 @@ const firebaseConfig = {
 const app =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Firestore
-export const db = getFirestore(app);
+// Firestore with persistent cache for offline resilience
+function createFirestore() {
+  if (typeof window !== "undefined") {
+    try {
+      return initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
+      });
+    } catch {
+      return getFirestore(app);
+    }
+  }
+  return getFirestore(app);
+}
+
+export const db = createFirestore();
 
 // Storage
 export const storage = getStorage(app);
+
+// Auth
+export const auth = getAuth(app);
 
 // Analytics (client-side only)
 export const initAnalytics = async () => {
